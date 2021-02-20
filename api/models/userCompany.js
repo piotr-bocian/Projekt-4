@@ -58,4 +58,6 @@ const userCompanySchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('UserCompany', userCompanySchema);
+const UserCompany = mongoose.model('UserCompany', userCompanySchema)
+
+exports = UserCompany;
