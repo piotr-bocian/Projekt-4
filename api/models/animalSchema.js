@@ -41,7 +41,7 @@ const animalSchema = new mongoose.Schema({
         required: true
     },
     image: {
-
+    //will be added later (needed configuration 'multer')
     },
     age: {
         type: Number,
