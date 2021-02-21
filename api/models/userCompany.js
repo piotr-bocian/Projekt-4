@@ -54,7 +54,10 @@ const userCompanySchema = new mongoose.Schema({
     mobile: { 
         type: String, 
         required: true,
-        minLength: 9
+        minLength: 11,
+        maxLength: 15,
+        match: /^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/
+        // mobile no pattern: +48 123-456-789, or 123-456-789
     },
 });
 
