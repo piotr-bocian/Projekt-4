@@ -15,7 +15,6 @@ const paymentSchema = mongoose.Schema({
   amount: {
     type: Number,
     min: 5,
-    max: 10000,
     required: true,
   },
   paymentDate: {
@@ -55,7 +54,7 @@ function validatePayment(payment) {
         'wirtualny opiekun-opłata cykliczna'
       )
       .required(),
-    amount: Joi.string().min(5).max(1000).required(),
+    amount: Joi.string().min(5).required(),
     paymentDate: Joi.date().min('now'),
     paymentMethod: Joi.string()
       .valid(
