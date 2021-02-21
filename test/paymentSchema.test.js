@@ -17,6 +17,7 @@ it('Should save payment to database with correct data and console.log null if ev
   });
   payment.validate((response) => {
     console.log(response);
+    expect(response).toBe(null)
     done();
   });
 });
@@ -28,8 +29,9 @@ it('Should console.log: Payment validation failed: typeOfPayment: `kot` is not a
     paymentDate: '2021-02-22',
     paymentMethod: 'Blik',
   });
-  payment.validate((response) => {
+    payment.validate((response) => {
     console.log(response.message);
+    expect(response.message).toBe('Payment validation failed: typeOfPayment: `kot` is not a valid enum value for path `typeOfPayment`.')
     done();
   });
 });
