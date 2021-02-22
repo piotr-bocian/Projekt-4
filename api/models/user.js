@@ -66,6 +66,7 @@ function validateUser(user) {
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
         mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+        image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
     }
 
     return Joi.validate(user, schema);
