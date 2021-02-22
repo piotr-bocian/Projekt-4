@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
+    _id: mongoose.Types.ObjectId,
     email: { 
         type: String, 
         required: true,
@@ -38,6 +39,9 @@ const userSchema = new mongoose.Schema({
         maxLength: 15,
         match: /^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/
         // mobile no pattern: +48 123-456-789, or 123-456-789
+    },
+    image: {
+        type: String
     },
     isAdmin: Boolean,
     isVolunteer: Boolean
