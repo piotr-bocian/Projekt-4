@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Joi = require('joi');
 
 const postSchema = new Schema({
     postDate: {
@@ -19,4 +20,17 @@ const postSchema = new Schema({
     }
 })
 
-module.exports = mongoose.model('Post', postSchema);
+const Post = mongoose.model('Post', postSchema);
+
+function validatePost(post) {
+    const schema = Joi.object({
+      postDate: Joi.Date().required(),
+      content: Joi.string().min(50).required(),
+      photo: Joi.string().required()
+    });
+
+    return Joi.validate(post, schema);
+  }
+
+  exports.validatePost = validatePost;
+  exports.Post = Post;
