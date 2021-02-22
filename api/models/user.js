@@ -1,5 +1,5 @@
-const Joi = require('joi');
 const mongoose = require('mongoose');
+const Joi = require('joi');
 
 
 const userSchema = new mongoose.Schema({
@@ -60,17 +60,19 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 function validateUser(user) {
-    const schema = {
+    const schema = Joi.object({
         firstName: Joi.string().min(3).max(50).required(),
         lastName: Joi.string().min(3).max(50).required(),
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
         mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
         image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
-    }
+    });
+
+    // const validation = schema.validate(user);
 
     return Joi.validate(user, schema);
 }
 
-exports = User;
-exports = validateUser;
+module.exports = User;
+module.exports = validateUser;
