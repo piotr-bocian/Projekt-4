@@ -9,12 +9,14 @@ const postSchema = new Schema({
     },
     content: {
         type: String,
+        minLength: 50,
         required: true
     },
     photo: {
         type: String,
         required: true,
+        // URL zdjęcia z zewnętrznego zródła
     }
 })
 
-module.exports = new mongoose.model('Post', postSchema);
+module.exports = mongoose.model('Post', postSchema);
