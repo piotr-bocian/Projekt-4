@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 
-//ADOPTION VISIT SCHEMA
+//ADOPTION VISIT SCHEMA 
 
 const adoptionVisitSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
