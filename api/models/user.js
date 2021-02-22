@@ -1,9 +1,25 @@
+const Joi = require('joi');
 const mongoose = require('mongoose');
+
 
 const userSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
+    firstName: {
+        type: String,
+        required: true,
+        minLength: 3, 
+        maxLength: 50 
+    },
+    lastName: {
+        type: String,
+        required: true,
+        minLength: 3, 
+        maxLength: 50
+    },
     email: { 
         type: String, 
+        minLength: 5,
+        maxLength: 255,
         required: true,
         unique: true,
         match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
@@ -20,18 +36,6 @@ const userSchema = new mongoose.Schema({
         // [0-9a-zA-Z]{8,} - should contain at least 8 from the mentioned characters
         // $ - force the matching to be only valid if can be applied until string termination
     },
-    firstName: {
-        type: String,
-        required: true,
-        minLength: 3, 
-        maxLength: 50 
-    },
-    lastName: {
-        type: String,
-        required: true,
-        minLength: 3, 
-        maxLength: 50
-    },
     mobile: { 
         type: String, 
         required: true,
@@ -43,10 +47,29 @@ const userSchema = new mongoose.Schema({
     image: {
         type: String
     },
-    isAdmin: Boolean,
-    isVolunteer: Boolean
+    isAdmin: {
+        type: Boolean,
+        default: false
+    },
+    isVolunteer: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const User = mongoose.model('User', userSchema);
 
+function validateUser(user) {
+    const schema = {
+        firstName: Joi.string().min(3).max(50).required(),
+        lastName: Joi.string().min(3).max(50).required(),
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
+        mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+    }
+
+    return Joi.validate(user, schema);
+}
+
 exports = User;
+exports = validateUser;
