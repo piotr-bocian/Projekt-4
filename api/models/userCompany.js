@@ -1,3 +1,4 @@
+const Joi = require('joi');
 const mongoose = require('mongoose');
 
 const userCompanySchema = new mongoose.Schema({
@@ -21,7 +22,9 @@ const userCompanySchema = new mongoose.Schema({
         // $ - force the matching to be only valid if can be applied until string termination
     },
     nip: { 
-        type: String, 
+        type: String,
+        minLength: 10,
+        maxLength: 10, 
         required: true 
     },
     companyName: { 
@@ -34,7 +37,7 @@ const userCompanySchema = new mongoose.Schema({
         type: String, 
         required: true, 
         minLength: 2, 
-        maxLength: 50 
+        maxLength: 100 
     },
     houseNo: { 
         type: String, 
@@ -65,6 +68,25 @@ const userCompanySchema = new mongoose.Schema({
     }
 });
 
-const UserCompany = mongoose.model('UserCompany', userCompanySchema)
+const UserCompany = mongoose.model('UserCompany', userCompanySchema);
+
+function validateUserCompany(user) {
+    const schema = {
+        email: Joi.string().min(5).max(255).required().email(),
+        password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
+        nip: Joi.string().length(10).required(),
+        companyName: Joi.string().min(2).max(255).required(),
+        street: Joi.string().min(2).max(100).required(),
+        houseNo: Joi.string().required(),
+        city: Joi.string().min(2).max(50).required(),
+        postcode: Joi.string().length(6).required(),
+        mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+        image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+    }
+
+    return Joi.validate(user, schema);
+}
+
 
 exports = UserCompany;
+exports = validateUserCompany;
