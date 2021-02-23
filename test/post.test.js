@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { post } = require('../api/models/post');
+const { Post } = require('../api/models/post');
 const databaseName = 'test';
 
 //you need to connect to a test database while DBCompass is running
@@ -8,8 +8,8 @@ beforeAll(async () => {
   await mongoose.connect(url, { useNewUrlParser: true });
 });
 
-it('Should save visit to database with correct data and console.log null if everything is ok', (done) => {
-  const postTest = new post({
+it('Should save post to database with correct data and console.log null if everything is ok', (done) => {
+  const postTest = new Post({
     postDate: '2021-02-22',
     content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
     photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -22,7 +22,7 @@ it('Should save visit to database with correct data and console.log null if ever
 });
 
 it('Should console.log: postTest validation failed: content: the minimum length of the text is 50 characters', (done) => {
-    const postTest = new post({
+    const postTest = new Post({
         postDate: '2021-02-22',
         content: 'Piękny pies shih tzu',
         photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -35,7 +35,7 @@ it('Should console.log: postTest validation failed: content: the minimum length 
 });
 
 it('Should console.log: postTest validation failed: photo: link to an external photo source is required', (done) => {
-    const postTest = new post({
+    const postTest = new Post({
         postDate: '2021-02-22',
         content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
         photo: '',
