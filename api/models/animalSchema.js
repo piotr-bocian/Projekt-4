@@ -98,5 +98,5 @@ function validateAnimal(animal) {
     return Joi.validate(animal, schema);
 }
 
-
-module.exports = Animal;
+exports.Animal = Animal;
+exports.validateAnimal = validateAnimal;
