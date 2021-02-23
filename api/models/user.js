@@ -8,14 +8,16 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true,
-        minLength: 3, 
-        maxLength: 50 
+        minLength: 2, 
+        maxLength: 50,
+        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/, 'Property firstName must contain only letters']
     },
     lastName: {
         type: String,
         required: true,
-        minLength: 3, 
-        maxLength: 50
+        minLength: 2, 
+        maxLength: 50,
+        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/, 'Property lastName must contain only letters']
     },
     email: { 
         type: String, 
@@ -23,12 +25,12 @@ const userSchema = new mongoose.Schema({
         maxLength: 255,
         required: true,
         unique: true,
-        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
+        match: [/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/, 'Property email should be a valid email']
     },
     password: { 
         type: String, 
         required: true,
-        match: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/ // 1 digit, 1 lower, 1 upper case, min 8 characters
+        match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, 'Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long'] // 1 digit, 1 lower, 1 upper case, min 8 characters
         //password validation:
         // ^ - symbol indicates that regex is for password,
         // (?=.*\d) - should contain at least one digit
@@ -42,7 +44,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         minLength: 11,
         maxLength: 15,
-        match: /^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/
+        match: [/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/, 'Property mobile should match a pattern: +12 123-456-789 or 123-456-789']
         // mobile no pattern: +48 123-456-789, or 123-456-789
     },
     image: {
