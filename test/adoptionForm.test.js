@@ -8,7 +8,7 @@ beforeAll(async () => {
   await mongoose.connect(url, { useNewUrlParser: true });
 });
 
-it('Should save visit to database with correct data and console.log null if everything is ok', (done) => {
+it('Should save adoption text to database with correct userID and console.log null if everything is ok', (done) => {
   const adoptionFormTest = new adoptionForm({
     content: 'Hello, How are U',
     userID: '5099803df3f4948bd2f98391',
