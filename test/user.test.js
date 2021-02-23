@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('../api/models/user');
+const { User } = require('../api/models/user');
 const databaseName = 'test';
 
 //you need to connect to a test database while DBCompass is running

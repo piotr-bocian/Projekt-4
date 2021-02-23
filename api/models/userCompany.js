@@ -88,5 +88,5 @@ function validateUserCompany(user) {
 }
 
 
-module.exports = UserCompany;
-module.exports = validateUserCompany;
+exports.UserCompany = UserCompany;
+exports.validateUserCompany = validateUserCompany;
