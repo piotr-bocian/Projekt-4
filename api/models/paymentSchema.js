@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
-// there is a problem with JOI validation when _id is adding in schema
 const paymentSchema = mongoose.Schema({
-  // _id: mongoose.Schema.Types.ObjectId,
+  _id: mongoose.Schema.Types.ObjectId,
   typeOfPayment: {
     type: String,
     enum: [
