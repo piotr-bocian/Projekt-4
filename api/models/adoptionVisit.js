@@ -32,7 +32,8 @@ const adoptionVisitSchema = new mongoose.Schema({
     },
     isVisitDone: {
         type: Boolean,
-        required: true
+        required: true,
+        default: false
     }
 });
 
