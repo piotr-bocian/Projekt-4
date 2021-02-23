@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const { ValidationError } = require('joi');
 
 
 const userSchema = new mongoose.Schema({
@@ -61,18 +62,41 @@ const User = mongoose.model('User', userSchema);
 
 function validateUser(user) {
     const schema = Joi.object({
-        firstName: Joi.string().min(3).max(50).required(),
-        lastName: Joi.string().min(3).max(50).required(),
+        firstName: Joi.string().min(2).max(50).required(),
+        lastName: Joi.string().min(2).max(50).required(),
         email: Joi.string().min(5).max(255).required().email(),
         password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
         mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
-        image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+        image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
+        isAdmin: Joi.boolean(),
+        isVolunteer: Joi.boolean()
     });
 
-    // const validation = schema.validate(user);
-
-    return Joi.validate(user, schema);
+    // with this approach "Joi.validate is not a function" error does not occur
+    const validate = schema.validate(user);
+    return validate;
 }
+
+// example of how to validate mongoose schema with joi
+// const testUser = new User({
+//     firstName: '',
+//     lastName: 'Kowalski',
+//     email: 'k.kowalski@gmail.com',
+//     password: 'Kkowals1',
+//     mobile: '+48 123-456-789',
+//     image: 'hello img',
+//     isAdmin: true,
+//     isVolunteer: false
+// });
+
+//new mongoose object has to be converted into POJO - Plain Old JavaScript Object with
+//mongoose's toObject() method to make it possible to validate it with Joi, as shown below.
+
+// const testVal = validateUser(testUser.toObject());
+// if(testVal.error) {
+//     console.log(testVal.error.details);
+// };
+
 
 exports.User = User;
 exports.validateUser = validateUser;

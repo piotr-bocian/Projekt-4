@@ -83,9 +83,12 @@ function validateUserCompany(user) {
         mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
         image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
     }
-
-    return Joi.validate(user, schema);
+    
+    const validate = schema.validate(user);
+    return validate;
 }
+
+
 
 
 exports.UserCompany = UserCompany;
