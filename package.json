@@ -24,6 +24,9 @@
     "url": "https://github.com/piotr-bocian/Projekt-4/issues"
   },
   "homepage": "https://github.com/piotr-bocian/Projekt-4#readme",
+  "jest": {
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "bcrypt": "^5.0.0",
     "cookie": "^0.4.1",
