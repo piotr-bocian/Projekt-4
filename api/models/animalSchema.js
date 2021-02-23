@@ -76,8 +76,8 @@ function validateAnimal(animal) {
         registrationDate: Joi.date(),
         gender: Joi.string().lowercase().required()
         .valid(
-            'męski',
-            'żeński'
+            'męska',
+            'żeńska'
         ),
         size: Joi.String().lowercase()
         // .when(Joi.animalType, {
