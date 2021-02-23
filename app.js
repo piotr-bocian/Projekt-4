@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
-const payment = require('./api/routes/payment');
+const payment = require('./api/routes/payments');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose

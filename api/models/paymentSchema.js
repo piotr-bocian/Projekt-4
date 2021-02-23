@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
+// there is a problem with JOI validation when _id is adding in schema
 const paymentSchema = mongoose.Schema({
-  _id: mongoose.Schema.Types.ObjectId,
+  // _id: mongoose.Schema.Types.ObjectId,
   typeOfPayment: {
     type: String,
     enum: [
@@ -45,7 +46,7 @@ const paymentSchema = mongoose.Schema({
 
 const Payment = mongoose.model('Payment', paymentSchema);
 
-function validatePayment(payment) {
+//validation is an object that return value or error
   const schema = Joi.object({
     typeOfPayment: Joi.string()
       .valid(
@@ -54,7 +55,7 @@ function validatePayment(payment) {
         'wirtualny opiekun-opłata cykliczna'
       )
       .required(),
-    amount: Joi.string().min(5).required(),
+    amount: Joi.number().min(5).required(),
     paymentDate: Joi.date().min('now'),
     paymentMethod: Joi.string()
       .valid(
@@ -67,8 +68,6 @@ function validatePayment(payment) {
       .required(),
   });
 
-  return Joi.validate(payment, schema);
-}
 
 exports.Payment = Payment;
-exports.validatePayment = validatePayment;
+exports.validatePayment = schema;
