@@ -21,13 +21,13 @@ it('Should save visit to database with correct data and console.log null if ever
   });
 });
 
-it('Should console.log: postTest validation failed: duration: the minimum length of the text is 50 characters', (done) => {
+it('Should console.log: postTest validation failed: content: the minimum length of the text is 50 characters', (done) => {
     const postTest = new post({
         postDate: '2021-02-22',
         content: 'Piękny pies shih tzu',
         photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
       });
-    visit.validate((response) => {
+      postTest.validate((response) => {
     console.log(response.message);
     expect(response.message).toBe('postTest validation failed: content: the minimum length of the text is 50 characters')
     done();
@@ -40,7 +40,7 @@ it('Should console.log: postTest validation failed: photo: link to an external p
         content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
         photo: '',
       });
-    visit.validate((response) => {
+      postTest.validate((response) => {
     console.log(response.message);
     expect(response.message).toBe('postTest validation failed: photo: link to an external photo source is required')
     done();
