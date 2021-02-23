@@ -29,7 +29,7 @@ it('Should console.log: postTest validation failed: content: the minimum length 
       });
       postTest.validate((response) => {
     console.log(response.message);
-    expect(response.message).toBe('postTest validation failed: content: the minimum length of the text is 50 characters')
+    expect(response.message).toBe('Post validation failed: content: Path `content` (`Piękny pies shih tzu`) is shorter than the minimum allowed length (50).')
     done();
   });
 });
@@ -42,7 +42,7 @@ it('Should console.log: postTest validation failed: photo: link to an external p
       });
       postTest.validate((response) => {
     console.log(response.message);
-    expect(response.message).toBe('postTest validation failed: photo: link to an external photo source is required')
+    expect(response.message).toBe('Post validation failed: photo: Path `photo` is required.')
     done();
   });
 });
