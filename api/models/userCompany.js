@@ -7,12 +7,12 @@ const userCompanySchema = new mongoose.Schema({
         type: String, 
         required: true,
         unique: true,
-        match: /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/ //email address regex validation
+        match: [/[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/, 'Property email should be a valid email'] //email address regex validation
     },
     password: { 
         type: String, 
         required: true,
-        match: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/ // 1 digit, 1 lower, 1 upper case, min 8 characters
+        match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, 'Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long'] // 1 digit, 1 lower, 1 upper case, min 8 characters
         //password validation:
         // ^ - symbol indicates that regex is for password,
         // (?=.*\d) - should contain at least one digit
@@ -60,7 +60,7 @@ const userCompanySchema = new mongoose.Schema({
         required: true,
         minLength: 11,
         maxLength: 15,
-        match: /^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/
+        match: [/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/, 'Property mobile should match a pattern: +12 123-456-789 or 123-456-789']
         // mobile no pattern: +48 123-456-789, or 123-456-789
     },
     image: {
@@ -83,9 +83,12 @@ function validateUserCompany(user) {
         mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
         image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
     }
-
-    return Joi.validate(user, schema);
+    
+    const validate = schema.validate(user);
+    return validate;
 }
+
+
 
 
 exports.UserCompany = UserCompany;

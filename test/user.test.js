@@ -25,6 +25,37 @@ describe("User schema tests", () => {
             expect(response).toBe(null);
         });
     });
+
+    it('Should throw error if firstName and / or lastName property is invalid', () => {
+        user.firstName = 'a';
+        user.lastName = 'X';
+        user.validate((response) => {
+            expect(response.errors.firstName.message).toBe('Path `firstName` (`a`) is shorter than the minimum allowed length (2).');
+            expect(response.errors.lastName.message).toBe('Path `lastName` (`X`) is shorter than the minimum allowed length (2).');
+        });
+    });
+
+    it('Should throw error if password does not contain 1 digit, 1 lowercase, 1 uppercase and is less than 8 char long', () => {
+        user.password = 'kowal';
+        user.validate((response) => {
+            expect(response.errors.password.message).toBeTruthy();
+        });
+    });
+
+    it('Should throw error if email is not valid email address', () => {
+        user.email = 'k.kowalskigmail.com';
+        user.validate((response) => {
+            expect(response.errors.email.message).toBeTruthy();
+        });
+    });
+
+    it('Should throw error if mobile number does not match the patterns: +12 123-456-789 or 123-456-789', () => {
+        user.mobile = '+12 123 456 789';
+        user.validate((response) => {
+            expect(response.errors.mobile.message).toBeTruthy();
+        });
+    });
+
 });
 
 //you have to clean the collections after the test
