@@ -6,9 +6,9 @@ const Joi = require('joi');
 
 const animalSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
-    type: {
+    animalType: {
         type: String,
-        enum: ['dog', 'cat', 'other'],
+        enum: ['pies', 'kot', 'inne'],
         lowercase: true,
         required: true
     },
@@ -20,19 +20,23 @@ const animalSchema = new mongoose.Schema({
     },
     registrationDate: {
         type: Date,
-        required: true
+        default: Date.now,
+        required: true,
+        validate: function(input) {
+            return new Date(input) <= new Date();
+        }
     },
     gender: {
         type: String,
-        enum: ['male', 'female'],
+        enum: ['męska', 'żeńska'],
         lowercase: true,
         required: true
     },
     size: {
         type: String,
-        enum: ['small','small/medium', 'medium','medium/big', 'big'],
+        enum: ['mały','mały/średni', 'średni','średni/duży', 'duży'],
         lowercase: true,
-        required: function() { return this.type === 'dog'}
+        required: function() { return this.animalType === 'pies'}
     },
     description: {
         type: String,
@@ -41,11 +45,11 @@ const animalSchema = new mongoose.Schema({
         required: true
     },
     image: {
+        type: String
     //will be added later (needed configuration 'multer')
     },
     age: {
-        type: Number,
-        max: 30
+        type: Number
     },
     breed: {
         type: String,
@@ -62,29 +66,29 @@ const Animal = mongoose.model('Animal', animalSchema);
 
 function validateAnimal(animal) {
     const schema = Joi.object({
-        type: Joi.string()
+        animalType: Joi.string()
         .valid(
-            'dog',
-            'cat',
-            'other'
+            'pies',
+            'kot',
+            'inne'
         ),
         name: Joi.string().min(2).max(50).required(),
-        registrationDate: Joi.Date(),
+        registrationDate: Joi.date(),
         gender: Joi.string().lowercase().required()
         .valid(
-            'male',
-            'female'
+            'męski',
+            'żeński'
         ),
         size: Joi.String().lowercase()
-        .when(Joi.type, {
-            is: 'dog', then: Joi.required()
-        })
+        // .when(Joi.animalType, {
+        //     is: 'pies', then: Joi.required()
+        // })
         .valid(
-            'small',
-            'small/medium',
-            'medium',
-            'medium/big',
-            'big'
+            'mały',
+            'mały/średni',
+            'średni',
+            'średni/duży',
+            'duży'
         ),
         description: Joi.String().min(50).max(524288).required(),
         age: Joi.Number().max(30),

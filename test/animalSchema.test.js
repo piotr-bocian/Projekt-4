@@ -8,13 +8,13 @@ beforeAll(async () => {
   await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
 });
 
-describe("Animal schema tests", () =>{
+describe("Animal schema tests", () => {
     const animal = new Animal({
-        type: 'dog',
+        animalType: 'pies',
         name: 'Simba',
-        registrationDate: '2021-01-30',
-        gender: 'male',
-        size: 'medium/big',
+        registrationDate: '2021-02-02',
+        gender: 'męska',
+        size: 'średni/duży',
         description: 'A true king of our shelter! Loves people, children and long walks in the park.',
         breed: 'German Shepherd'
       });
@@ -26,19 +26,29 @@ describe("Animal schema tests", () =>{
     });
 
     it('Should throw errors if object is incorrect', () => {
-        animal.type = 'dogew';
+        animal.animalType = 'dogew';
         animal.description = 'test';
+        animal.registrationDate = '2024-02-02';
         animal.name = '';
         animal.gender = '';
         animal.size ='';
         animal.validate((response) => {
-            expect(response.errors.type.message).toBeTruthy();
+            expect(response.errors.animalType.message).toBeTruthy();
             expect(response.errors.description.message).toBeTruthy();
+            expect(response.errors.registrationDate.message).toBeTruthy();
             expect(response.errors.name.message).toBeTruthy();
             expect(response.errors.gender.message).toBeTruthy();
             expect(response.errors.size.message).toBeTruthy();
         });
     });
+
+    it('Should throw error if animalType is {pies} & size is empty', () => {
+      animal.animalType = 'pies';
+      animal.size ='';
+      animal.validate((response) => {
+          expect(response.errors.size.message).toBeTruthy();
+      });
+  });
 
 
 })
