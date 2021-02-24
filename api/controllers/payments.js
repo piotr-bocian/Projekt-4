@@ -7,7 +7,7 @@ exports.getAllPayments = async (req, res) => {
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
- 
+
   const results = {
     allPaymentsInDatabase: await Payment.count(),
   };
@@ -33,12 +33,18 @@ exports.getAllPayments = async (req, res) => {
 };
 
 exports.getOnePayment = async (req, res) => {
-  const payment = await Payment.findById(req.params.id);
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (isIdValid) {
+    const payment = await Payment.findById(req.params.id);
 
-  if (!payment)
-    return res.status(404).send('Płatność, której szukasz nie istnieje');
+    if (!payment) {
+      return res.status(404).send('Płatność, której szukasz nie istnieje');
+    }
 
-  res.send(payment);
+    res.send(payment);
+  } else {
+    res.status(400).send('Podano błędny numer _id');
+  }
 };
 
 exports.makeAPayment = async (req, res) => {
