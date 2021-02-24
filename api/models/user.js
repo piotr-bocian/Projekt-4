@@ -4,7 +4,7 @@ const { ValidationError } = require('joi');
 
 
 const userSchema = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
+    // _id: mongoose.Types.ObjectId,
     firstName: {
         type: String,
         required: true,
@@ -101,6 +101,20 @@ function validateUser(user) {
 // }else {
 //     console.log(testVal);
 // };
+
+
+// async function update_User(id){
+//     const user = await User.findById(id);
+//     if(!user) return;
+//     user.set({
+//         lastName: 'Żygadło',
+//         isVolunteer: true
+//     });
+//     const result = await user.save();
+//     console.log(result);
+// }
+
+// update_User('6036c9901afeb14043e3fe36');
 
 
 exports.User = User;

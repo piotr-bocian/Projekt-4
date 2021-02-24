@@ -20,6 +20,7 @@ mongoose
     console.log('Connection failed', error);
   });
 
+  app.use(express.json());
   app.use(users);
 
 module.exports = app;
