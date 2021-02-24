@@ -13,23 +13,29 @@ exports.getAllPayments = async (req, res) => {
   };
   if (endIndex < (await Payment.count())) {
     results.next = {
-      page: page + 1,
+      page: `/api/payments?page=${page + 1}&limit=${limit}`,
       limit: limit,
     };
   }
 
   if (startIndex > 0) {
     results.previous = {
-      page: page - 1,
+      page: `/api/payments?page=${page - 1}&limit=${limit}`,
       limit: limit,
     };
   }
-
   results.results = await Payment.find()
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
-  res.send(results);
+  res.send({
+    product: results,
+    request: {
+      type: 'GET',
+      description: 'Get all payments',
+      url: 'http://localhost:3000/api/payments/',
+    },
+  });
 };
 
 exports.getOnePayment = async (req, res) => {
