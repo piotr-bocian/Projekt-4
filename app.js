@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
+const users = require('./api/routes/users');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -18,5 +19,7 @@ mongoose
   .catch((error) => {
     console.log('Connection failed', error);
   });
+
+  app.use(users);
 
 module.exports = app;

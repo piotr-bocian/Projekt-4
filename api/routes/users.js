@@ -1,9 +1,10 @@
-const { User, validate } = require('../models/user');
+const { User, validateUser } = require('../models/user');
+const UserController = require('../controllers/user');
 const express = require('express');
 const router = express.Router();
 
 
-router.get('/', async (req, res, next) => {
-    const users = await User.find().sort('lastName');
-    res.send(users);
-});
+router.get('/', UserController.getUsers);
+
+
+module.exports = router;
