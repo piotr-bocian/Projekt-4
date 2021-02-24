@@ -76,7 +76,6 @@ function validateUser(user) {
 
     // with this approach "Joi.validate is not a function" error does not occur
     const validate = schema.validateAsync(user);
-    // console.log(validate);
     return validate;
 }
 
@@ -103,19 +102,6 @@ function validateUser(user) {
 // };
 
 
-// async function update_User(id){
-//     const user = await User.findById(id);
-//     if(!user) return;
-//     user.set({
-//         lastName: 'Żygadło',
-//         isVolunteer: true
-//     });
-//     const result = await user.save();
-//     console.log(result);
-// }
-
-// update_User('6036c9901afeb14043e3fe36');
-
 
 exports.User = User;
-exports.validateUser = validateUser;
+exports.validate = validateUser;

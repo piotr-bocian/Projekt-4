@@ -21,6 +21,6 @@ mongoose
   });
 
   app.use(express.json());
-  app.use(users);
+  app.use('/api/users', users);
 
 module.exports = app;
