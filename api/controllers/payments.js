@@ -59,9 +59,8 @@ exports.makeAPayment = async (req, res) => {
     let payment = new Payment({
       _id: mongoose.Types.ObjectId(),
       ...value,
-      //not work or it will be added automatically by a logged user???
-      userId: req.body.userId,
-      userCompanyId: req.body.userCompanyId,
+      userID: req.body.userID,
+      userCompanyID: req.body.userCompanyID,
     });
     payment = await payment.save();
     res.status(201).send({
