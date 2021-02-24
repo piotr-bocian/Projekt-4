@@ -75,7 +75,8 @@ function validateUser(user) {
     });
 
     // with this approach "Joi.validate is not a function" error does not occur
-    const validate = schema.validate(user);
+    const validate = schema.validateAsync(user);
+    // console.log(validate);
     return validate;
 }
 
@@ -91,12 +92,14 @@ function validateUser(user) {
 //     isVolunteer: false
 // });
 
-//new mongoose object has to be converted into POJO - Plain Old JavaScript Object with
-//mongoose's toObject() method to make it possible to validate it with Joi, as shown below.
+// new mongoose object has to be converted into POJO - Plain Old JavaScript Object with
+// mongoose's toObject() method to make it possible to validate it with Joi, as shown below.
 
 // const testVal = validateUser(testUser.toObject());
 // if(testVal.error) {
-//     console.log(testVal.error.details);
+//     console.log(testVal);
+// }else {
+//     console.log(testVal);
 // };
 
 
