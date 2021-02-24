@@ -2,8 +2,34 @@ const mongoose = require('mongoose');
 const { Payment, validatePayment } = require('../models/paymentSchema');
 
 exports.getAllPayments = async (req, res) => {
-  const payment = await Payment.find().sort({ amount: -1 });
-  res.send(payment);
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+ 
+  const results = {
+    allPaymentsInDatabase: await Payment.count(),
+  };
+  if (endIndex < (await Payment.count())) {
+    results.next = {
+      page: page + 1,
+      limit: limit,
+    };
+  }
+
+  if (startIndex > 0) {
+    results.previous = {
+      page: page - 1,
+      limit: limit,
+    };
+  }
+
+  results.results = await Payment.find()
+    .limit(limit)
+    .skip(startIndex)
+    .sort({ amount: -1 });
+  res.send(results);
 };
 
 exports.getOnePayment = async (req, res) => {
@@ -17,11 +43,12 @@ exports.getOnePayment = async (req, res) => {
 
 exports.makeAPayment = async (req, res) => {
   try {
+    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
     const value = await validatePayment.validateAsync({
-      typeOfPayment: req.body.typeOfPayment,
-      amount: req.body.amount,
-      paymentDate: req.body.paymentDate,
-      paymentMethod: req.body.paymentMethod,
+      typeOfPayment,
+      amount,
+      paymentDate,
+      paymentMethod,
     });
     let payment = new Payment({
       _id: mongoose.Types.ObjectId(),
@@ -32,8 +59,9 @@ exports.makeAPayment = async (req, res) => {
     });
     payment = await payment.save();
     res.status(201).send({
-      message: "Płatność przebiegła pomyślnie",
-      payment});
+      message: 'Płatność przebiegła pomyślnie',
+      payment,
+    });
   } catch (error) {
     res.status(400).send(error.details[0].message);
   }
