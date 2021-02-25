@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 const users = require('./api/routes/users');
+const login = require('./api/routes/login');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -22,5 +23,6 @@ mongoose
 
   app.use(express.json());
   app.use('/api/users', users);
+  app.use('/api/login', login);
 
 module.exports = app;

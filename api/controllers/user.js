@@ -22,12 +22,12 @@ exports.usersGetUser = async(req, res, next) => {
 exports.usersAddUser = async(req, res, next) => {
     try{
         const { firstName, lastName, email, password, mobile, image, isAdmin, isVolunteer } = req.body;
-        const usr = await validateUser.validateAsync(req.body);
+        const validUser = await validateUser.validateAsync(req.body);
         let user = await User.findOne({ email: req.body.email });
         if(user) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
 
         user = new User({
-            ...usr
+            ...validUser
         });
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
