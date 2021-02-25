@@ -32,7 +32,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         minLength: 8,
         maxLength: 1024,
-        match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/, 'Hasło musi składać się z przynajmniej 8 znaków, zawierać 1 cyfrę, 1 małą i 1 dużą literę.'] // 1 digit, 1 lower, 1 upper case, min 8 characters
+        // I had to comment the match property because, after hash, password did not matched a pattern
+        // match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/, 'Hasło musi składać się z przynajmniej 8 znaków, zawierać 1 cyfrę, 1 małą i 1 dużą literę.'] // 1 digit, 1 lower, 1 upper case, min 8 characters
         //password validation:
         // ^ - symbol indicates that regex is for password,
         // (?=.*\d) - should contain at least one digit
