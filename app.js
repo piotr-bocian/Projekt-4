@@ -12,7 +12,7 @@ mongoose
       '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
     {
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     }
   )
   .then(() => {
