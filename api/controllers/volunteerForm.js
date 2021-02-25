@@ -7,10 +7,19 @@ exports.VolunteerFormGetAll = async (req, res, next) => {
 }
 
 exports.VolunteerFormGetOne = async (req, res, next) => {
+    if(!mongoose.Types.ObjectId.isValid(req.params.id))
+        return res.status(400).send('Podano błędny numer _id');
     const volunteerForm = await VolunteerForm.findById(req.params.id);
     if(!volunteerForm) return res.status(404).send('Formularz wolontariusza o podanym ID nie istnieje.');
 
-    res.send(volunteerForm);
+    res.send({
+        volunteerForm: volunteerForm,
+        request: {
+            type: 'GET',
+            description: 'Get all volunteer forms',
+            url: 'localhost:3000/api/volunteerForms/',
+        }
+    });
 }
 
 exports.addVolunteerForm = async (req, res, next) => {
