@@ -29,12 +29,12 @@ exports.getAllPayments = async (req, res) => {
     .skip(startIndex)
     .sort({ amount: -1 });
   res.send({
-    product: results,
     request: {
       type: 'GET',
       description: 'Get all payments',
       url: 'http://localhost:3000/api/payments/',
     },
+    product: results,
   });
 };
 
@@ -47,7 +47,14 @@ exports.getOnePayment = async (req, res) => {
       return res.status(404).send('Płatność, której szukasz nie istnieje');
     }
 
-    res.send(payment);
+    res.send({
+      request: {
+        type: 'GET',
+        description: 'Get all payments',
+        url: 'http://localhost:3000/api/payments/',
+      },
+      product: payment,
+    });
   } else {
     res.status(400).send('Podano błędny numer _id');
   }
