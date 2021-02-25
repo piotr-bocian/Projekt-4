@@ -12,9 +12,11 @@ const volunteerFormSchema = mongoose.Schema({
         required: true
     },
     birthDate: {
-        type: Date,
-        required: true
+        type: String,
+        required: true,
+        match: /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/
     },
+    //birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/).required()
     mobile: {
         type: String,
         required: true,
@@ -40,25 +42,21 @@ const volunteerFormSchema = mongoose.Schema({
 
 const VolunteerForm = mongoose.model('VolunteerForm', volunteerFormSchema);
 
-function validateVolunteerForm(volunteerForm){
-    const schema = Joi.object({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        birthDate: Joi.date().required(),
-        mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
-        occupation: Joi.string.required(),
-        preferredTasks: Joi
-            .string()
-            .valid(
-                'praca z psami',
-                'praca z kotami',
-                'promocja schroniska'
-            )
-            .required()
-    });
-
-    return Joi.validate(volunteerForm, schema);
-}
+const schema = Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/).required(),
+    mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+    occupation: Joi.string().required(),
+    preferredTasks: Joi
+        .string()
+        .valid(
+            'praca z psami',
+            'praca z kotami',
+            'promocja schroniska'
+        )
+        .required()
+});
 
 exports.VolunteerForm = VolunteerForm;
-exports.validateVolunteerForm = validateVolunteerForm;
+exports.validateVolunteerForm = schema;
