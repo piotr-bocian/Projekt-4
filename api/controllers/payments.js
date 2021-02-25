@@ -34,7 +34,7 @@ exports.getAllPayments = async (req, res) => {
       description: 'Get all payments',
       url: 'http://localhost:3000/api/payments/',
     },
-    product: results,
+    payments: results,
   });
 };
 
@@ -53,7 +53,7 @@ exports.getOnePayment = async (req, res) => {
         description: 'Get all payments',
         url: 'http://localhost:3000/api/payments/',
       },
-      product: payment,
+      payment,
     });
   } else {
     res.status(400).send('Podano błędny numer _id');
@@ -83,4 +83,91 @@ exports.makeAPayment = async (req, res) => {
   } catch (error) {
     res.status(400).send(error.details[0].message);
   }
+};
+
+exports.deleteOnePayment = async (req, res) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (isIdValid) {
+    const payment = await Payment.findByIdAndRemove(req.params.id);
+
+    if (!payment) {
+      return res.status(404).send('Płatność, której szukasz nie istnieje');
+    }
+
+    res.send({
+      message: 'Płatność została poprawnie usunieta z bazy danych',
+      payment,
+      request: {
+        type: 'DELETE',
+        description: 'To see all payments go to:',
+        url: 'http://localhost:3000/api/payments/',
+      },
+    });
+  } else {
+    res.status(400).send('Podano błędny numer _id');
+  }
+};
+
+exports.updateOnePayment = async (req, res) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (!isIdValid) {
+    res.status(400).send('Podano błędny numer _id');
+    return;
+  }
+  try {
+    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
+    await validatePayment.validateAsync({
+      typeOfPayment,
+      amount,
+      paymentDate,
+      paymentMethod,
+    });
+
+    let payment = await Payment.findByIdAndUpdate(
+      req.params.id,
+      {
+        typeOfPayment,
+        amount,
+        paymentDate,
+        paymentMethod,
+      },
+      { new: true }
+    );
+    res.status(201).send({
+      message: 'Zaktualizowana płatność',
+      payment,
+      request: {
+        type: 'PUT',
+        description: 'To see all payments go to:',
+        url: 'http://localhost:3000/api/payments/',
+      },
+    });
+  } catch (error) {
+    res.status(400).send(error.details[0].message);
+  }
+};
+
+exports.updateOnePropertyInPayment = async (req, res) => {
+  const id = req.params.productId;
+  const isIdValid = mongoose.Types.ObjectId.isValid(id);
+  if (!isIdValid) {
+    res.status(400).send('Podano błędny numer _id');
+    return;
+  }
+  try {
+    await Payment.findByIdAndUpdate(
+      { _id: id },
+      { $set: updated },
+      { new: true }
+    );
+    res.status(201).send({
+      message: 'Zaktualizowana płatność',
+      payment,
+      request: {
+        type: 'PUT',
+        description: 'To see all payments go to:',
+        url: 'http://localhost:3000/api/payments/',
+      },
+    });
+  } catch (err) {}
 };
