@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 
+const adoptionForms = require('./api/routes/adoptionFormRoutes');
+
+
+
 mongoose.set('useUnifiedTopology', true);
 mongoose
   .connect(
@@ -18,5 +22,8 @@ mongoose
   .catch((error) => {
     console.log('Connection failed', error);
   });
+
+  app.use(express.json());
+  app.use('/api/adoptionForms', adoptionForms);
 
 module.exports = app;
