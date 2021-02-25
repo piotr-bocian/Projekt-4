@@ -1,7 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const multer = require('multer');
 require('dotenv').config();
+const animalRouter = require('./api/routes/animals');
 const app = express();
+
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -18,5 +21,9 @@ mongoose
   .catch((error) => {
     console.log('Connection failed', error);
   });
+
+
+app.use(express.json());
+app.use('/api/animals', animalRouter);
 
 module.exports = app;

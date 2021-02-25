@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const multer = require('multer');
 
 
 //ANIMAL SCHEMA
 
 const animalSchema = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
     animalType: {
         type: String,
         enum: ['pies', 'kot', 'inne'],
@@ -46,7 +46,6 @@ const animalSchema = new mongoose.Schema({
     },
     image: {
         type: String
-    //will be added later (needed configuration 'multer')
     },
     age: {
         type: Number
@@ -95,7 +94,7 @@ function validateAnimal(animal) {
         breed: Joi.String().min(2).max(255)
     });
 
-    return Joi.validate(animal, schema);
+    return schema.validate(animal);
 }
 
 exports.Animal = Animal;
