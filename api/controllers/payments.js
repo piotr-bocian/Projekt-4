@@ -94,7 +94,7 @@ exports.deleteOnePayment = async (req, res) => {
       return res.status(404).send('Płatność, której szukasz nie istnieje');
     }
 
-    res.send({
+    res.status(202).send({
       message: 'Płatność została poprawnie usunieta z bazy danych',
       payment,
       request: {
@@ -133,7 +133,7 @@ exports.updateOnePayment = async (req, res) => {
       },
       { new: true }
     );
-    res.status(201).send({
+    res.status(200).send({
       message: 'Zaktualizowana płatność',
       payment,
       request: {
@@ -148,26 +148,33 @@ exports.updateOnePayment = async (req, res) => {
 };
 
 exports.updateOnePropertyInPayment = async (req, res) => {
-  const id = req.params.productId;
+  const id = req.params.id;
   const isIdValid = mongoose.Types.ObjectId.isValid(id);
   if (!isIdValid) {
     res.status(400).send('Podano błędny numer _id');
     return;
   }
   try {
-    await Payment.findByIdAndUpdate(
+    const updatePayment = {};
+    for (const update of req.body) {
+      updatePayment[update.propertyName] = update.newValue;
+    }
+    // const value = await validatePayment.validateAsync(updatePayment);
+    const payment = await Payment.findOneAndUpdate(
       { _id: id },
-      { $set: updated },
+      { $set: updatePayment },
       { new: true }
     );
-    res.status(201).send({
-      message: 'Zaktualizowana płatność',
+    res.status(200).send({
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(updatePayment)}`,
       payment,
       request: {
-        type: 'PUT',
+        type: 'PATCH',
         description: 'To see all payments go to:',
         url: 'http://localhost:3000/api/payments/',
       },
     });
-  } catch (err) {}
+  } catch (error) {
+    res.status(400).send(error);
+  }
 };
