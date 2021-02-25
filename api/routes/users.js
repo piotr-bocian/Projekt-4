@@ -1,4 +1,4 @@
-const { User, validate } = require('../models/user');
+const { User, validateUser } = require('../models/user');
 const userController = require('../controllers/user');
 const express = require('express');
 const router = express.Router();
