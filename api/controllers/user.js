@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { User, validateUser } = require('../models/user');
 
@@ -8,35 +9,37 @@ exports.usersGetAll = async(req, res, next) => {
 };
 
 exports.usersGetUser = async(req, res, next) => {
-    const user = await User.findById(req.params.id);
-    if(!user) return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
-    
-    res.send(user);
+    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+    if(isIdValid){
+        const user = await User.findById(req.params.id);
+        if(!user) return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+        res.send(user);
+    }else {
+        res.status(400).send('Podano nieprawidłowy numer id');
+    }    
 };
 
 exports.usersAddUser = async(req, res, next) => {
     try{
-        const { error } = await validateUser.validateAsync(req.body);
+        const { firstName, lastName, email, password, mobile, image, isAdmin, isVolunteer } = req.body;
+        const usr = await validateUser.validateAsync(req.body);
         let user = await User.findOne({ email: req.body.email });
         if(user) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
 
         user = new User({
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email,
-            password: req.body.password,
-            mobile: req.body.mobile,
-            image: req.body.image,
-            isAdmin: req.body.isAdmin,
-            isVolunteer: req.body.isVolunteer
+            ...usr
         });
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(user.password, salt);
         user = await user.save();
         res.send({
             message: 'Rejestracja przebiegła pomyślnie',
-            user
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email
         });
     } catch (error) {
-        res.status(400).send(error.details[0].message);
+        res.status(400).send(error.message);
     }
 
 };
