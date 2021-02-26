@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const { Payment, validatePayment } = require('../models/paymentSchema');
+const {
+  Payment,
+  validatePayment,
+  validatePatchUpdate,
+} = require('../models/paymentSchema');
 
 exports.getAllPayments = async (req, res) => {
   const page = parseInt(req.query.page);
@@ -159,14 +163,16 @@ exports.updateOnePropertyInPayment = async (req, res) => {
     for (const update of req.body) {
       updatePayment[update.propertyName] = update.newValue;
     }
-    // const value = await validatePayment.validateAsync(updatePayment);
+    await validatePatchUpdate.validateAsync(updatePayment);
     const payment = await Payment.findOneAndUpdate(
       { _id: id },
       { $set: updatePayment },
       { new: true }
     );
     res.status(200).send({
-      message: `Zaktualizowano nastepujące pola ${JSON.stringify(updatePayment)}`,
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(
+        updatePayment
+      )}`,
       payment,
       request: {
         type: 'PATCH',
@@ -175,6 +181,6 @@ exports.updateOnePropertyInPayment = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).send(error);
+    res.status(400).send(error.details[0].message);
   }
 };

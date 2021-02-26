@@ -67,6 +67,25 @@ const Payment = mongoose.model('Payment', paymentSchema);
       .required(),
   });
 
+  const patch = Joi.object({
+    typeOfPayment: Joi.string()
+      .valid(
+        'opłata adopcyjna',
+        'jednorazowy przelew',
+        'wirtualny opiekun-opłata cykliczna'
+      ),
+    amount: Joi.number().min(5),
+    paymentDate: Joi.date().min('now'),
+    paymentMethod: Joi.string()
+      .valid(
+        'Karta płatnicza',
+        'Blik',
+        'Przelew bankowy',
+        'Apple Pay',
+        'Google Pay'
+      ),
+  });
 
 exports.Payment = Payment;
 exports.validatePayment = schema;
+exports.validatePatchUpdate = patch;
