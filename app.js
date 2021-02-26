@@ -25,4 +25,11 @@ mongoose
 app.use(express.json());
 app.use('/api/payments', payment);
 
+//handles query on non-existent route
+app.use((req, res, next) => {
+  const error = new Error('STRONA O PODANYM ADRESIE NIE ISTNIEJE');
+  res.status(404).send(error.message);
+  next(error);
+});
+
 module.exports = app;
