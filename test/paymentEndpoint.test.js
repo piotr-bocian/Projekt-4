@@ -16,7 +16,7 @@ app.use(express.json());
 app.get('/test', payment.getAllPayments);
 app.get('/test/:id', payment.getOnePayment);
 app.post('/test', payment.makeAPayment);
-// app.delete('/test/:id', payment.deleteOnePayment);
+app.delete('/test/:id', payment.deleteOnePayment);
 
 const dummyData = {
   _id: '60369dc3e954c736b94a12f3',
@@ -125,7 +125,7 @@ it('should respond with status 201', function (done) {
     });
 });
 
-it('should respond with status 400 when incorrect data are sended', function (done) {
+it('should respond with status 400 when incorrect data are sended, it should also send: typeOfPayment" must be one of [opłata adopcyjna, jednorazowy przelew, wirtualny opiekun-opłata cykliczna]', function (done) {
   const postData = {
     typeOfPayment: 'bad data',
     amount: 25,
@@ -149,7 +149,20 @@ it('should respond with status 400 when incorrect data are sended', function (do
 
 // DELETE /test
 
-it('should delete data from database', function (done) {
+it('should response with status 400 and send: Podano błędny numer _id', function (done) {
+  return request(app)
+    .delete('/test/incorrectid')
+    .set('Accept', 'application/json')
+    .expect(400)
+    .then((response) => {
+      // console.log(response.text);
+      expect(response.text).toBe('Podano błędny numer _id');
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+it('should response with status 404 and send: Płatność, której szukasz nie istnieje', function (done) {
   const dummyDataDelete = {
     _id: '60369dc3e954c736b94a12f5',
     typeOfPayment: 'opłata adopcyjna',
@@ -159,12 +172,31 @@ it('should delete data from database', function (done) {
   };
   const post = Payment.create(dummyDataDelete);
   return request(app)
-    .delete('/test/60369dc3e954c736b94a12f')
+    .delete('/test/60369dc3e954c736b94a12f0')
     .set('Accept', 'application/json')
     .expect(404)
     .then((response) => {
-      // console.log(response.text);
       expect(response.text).toBe('Płatność, której szukasz nie istnieje');
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+it('should response with status 200 and send: Płatność została poprawnie usunieta z bazy danych', function (done) {
+  const dummyDataDelete = {
+    _id: '99369dc3e954c736b94a12f5',
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 19,
+    paymentDate: '2021-05-05',
+    paymentMethod: 'Blik',
+  };
+  const post = Payment.create(dummyDataDelete);
+  return request(app)
+    .delete('/test/99369dc3e954c736b94a12f5')
+    .set('Accept', 'application/json')
+    .expect(202)
+    .then((response) => {
+      expect(response.body.message).toBe('Płatność została poprawnie usunieta z bazy danych');
       done();
     })
     .catch((err) => done(err));
