@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
+const visitRoutes = require('./api/routes/adoptionVisit');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -18,5 +19,8 @@ mongoose
   .catch((error) => {
     console.log('Connection failed', error);
   });
+
+app.use(express.json());
+app.use('/api/visits', visitRoutes)
 
 module.exports = app;
