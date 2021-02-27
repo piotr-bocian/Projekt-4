@@ -53,7 +53,7 @@ describe('GET', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .then((response) => {
-        expect(response.body.payments.allPaymentsInDatabase).toBe(1);
+        expect(response.body.payments.allPaymentsInDatabase).toStrictEqual(1);
         done();
       })
       .catch((err) => done(err));
