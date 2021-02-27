@@ -1,14 +1,9 @@
 const request = require('supertest');
 // const app = require('../app');
 const payment = require('../api/controllers/payments');
-const {
-  Payment,
-  validatePayment,
-  validatePatchUpdate,
-} = require('../api/models/paymentSchema');
+const { Payment } = require('../api/models/paymentSchema');
 const express = require('express');
 const mongoose = require('mongoose');
-const { describe } = require('yargs');
 const databaseName = 'test';
 
 const app = express();
@@ -17,6 +12,7 @@ app.get('/test', payment.getAllPayments);
 app.get('/test/:id', payment.getOnePayment);
 app.post('/test', payment.makeAPayment);
 app.delete('/test/:id', payment.deleteOnePayment);
+app.put('/test/:id', payment.updateOnePayment);
 
 const dummyData = {
   _id: '60369dc3e954c736b94a12f3',
@@ -182,7 +178,7 @@ it('should response with status 404 and send: Płatność, której szukasz nie i
     .catch((err) => done(err));
 });
 
-it('should response with status 200 and send: Płatność została poprawnie usunieta z bazy danych', function (done) {
+it('should response with status 202 and send: Płatność została poprawnie usunieta z bazy danych', function (done) {
   const dummyDataDelete = {
     _id: '99369dc3e954c736b94a12f5',
     typeOfPayment: 'opłata adopcyjna',
@@ -196,11 +192,106 @@ it('should response with status 200 and send: Płatność została poprawnie usu
     .set('Accept', 'application/json')
     .expect(202)
     .then((response) => {
-      expect(response.body.message).toBe('Płatność została poprawnie usunieta z bazy danych');
+      expect(response.body.message).toBe(
+        'Płatność została poprawnie usunieta z bazy danych'
+      );
       done();
     })
     .catch((err) => done(err));
 });
+
+// PUT /test
+
+it('should update payment and response with status 200 and send: Zaktualizowana płatność', function (done) {
+  const dummyDataForUpdate = {
+    _id: '99999dc3e954c736b94a12f5',
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 19,
+    paymentDate: '2021-05-05',
+    paymentMethod: 'Blik',
+  };
+
+  const putData = {
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 25,
+    paymentDate: '2021-07-09',
+    paymentMethod: 'Blik',
+  };
+
+  const post = Payment.create(dummyDataForUpdate);
+  return request(app)
+    .put('/test/99999dc3e954c736b94a12f5')
+    .send(putData)
+    .set('Accept', 'application/json')
+    .expect(200)
+    .then((response) => {
+      expect(response.body.message).toBe('Zaktualizowana płatność');
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+it('should update payment and response with status 400 and send: Podano błędny numer _id', function (done) {
+  const dummyDataForUpdate = {
+    _id: '33333dc3e954c736b94a12f5',
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 19,
+    paymentDate: '2021-05-05',
+    paymentMethod: 'Blik',
+  };
+
+  const putData = {
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 25,
+    paymentDate: '2021-07-09',
+    paymentMethod: 'Blik',
+  };
+
+  const post = Payment.create(dummyDataForUpdate);
+  return request(app)
+    .put('/test/10101dc3e954c736b94a')
+    .send(putData)
+    .set('Accept', 'application/json')
+    .expect(400)
+    .then((response) => {
+      expect(response.text).toBe('Podano błędny numer _id');
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+it('should update payment and response with status 400 when incorrect data are send also it should response with : paymentMethod" must be one of [Karta płatnicza, Blik, Przelew bankowy, Apple Pay, Google Pay]', function (done) {
+  const dummyDataForUpdate = {
+    _id: '56789dc3e954c736b94a12f5',
+    typeOfPayment: 'opłata adopcyjna',
+    amount: 19,
+    paymentDate: '2021-05-05',
+    paymentMethod: 'Blik',
+  };
+
+  const putData = {
+    typeOfPayment: 'jednorazowy przelew',
+    amount: 25,
+    paymentDate: '2021-07-09',
+    paymentMethod: 'nothing',
+  };
+
+  const post = Payment.create(dummyDataForUpdate);
+  return request(app)
+    .put('/test/56789dc3e954c736b94a12f5')
+    .send(putData)
+    .set('Accept', 'application/json')
+    .expect(400)
+    .then((response) => {
+      expect(response.text).toBe(
+        '"paymentMethod" must be one of [Karta płatnicza, Blik, Przelew bankowy, Apple Pay, Google Pay]'
+      );
+      done();
+    })
+    .catch((err) => done(err));
+});
+
+// PATCH /test
 
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
