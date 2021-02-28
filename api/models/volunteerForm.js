@@ -11,12 +11,16 @@ const volunteerFormSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    birthDate: {
-        type: String,
-        required: true,
-        match: /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/
-    },
+    // birthDate: {
+    //     type: String,
+    //     required: true,
+    //     match: /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/
+    // },
     //birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/).required()
+    birthDate: {
+        type: Date,
+        required: true,
+    },
     mobile: {
         type: String,
         required: true,
@@ -45,7 +49,7 @@ const VolunteerForm = mongoose.model('VolunteerForm', volunteerFormSchema);
 const schema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/).required(),
+    birthDate: Joi.date().required(),
     mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
     occupation: Joi.string().required(),
     preferredTasks: Joi
@@ -61,7 +65,7 @@ const schema = Joi.object({
 const schemaLight = Joi.object({
     firstName: Joi.string(),
     lastName: Joi.string(),
-    birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/),
+    birthDate: Joi.date(),
     mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
     occupation: Joi.string(),
     preferredTasks: Joi
