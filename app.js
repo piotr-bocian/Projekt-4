@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
+const postForm = require('./api/routes/postRoutes');
+
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -18,5 +20,8 @@ mongoose
   .catch((error) => {
     console.log('Connection failed', error);
   });
+
+  app.use(express.json());
+  app.use('/api/posts/', postForm)
 
 module.exports = app;
