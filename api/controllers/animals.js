@@ -66,10 +66,10 @@ exports.getOneAnimal = async (req, res) => {
     } else {
       res.status(400).send('Podano błędny numer _id');
     }
-  };
+};
 
-  //POST METHOD - POST AN ANIMAL
-  exports.addAnimal = async (req, res) => {
+//POST METHOD - POST AN ANIMAL
+exports.addAnimal = async (req, res) => {
     try {
         const { animalType, name, registrationDate, gender, size, description, age, breed } = req.body;
         const value = await validateAnimal.validateAsync({
