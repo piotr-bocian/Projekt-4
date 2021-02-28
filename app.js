@@ -2,8 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 require('dotenv').config();
-const animalRouter = require('./api/routes/animals');
 const app = express();
+const animalRouter = require('./api/routes/animals');
 
 
 mongoose.set('useUnifiedTopology', true);
