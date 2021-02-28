@@ -14,7 +14,7 @@ mongoose
       process.env.ANIMAL_SHELTER_PW +
       '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
     { useNewUrlParser: true,
-      useUnifiedTopology: true 
+      useUnifiedTopology: true
     })
   .then(() => {
     console.log('Connected to Atlas MongoDB');
