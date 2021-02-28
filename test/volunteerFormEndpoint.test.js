@@ -4,6 +4,7 @@ const { VolunteerForm } = require('../api/models/volunteerForm');
 const express = require('express');
 const mongoose = require('mongoose');
 const { response } = require('express');
+const { func } = require('joi');
 const databaseName = 'test';
 
 const app = express();
@@ -20,6 +21,16 @@ const data1 = {
     mobile: '123-456-789',
     occupation: 'youtuber',
     preferredTasks: 'praca z psami'
+}
+
+const data2 = {
+  _id: '6037e7fb89718601ac3a0bf7',
+  firstName: 'Krzysztof',
+  lastName: 'Rutkowski',
+  birthDate: '1960-04-06',
+  mobile: '111-222-333',
+  occupation: 'detektyw',
+  preferredTasks: 'praca z psami'
 }
 
 beforeAll((done) => {
@@ -45,7 +56,44 @@ describe('GET', () => {
             .set('Accept', 'appliacation/json')
             .expect(200)
             .then((response) => {
-                console.log(response.body);
+                expect(response.body).toStrictEqual(
+                  [
+                    {
+                      _id: '60377c92f773614138a582d6',
+                      firstName: 'Robert',
+                      lastName: 'Maklowicz',
+                      birthDate: '1963-08-12T00:00:00.000Z',
+                      mobile: '123-456-789',
+                      occupation: 'youtuber',
+                      preferredTasks: 'praca z psami',
+                      __v: 0
+                    }
+                  ]
+                );
+                done();
+            })
+            .catch((err) => done(err));
+    });
+
+    it('should return one form when valid id is given', function(done){
+      const volunteerForm = VolunteerForm.create(data2);
+      return request(app)
+            .get('/test/6037e7fb89718601ac3a0bf7')
+            .set('Accept', 'appliacation/json')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.volunteerForm).toStrictEqual(
+                    {
+                      _id: '6037e7fb89718601ac3a0bf7',
+                      firstName: 'Krzysztof',
+                      lastName: 'Rutkowski',
+                      birthDate: '1960-04-06T00:00:00.000Z',
+                      mobile: '111-222-333',
+                      occupation: 'detektyw',
+                      preferredTasks: 'praca z psami',
+                      __v: 0
+                    }
+                );
                 done();
             })
             .catch((err) => done(err));
