@@ -58,5 +58,21 @@ const schema = Joi.object({
         .required()
 });
 
+const schemaLight = Joi.object({
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/),
+    mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
+    occupation: Joi.string(),
+    preferredTasks: Joi
+        .string()
+        .valid(
+            'praca z psami',
+            'praca z kotami',
+            'promocja schroniska'
+        )
+});
+
 exports.VolunteerForm = VolunteerForm;
 exports.validateVolunteerForm = schema;
+exports.validateVolunteerFormLight = schemaLight;
