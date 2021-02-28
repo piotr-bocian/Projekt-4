@@ -31,7 +31,7 @@ function validateAdoptionForm(form) {
 }
 
 
-exports.adoptionForm = adoptionForm;
+exports.AdoptionForm = adoptionForm;
 exports.validateAdoptionForm = validateAdoptionForm;
 
 
