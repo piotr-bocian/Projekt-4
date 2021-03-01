@@ -27,12 +27,15 @@ exports.usersAddUser = async(req, res, next) => {
         if(user) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
 
         user = new User({
+            _id: new mongoose.Types.ObjectId(),
             ...validUser
         });
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
         user = await user.save();
-        res.send({
+
+        const token = user.generateAuthToken();
+        res.header('x-auth-token', token).send({
             message: 'Rejestracja przebiegła pomyślnie',
             firstName: user.firstName,
             lastName: user.lastName,

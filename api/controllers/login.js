@@ -13,7 +13,8 @@ exports.logging = async(req, res, next) => {
         const validPassword = await bcrypt.compare(req.body.password, user.password)
         if(!validPassword) return res.status(400).send('Nieprawidłowy email lub hasło');
 
-        res.send(true);
+        const token = user.generateAuthToken();
+        res.send(token);
         
     } catch (error) {
         res.status(400).send(error.message);

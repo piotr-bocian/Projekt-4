@@ -1,10 +1,12 @@
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const { ValidationError } = require('joi');
 
 
 const userSchema = new mongoose.Schema({
-    // _id: mongoose.Types.ObjectId,
+    _id: mongoose.Types.ObjectId,
     firstName: {
         type: String,
         required: true,
@@ -62,6 +64,20 @@ const userSchema = new mongoose.Schema({
         default: false
     }
 });
+
+userSchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({
+        _id: this._id,
+        email: this.email,
+        isAdmin: this.isAdmin,
+        isVolunteer: this.isVolunteer
+    },
+    process.env.SCHRONISKO_JWT_PRIVATE_KEY,
+    {
+        expiresIn: "1h"
+    });
+    return token;
+}
 
 const User = mongoose.model('User', userSchema);
 

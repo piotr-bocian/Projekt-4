@@ -21,6 +21,11 @@ mongoose
     console.log('Connection failed', error);
   });
 
+  if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
+    console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
+    process.exit(1);
+  }
+
   app.use(express.json());
   app.use('/api/users', users);
   app.use('/api/login', login);
