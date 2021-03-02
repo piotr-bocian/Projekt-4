@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { adoptionForm } = require('../api/models/adoptionForm');
+const { AdoptionForm } = require('../api/models/adoptionForm');
 const databaseName = 'test';
 
 //you need to connect to a test database while DBCompass is running
@@ -9,18 +9,16 @@ beforeAll(async () => {
 });
 
 it('Should save adoption text to database with correct userID and console.log null if everything is ok', (done) => {
-  const adoptionFormTest = new adoptionForm({
+  const adoptionFormTest = new AdoptionForm({
     content: 'Hello, How are U',
     userID: '5099803df3f4948bd2f98391',
     animalID: '5099803df3f4948bd2f98392'
   });
   adoptionFormTest.validate((response) => {
-    console.log(response);
     expect(response).toBe(null)
     done();
   });
 });
-
 // it('Should console.log: adoptionFormTest validation failed: content: some text is required', (done) => {
 //     const adoptionFormTest = new adoptionForm({
 //         content: 'Hello, How are U',
@@ -54,7 +52,6 @@ async function removeAllCollections() {
     await collection.deleteMany();
   }
 }
-
 afterEach(async () => {
   await removeAllCollections();
 });
