@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
         // mobile no pattern: +48 123-456-789, or 123-456-789
     },
     image: {
-        type: Buffer('base64')
+        type: Buffer.from('base64')
     },
     isAdmin: {
         type: Boolean,
