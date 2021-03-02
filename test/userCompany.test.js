@@ -27,6 +27,55 @@ describe("UserCompany schema tests", () => {
             expect(response).toBe(null);
         });
     });
+
+    it('Should throw error if email is not valid email address', () => {
+        user.email = 'super_firma@.com';
+        user.validate((response) => {
+            expect(response.errors.email.message).toBe('Property email should be a valid email');
+        });
+    });
+
+    it('Should throw error if password does not contain 1 digit, 1 lowercase, 1 uppercase and is less than 8 char long', () => {
+        user.password = 'firma';
+        user.validate((response) => {
+            expect(response.errors.password.message).toBe('Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long');
+        });
+    });
+
+    it('Should throw error if nip is less or more than 10 characters', () => {
+        user.nip = '0123';
+        user.validate((response) => {
+            expect(response.errors.nip.message).not.toBe(null);
+        });
+    });
+
+    it('Should throw error if at least one of mentioned properties is invalid', () => {
+        user.companyName = '';
+        user.street = '';
+        user.houseNo = '';
+        user.city =  '';
+        user.validate((response) => {
+            expect(response.errors.companyName.message).not.toBe(null);
+            expect(response.errors.street.message).not.toBe(null);
+            expect(response.errors.houseNo.message).not.toBe(null);
+            expect(response.errors.city.message).not.toBe(null);
+        });
+    });
+
+    it('Should throw error if postcode is less or more than 6 characters', () => {
+        user.postcode = '12-45';
+        user.validate((response) => {
+            expect(response.errors.nip.message).not.toBe(null);
+        });
+    });
+
+    it('Should throw error if mobile number does not match the patterns: +12 123-456-789 or 123-456-789', () => {
+        user.mobile = '+12 123 456 792';
+        user.validate((response) => {
+            expect(response.errors.mobile.message).toBe('Property mobile should match a pattern: +12 123-456-789 or 123-456-789');
+        });
+    });
+
 });
 
 //you have to clean the collections after the test
