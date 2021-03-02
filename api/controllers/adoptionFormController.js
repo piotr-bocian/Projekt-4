@@ -88,7 +88,7 @@ exports.editAdoptionForm = async (req, res, next) => {
   };
 
 // DELETE adoption form
-exports.deleteAdoptionForm = (req, res, next) => {
+exports.deleteAdoptionForm = async (req, res, next) => {
     const adoptionId = req.params.adoptionId;
     if(!mongoose.Types.ObjectId.isValid(adoptionId))
         return res.status(400).send('Podano błędny numer _adoptionId');
