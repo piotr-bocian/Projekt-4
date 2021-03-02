@@ -1,5 +1,4 @@
 const multer = require('multer');
-const upload = multer({dest: 'uploads/'});
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -8,9 +7,9 @@ const storage = multer.diskStorage({
     filename: function(req, file, cb) {
       cb(null, Date.now() + file.originalname);
     }
-  });
+});
 
-  const fileFilter = (req, file, cb) => {
+const fileFilter = (req, file, cb) => {
     if (
       file.mimetype === "image/jpeg" ||
       file.mimetype === "image/png" ||
@@ -22,13 +21,13 @@ const storage = multer.diskStorage({
     }
   };
 
-  const upload = multer({
+const upload = multer({
     storage: storage,
     limits: {
       fileSize: 1024 * 1024 * 5
     },
     fileFilter: fileFilter
-  }).single('file');
+}).single('file');
 
-  exports.upload = uploadMulter;
+exports.upload = upload;
 

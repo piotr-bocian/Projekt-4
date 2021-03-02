@@ -25,5 +25,7 @@ mongoose
 
 app.use(express.json());
 app.use('/api/animals', animalRouter);
+app.use(express.static('uploads'));
+
 
 module.exports = app;

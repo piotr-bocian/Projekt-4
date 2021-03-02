@@ -40,7 +40,7 @@ exports.getAnimals = async (req, res) => {
           description: 'Get all animals',
           url: 'http://localhost:3000/api/animals/',
         },
-        product: results,
+        animals: results,
     });
 };
 
@@ -85,6 +85,7 @@ exports.addAnimal = async (req, res) => {
         let animal = new Animal({
           _id: mongoose.Types.ObjectId(),
           ...value,
+          image: req.file.path
         });
         animal = await animal.save();
         res.status(201).send({

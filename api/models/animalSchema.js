@@ -46,7 +46,7 @@ const animalSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String
+        type: Buffer('base64')
     },
     age: {
         type: Number
