@@ -1,7 +1,12 @@
+const auth = require('../middleware/authorization');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { User, validateUser } = require('../models/user');
 
+exports.usersGetMe = async (req, res, next) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
+}
 
 exports.usersGetAll = async(req, res, next) => {
     const users = await User.find().sort('lastName');
