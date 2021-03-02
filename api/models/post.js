@@ -20,9 +20,9 @@ const postSchema = new Schema({
     }
 })
 
-const Post = mongoose.model('Post', postSchema);
+const PostSchema = mongoose.model('Post', postSchema);
 
-function validatePost(post) {
+function ValidatePostSchema(post) {
     const schema = Joi.object({
       postDate: Joi.Date().required(),
       content: Joi.string().min(50).required(),
@@ -32,5 +32,5 @@ function validatePost(post) {
     return Joi.validate(post, schema);
   }
 
-  exports.validatePost = validatePost;
-  exports.Post = Post;
+  exports.ValidatePost = ValidatePostSchema;
+  exports.Post = PostSchema;
