@@ -3,14 +3,16 @@ const animalControllers = require('../api/controllers/animals');
 const { Animal } = require('../api/models/animalSchema');
 const express = require('express');
 const mongoose = require('mongoose');
+const fs = require('fs');
 const databaseName = 'test';
+const { upload } = require('../api/middleware/upload');
 
 // here create endpoint for tests,
 const app = express();
 app.use(express.json());
 app.get('/test', animalControllers.getAnimals);
 app.get('/test/:id', animalControllers.getOneAnimal);
-app.post('/test', animalControllers.addAnimal);
+app.post('/test', upload.single('image'), animalControllers.addAnimal);
 app.delete('/test/:id', animalControllers.deleteAnimal);
 app.put('/test/:id', animalControllers.updateAnimal);
 
@@ -104,9 +106,18 @@ describe('GET', () => {
 //POST ANIMAL TEST
 
 describe('POST', () => {
+
     it('should respond with status 201', function (done) {
-      const postData = dummyData;
-  
+      const postData = {
+        _id: '603b512b3e865c0e4cf63527',
+        animalType: 'kot',
+        name: 'Jadwiga',
+        gender: 'żeńska',
+        description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
+        age: 3,
+        registrationDate: "2021-03-01"
+      };
+
       request(app)
         .post('/test')
         .send(postData)
@@ -220,4 +231,16 @@ describe('PUT', () => {
         })
         .catch((err) => done(err));
     });
+});
+
+async function removeAllCollections() {
+  const collections = Object.keys(mongoose.connection.collections);
+  for (const collectionName of collections) {
+    const collection = mongoose.connection.collections[collectionName];
+    await collection.deleteMany();
+  }
+}
+
+afterAll(async () => {
+  await removeAllCollections();
 });

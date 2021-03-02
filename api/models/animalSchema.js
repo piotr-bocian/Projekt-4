@@ -46,7 +46,7 @@ const animalSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: Buffer('base64')
+        type: Buffer.from('base64')
     },
     age: {
         type: Number
@@ -54,7 +54,8 @@ const animalSchema = new mongoose.Schema({
     breed: {
         type: String,
         minlength: 2,
-        maxlength: 255
+        maxlength: 255,
+        lowercase: true
     }
 });
 

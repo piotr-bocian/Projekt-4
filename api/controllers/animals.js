@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
 const { Animal, validateAnimal } = require('../models/animalSchema');
 
 
@@ -40,7 +41,7 @@ exports.getAnimals = async (req, res) => {
           description: 'Get all animals',
           url: 'http://localhost:3000/api/animals/',
         },
-        animals: results,
+        animals: results
     });
 };
 
@@ -72,6 +73,7 @@ exports.getOneAnimal = async (req, res) => {
 exports.addAnimal = async (req, res) => {
     try {
         const { animalType, name, registrationDate, gender, size, description, age, breed } = req.body;
+        let animal;
         const value = await validateAnimal.validateAsync({
             animalType, 
             name, 
@@ -82,18 +84,26 @@ exports.addAnimal = async (req, res) => {
             age, 
             breed
         });
-        let animal = new Animal({
-          _id: mongoose.Types.ObjectId(),
-          ...value,
-          image: req.file.path
-        });
+        if (!req.file) {
+          animal = new Animal({
+            _id: mongoose.Types.ObjectId(),
+            ...value
+          });
+        } else {
+          animal = new Animal({
+            _id: mongoose.Types.ObjectId(),
+            ...value,
+            image: fs.readFileSync(req.file.path)
+          });
+        }
+    
         animal = await animal.save();
         res.status(201).send({
           message: 'Nowy zwierzak został zarejestrowany.',
           animal
         });
     } catch (error) {
-        res.status(400).send(error.details[0].message);
+        res.status(400).send(error.message);
     }
 };
 
