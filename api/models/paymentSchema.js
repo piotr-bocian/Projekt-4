@@ -45,7 +45,7 @@ const paymentSchema = mongoose.Schema({
 
 const Payment = mongoose.model('Payment', paymentSchema);
 
-function validatePayment(payment) {
+//validation is an object that return value or error
   const schema = Joi.object({
     typeOfPayment: Joi.string()
       .valid(
@@ -54,7 +54,7 @@ function validatePayment(payment) {
         'wirtualny opiekun-opłata cykliczna'
       )
       .required(),
-    amount: Joi.string().min(5).required(),
+    amount: Joi.number().min(5).required(),
     paymentDate: Joi.date().min('now'),
     paymentMethod: Joi.string()
       .valid(
@@ -67,8 +67,25 @@ function validatePayment(payment) {
       .required(),
   });
 
-  return Joi.validate(payment, schema);
-}
+  const patch = Joi.object({
+    typeOfPayment: Joi.string()
+      .valid(
+        'opłata adopcyjna',
+        'jednorazowy przelew',
+        'wirtualny opiekun-opłata cykliczna'
+      ),
+    amount: Joi.number().min(5),
+    paymentDate: Joi.date().min('now'),
+    paymentMethod: Joi.string()
+      .valid(
+        'Karta płatnicza',
+        'Blik',
+        'Przelew bankowy',
+        'Apple Pay',
+        'Google Pay'
+      ),
+  });
 
 exports.Payment = Payment;
-exports.validatePayment = validatePayment;
+exports.validatePayment = schema;
+exports.validatePatchUpdate = patch;
