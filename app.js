@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 const userCompany = require('./api/routes/userCompany');
-// const login = require('./api/routes/login');
+const users = require('./api/routes/users');
+const login = require('./api/routes/login');
 const payment = require('./api/routes/payments');
 
 mongoose
@@ -22,9 +23,16 @@ mongoose
     console.log('Connection failed', error);
   });
 
-app.use(express.json());
-app.use('/api/usersCompany', userCompany);
-app.use('/api/payments', payment);
+  if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
+    console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
+    process.exit(1);
+  }
+
+  app.use(express.json());
+  app.use('/api/users', users);
+  app.use('/api/usersCompany', userCompany);
+  app.use('/api/login', login);
+  app.use('/api/payments', payment);
 
 //handles query on non-existent route
 app.use((req, res, next) => {
