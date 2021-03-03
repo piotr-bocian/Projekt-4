@@ -9,7 +9,7 @@ exports.usersGetMe = async (req, res, next) => {
 }
 
 exports.usersGetAll = async(req, res, next) => {
-    const users = await User.find().sort('lastName');
+    const users = await User.find().select('-password').sort('lastName');
     res.send(users);
 };
 
@@ -51,3 +51,30 @@ exports.usersAddUser = async(req, res, next) => {
     }
 
 };
+
+exports.usersUpdateUser = async(req, res, next) => {
+    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+    if(!isIdValid){
+        return res.status(400).send('Podano błędny numer id.');
+    }
+
+
+}
+
+exports.usersDeleteUser = async(req, res, next) => {
+    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+    if(!isIdValid){
+        return res.status(400).send('Podano błędny numer id.');
+    }
+
+    let user = await User.findByIdAndRemove(req.params.id);
+
+    if(!user){
+        return res.status(404).send('Podany użytkownik nie istnieje');
+    }
+
+    res.status(202).send({
+        message: 'Pomyślnie usunięto konto użytkownika.',
+        user
+    });
+}
