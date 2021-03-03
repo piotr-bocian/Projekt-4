@@ -1,5 +1,8 @@
-const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const mongoose = require('mongoose');
+const Joi = require('joi');
+const { ValidationError } = require('joi');
 
 const userCompanySchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
@@ -12,7 +15,7 @@ const userCompanySchema = new mongoose.Schema({
     password: { 
         type: String, 
         required: true,
-        match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, 'Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long'] // 1 digit, 1 lower, 1 upper case, min 8 characters
+        // match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, 'Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long'] // 1 digit, 1 lower, 1 upper case, min 8 characters
         //password validation:
         // ^ - symbol indicates that regex is for password,
         // (?=.*\d) - should contain at least one digit
@@ -68,28 +71,35 @@ const userCompanySchema = new mongoose.Schema({
     }
 });
 
-const UserCompany = mongoose.model('UserCompany', userCompanySchema);
-
-function validateUserCompany(user) {
-    const schema = {
-        email: Joi.string().min(5).max(255).required().email(),
-        password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
-        nip: Joi.string().length(10).required(),
-        companyName: Joi.string().min(2).max(255).required(),
-        street: Joi.string().min(2).max(100).required(),
-        houseNo: Joi.string().required(),
-        city: Joi.string().min(2).max(50).required(),
-        postcode: Joi.string().length(6).required(),
-        mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
-        image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
-    }
-    
-    const validate = schema.validate(user);
-    return validate;
+userCompanySchema.methods.generateAuthToken = function() {
+    const token = jwt.sign({
+        _id: this._id,
+        email: this.email,
+        // isAdmin: this.isAdmin,
+        // isVolunteer: this.isVolunteer
+    },
+    process.env.SCHRONISKO_JWT_PRIVATE_KEY,
+    {
+        expiresIn: "1h"
+    });
+    return token;
 }
 
+const UserCompany = mongoose.model('UserCompany', userCompanySchema);
 
+const schema = Joi.object({
+    email: Joi.string().min(5).max(255).required().email(),
+    password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/).required(),
+    nip: Joi.string().length(10).required(),
+    companyName: Joi.string().min(2).max(255).required(),
+    street: Joi.string().min(2).max(100).required(),
+    houseNo: Joi.string().required(),
+    city: Joi.string().min(2).max(50).required(),
+    postcode: Joi.string().length(6).required(),
+    mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+    image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+});
 
 
 exports.UserCompany = UserCompany;
-exports.validateUserCompany = validateUserCompany;
+exports.validateUserCompany = schema;

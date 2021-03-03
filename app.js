@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
+const userCompany = require('./api/routes/userCompany');
+// const login = require('./api/routes/login');
 const payment = require('./api/routes/payments');
 
 mongoose
@@ -21,6 +23,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use('/api/usersCompany', userCompany);
 app.use('/api/payments', payment);
 
 //handles query on non-existent route
