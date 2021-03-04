@@ -5,6 +5,8 @@ const { User, validateUser } = require('../models/user');
 
 exports.usersGetMe = async (req, res, next) => {
     const user = await User.findById(req.user._id).select('-password');
+    if(!user) return res.status(404).send('Użytkownik o podanym id nie istnieje.');
+
     res.send(user);
 }
 
