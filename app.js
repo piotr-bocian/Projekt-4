@@ -1,12 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const multer = require('multer');
 require('dotenv').config();
 const app = express();
 const userCompany = require('./api/routes/userCompany');
 const users = require('./api/routes/users');
 const login = require('./api/routes/login');
+const visitRoutes = require('./api/routes/adoptionVisit');
 const payment = require('./api/routes/payments');
+const volunteerForms = require('./api/routes/volunteerForms');
+const animalRouter = require('./api/routes/animals');
 
+mongoose.set('useUnifiedTopology', true);
 mongoose
   .connect(
     'mongodb+srv://Lukasz:' +
@@ -28,11 +33,15 @@ mongoose
     process.exit(1);
   }
 
-  app.use(express.json());
-  app.use('/api/users', users);
-  app.use('/api/usersCompany', userCompany);
-  app.use('/api/login', login);
-  app.use('/api/payments', payment);
+app.use(express.json());
+app.use('/api/users', users);
+app.use('/api/usersCompany', userCompany);
+app.use('/api/login', login);
+app.use('/api/visits', visitRoutes)
+app.use('/api/payments', payment);
+app.use('/api/volunteerForms', volunteerForms);
+app.use('/api/animals', animalRouter);
+app.use(express.static('uploads'));
 
 //handles query on non-existent route
 app.use((req, res, next) => {
