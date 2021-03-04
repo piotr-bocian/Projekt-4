@@ -53,8 +53,6 @@ describe("Animal schema tests", () => {
 
 })
 
-
-
 //you have to clean the collections after the tests
 async function removeAllCollections() {
     const collections = Object.keys(mongoose.connection.collections);

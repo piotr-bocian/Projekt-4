@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const multer = require('multer');
 
 
 //ANIMAL SCHEMA
 
 const animalSchema = new mongoose.Schema({
-    _id: mongoose.Types.ObjectId,
+     _id: mongoose.Schema.Types.ObjectId,
     animalType: {
         type: String,
         enum: ['pies', 'kot', 'inne'],
@@ -45,8 +46,7 @@ const animalSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        type: String
-    //will be added later (needed configuration 'multer')
+        type: Buffer.from('base64')
     },
     age: {
         type: Number
@@ -54,7 +54,8 @@ const animalSchema = new mongoose.Schema({
     breed: {
         type: String,
         minlength: 2,
-        maxlength: 255
+        maxlength: 255,
+        lowercase: true
     }
 });
 
@@ -64,22 +65,21 @@ const Animal = mongoose.model('Animal', animalSchema);
 
 //JOI VALIDATION
 
-function validateAnimal(animal) {
-    const schema = Joi.object({
-        animalType: Joi.string()
+const schema = Joi.object({
+    animalType: Joi.string()
         .valid(
             'pies',
             'kot',
             'inne'
         ),
-        name: Joi.string().min(2).max(50).required(),
-        registrationDate: Joi.date(),
-        gender: Joi.string().lowercase().required()
+    name: Joi.string().min(2).max(50).required(),
+    registrationDate: Joi.date(),
+    gender: Joi.string().lowercase().required()
         .valid(
             'męska',
             'żeńska'
         ),
-        size: Joi.String().lowercase()
+    size: Joi.string().lowercase()
         // .when(Joi.animalType, {
         //     is: 'pies', then: Joi.required()
         // })
@@ -90,13 +90,11 @@ function validateAnimal(animal) {
             'średni/duży',
             'duży'
         ),
-        description: Joi.String().min(50).max(524288).required(),
-        age: Joi.Number().max(30),
-        breed: Joi.String().min(2).max(255)
-    });
+    description: Joi.string().min(50).max(524288).required(),
+    age: Joi.number().max(30),
+    breed: Joi.string().min(2).max(255)
+});
 
-    return Joi.validate(animal, schema);
-}
 
 exports.Animal = Animal;
-exports.validateAnimal = validateAnimal;
+exports.validateAnimal = schema;
