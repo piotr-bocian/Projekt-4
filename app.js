@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
 const payment = require('./api/routes/payments');
+const volunteerForms = require('./api/routes/volunteerForms');
 
+mongoose.set('useUnifiedTopology', true);
 mongoose
   .connect(
     'mongodb+srv://Lukasz:' +
@@ -22,6 +24,7 @@ mongoose
 
 app.use(express.json());
 app.use('/api/payments', payment);
+app.use('/api/volunteerForms', volunteerForms);
 
 //handles query on non-existent route
 app.use((req, res, next) => {
