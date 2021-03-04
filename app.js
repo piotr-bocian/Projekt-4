@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const app = express();
+const visitRoutes = require('./api/routes/adoptionVisit');
 const payment = require('./api/routes/payments');
 const volunteerForms = require('./api/routes/volunteerForms');
 
@@ -23,6 +24,7 @@ mongoose
   });
 
 app.use(express.json());
+app.use('/api/visits', visitRoutes)
 app.use('/api/payments', payment);
 app.use('/api/volunteerForms', volunteerForms);
 
