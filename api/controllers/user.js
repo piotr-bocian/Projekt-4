@@ -19,7 +19,7 @@ exports.usersGetUser = async(req, res, next) => {
     const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
     if(isIdValid){
         const user = await User.findById(req.params.id);
-        if(!user) return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+        if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
         res.send(user);
     }else {
         res.status(400).send('Podano nieprawidłowy numer id');
@@ -59,8 +59,16 @@ exports.usersUpdateUser = async(req, res, next) => {
     if(!isIdValid){
         return res.status(400).send('Podano błędny numer id.');
     }
+}
 
+exports.usersDeleteMe = async(req, res, next) => {
+    const user = await User.findByIdAndRemove(req.user._id).select('-password');
+    if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
 
+    res.status(202).send({
+        message: 'Konto zostało poprawnie usunięte',
+        user
+    });
 }
 
 exports.usersDeleteUser = async(req, res, next) => {
@@ -72,7 +80,7 @@ exports.usersDeleteUser = async(req, res, next) => {
     let user = await User.findByIdAndRemove(req.params.id);
 
     if(!user){
-        return res.status(404).send('Podany użytkownik nie istnieje');
+        return res.status(404).send('Podany użytkownik nie istnieje.');
     }
 
     res.status(202).send({
