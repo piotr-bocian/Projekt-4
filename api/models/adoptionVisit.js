@@ -23,7 +23,6 @@ const adoptionVisitSchema = new mongoose.Schema({
     },
     isVisitDone: {
         type: Boolean,
-        required: true,
         default: false
     },
     userID: {
@@ -48,7 +47,7 @@ const schema = Joi.object({
     visitDate: Joi.date().required(),
     visitTime: Joi.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).required(),
     duration: Joi.number().min(30).max(120).required(),
-    isVisitDone: Joi.boolean().required()
+    isVisitDone: Joi.boolean()
 });
 
 
