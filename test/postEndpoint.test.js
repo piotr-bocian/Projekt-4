@@ -12,18 +12,18 @@ app.use(express.json());
 app.get('/test', postController.postFormsGetAll);
 app.get('/test/:postId', postController.postFormGetOne);
 app.post('/test', postController.addpostForm);
-app.patch('/test/:id', postController.editpostForm);
-app.delete('/test/:id', postController.deletepostForm);
+app.patch('/test/:postId', postController.editpostForm);
+app.delete('/test/:postId', postController.deletepostForm);
 
 const data1 = {
-    postId: '60377c92f773614138a582d6',
+    _id: '60377c92f773614138a582d6',
     postDate: '2010-01-12',
     content: 'Cudny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
     photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
 }
 
 const data2 = {
-  postId: '6037e7fb89718601ac3a0bf7',
+    _id: '6037e7fb89718601ac3a0bf7',
   postDate: '2021-02-22',
   content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
   photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -55,7 +55,7 @@ describe('GET', () => {
                 expect(response.body).toStrictEqual(
                   [
                     {
-                        postId: '60377c92f773614138a582d6',
+                        _id: '60377c92f773614138a582d6',
                         postDate: '2010-01-12',
                         content: 'Cudny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
                         photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -77,7 +77,7 @@ describe('GET', () => {
             .then((response) => {
                 expect(response.body.volunteerForm).toStrictEqual(
                     {
-                        postId: '6037e7fb89718601ac3a0bf7',
+                        _id: '6037e7fb89718601ac3a0bf7',
                         postDate: '2021-02-22',
                         content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
                         photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -206,7 +206,7 @@ describe('POST', () => {
 describe('DELETE', () => {
   it('should respond with status 202 and send: Formularz zostal poprawnie usuniety z bazy danych', function(done){
     const deleteDummy = {
-      postId: '6037e7fb89718601ac3a0bf1',
+        _id: '6037e7fb89718601ac3a0bf1',
       postDate: '2022-09-31',
       content: 'Adoptowany pies 2 miesiące temu z naszego schroniska. Jak widać ma sie dobrze :)',
       photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
@@ -228,7 +228,7 @@ describe('DELETE', () => {
 
   it('should respond with status 404 and send: Taki formularz nie figuruje w naszej bazie danych', function(done){
     const deleteDummy = {
-        postId: '6037e7fb89718601ac3a0bf2',
+        _id: '6037e7fb89718601ac3a0bf2',
         postDate: '2022-09-31',
         content: 'Adoptowany pies 2 miesiące temu z naszego schroniska. Jak widać ma sie dobrze :)',
         photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',

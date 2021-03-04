@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const app = require('../../app');
-const {Post, ValidatePost} = require('../models/post');
+const { Post, ValidatePost } = require('../models/post');
 
 // GETL ALL post forms
   exports.postFormsGetAll = async (req, res, next) => {
@@ -26,7 +25,7 @@ exports.postFormGetOne = async (req, res, next) => {
 }
 
 // UPDATE post form
-exports.editAdoptionForm = async (req, res, next) => {
+exports.editpostForm = async (req, res, next) => {
   const postId = req.params.postId;
   if(!mongoose.Types.ObjectId.isValid(postId))
       return res.status(400).send('Podano bledny numer _postId');
@@ -52,7 +51,7 @@ exports.editAdoptionForm = async (req, res, next) => {
 };
 
 // DELETE post form
-exports.deleteAdoptionForm = async (req, res, next) => {
+exports.deletepostForm = async (req, res, next) => {
   const postId = req.params.postId;
   if(!mongoose.Types.ObjectId.isValid(postId))
       return res.status(400).send('Podano błędny numer _postId');
@@ -69,7 +68,7 @@ exports.deleteAdoptionForm = async (req, res, next) => {
 }
 
 // POST adoption form
-exports.addAdoptionForm = async (req, res, next) => {
+exports.addpostForm = async (req, res, next) => {
   try{
       const {content, userID, animalID} = req.body;
       const value = await Post.validateAsync({
