@@ -24,6 +24,30 @@ exports.postFormGetOne = async (req, res, next) => {
   });
 }
 
+// POST adoption form
+exports.addpostForm = async (req, res, next) => {
+  try{
+      const {content, postDate, photo} = req.body;
+      const value = await ValidatePost.validateAsync({
+          postDate,
+          content,
+          photo,
+      });
+      let postForm = new Post({
+        postId: mongoose.Types.ObjectId(),
+          ...value
+      });
+      postForm = await postForm.save();
+      res.status(201).send({
+          message: 'Formularz zostal zapisany',
+          postForm,
+        });
+  }
+  catch(error){
+      res.status(400).send(error.message);
+  }
+}
+
 // UPDATE post form
 exports.editpostForm = async (req, res, next) => {
   const postId = req.params.postId;
@@ -67,26 +91,3 @@ exports.deletepostForm = async (req, res, next) => {
   });
 }
 
-// POST adoption form
-exports.addpostForm = async (req, res, next) => {
-  try{
-      const {content, userID, animalID} = req.body;
-      const value = await Post.validateAsync({
-          postDate,
-          content,
-          photo,
-      });
-      let postForm = new Post({
-        postId: mongoose.Types.ObjectId(),
-          ...value
-      });
-      postForm = await postForm.save();
-      res.status(201).send({
-          message: 'Formularz zostal zapisany',
-          postForm,
-        });
-  }
-  catch(error){
-      res.status(400).send(error.message);
-  }
-}

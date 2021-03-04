@@ -32,17 +32,17 @@ const data2 = {
 beforeAll((done) => {
     done();
   });
-  
+
   beforeAll(async () => {
     const url = `mongodb://127.0.0.1/${databaseName}`;
     await mongoose.connect(url, { useNewUrlParser: true });
   });
-  
+
   afterAll((done) => {
     mongoose.connection.close();
     done();
   });
-  
+
 // GET
 describe('GET', () => {
     it('should return all post forms', function(done){
@@ -93,9 +93,9 @@ describe('GET', () => {
         return request(app)
             .get('/test/incorectid')
             .set('Accept', 'application/json')
-            .expect(400, 'Podano błędny numer postId')
+            .expect(400, 'Podano błędny numer _postId')
             .then((response) => {
-                expect(response.text).toBe('Podano błędny numer postId');
+                expect(response.text).toBe('Podano błędny numer _postId');
                 done();
             })
             .catch((err) => done(err));
@@ -106,7 +106,7 @@ describe('GET', () => {
 describe('POST', () => {
   it('should respond with status 201', function(done){
     const newForm = {
-      postDate: '2022-09-31',
+      postDate: '2022-09-31T00:00:00.000Z',
       content: 'Adoptowany pies 2 miesiące temu z naszego schroniska. Jak widać ma sie dobrze :)',
       photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
     }
@@ -122,25 +122,6 @@ describe('POST', () => {
         return done();
       });
   });
-
-//   it('should respond with status 400 when incorrect data are being sent also should send: "preferredTasks" must be one of [praca z psami, praca z kotami, promocja schroniska]', function(done){
-//     const newForm = {
-//     postDate: '2022-09-31',
-//     content: 'Adoptowany pies 2 miesiące temu z naszego schroniska. Jak widać ma sie dobrze :)',
-//     photo: 'http://cytrynowelove.pl/wp-content/uploads/2019/09/shih-tzu_usposobienie.jpg',
-//     }
-
-//     request(app)
-//       .post('/test')
-//       .send(newForm)
-//       .set('Accept', 'application/json')
-//       .expect(400)
-//       .end(function(error, response){
-//         expect(response.text).toBe('"preferredTasks" must be one of [praca z psami, praca z kotami, promocja schroniska]');
-//         if(error) return done(error);
-//         return done();
-//       });
-//   });
 });
 
 

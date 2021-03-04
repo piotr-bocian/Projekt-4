@@ -19,18 +19,12 @@ const postSchema = new Schema({
         // URL zdjęcia z zewnętrznego zródła
     }
 })
-
 const PostSchema = mongoose.model('Post', postSchema);
-
-function ValidatePostSchema(post) {
     const schema = Joi.object({
-      postDate: Joi.Date().required(),
+      postDate: Joi.date().required(),
       content: Joi.string().min(50).required(),
-      photo: Joi.string().required()
+      photo: Joi.string()
     });
 
-    return Joi.validate(post, schema);
-  }
-
-  exports.ValidatePost = ValidatePostSchema;
+  exports.ValidatePost = schema;
   exports.Post = PostSchema;
