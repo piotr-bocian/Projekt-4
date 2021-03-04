@@ -100,6 +100,19 @@ const schema = Joi.object({
     image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
 });
 
+const patch = Joi.object({
+    email: Joi.string().min(5).max(255).email(),
+    password: Joi.string().min(8).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/),
+    nip: Joi.string().length(10),
+    companyName: Joi.string().min(2).max(255),
+    street: Joi.string().min(2).max(100),
+    houseNo: Joi.string(),
+    city: Joi.string().min(2).max(50),
+    postcode: Joi.string().length(6),
+    mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
+    image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+});
 
 exports.UserCompany = UserCompany;
 exports.validateUserCompany = schema;
+exports.validatePatchUpdate = patch;
