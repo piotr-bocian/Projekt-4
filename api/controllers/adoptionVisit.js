@@ -47,6 +47,31 @@ exports.getVisit = async (req, res) => {
   }
 };
 
+exports.makeMyVisit = async (req, res) => {
+  try {
+    const { visitDate, visitTime, duration, isVisitDone } = req.body;
+    const value = await validateVisit.validateAsync({
+      visitDate,
+      visitTime,
+      duration,
+      isVisitDone,
+    });
+    let visit = new adoptionVisit({
+      _id: mongoose.Types.ObjectId(),
+      ...value,
+      userID: req.user._id,
+      animalID: req.body.animalID,
+    });
+    visit = await visit.save();
+    res.status(201).send({
+      message: 'Rezerwacja wizyty adopcyjnej przebiegła pomyślnie',
+      visit,
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
 exports.makeVisit = async (req, res) => {
   try {
     const { visitDate, visitTime, duration, isVisitDone } = req.body;

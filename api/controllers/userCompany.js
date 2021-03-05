@@ -1,4 +1,5 @@
 const auth = require('../middleware/authorization');
+const fs = require('fs');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { UserCompany, validateUserCompany, validatePatchUpdate } = require('../models/userCompany');
@@ -32,19 +33,31 @@ exports.userCompanyGetUser = async(req, res, next) => {
 
 exports.userCompanyAddUser = async(req, res, next) => {
     try{
-        const { email, password, nip, companyName, street, houseNo, city, postcode, mobile, image } = req.body;
+        const { email, password, nip, companyName, street, houseNo, city, postcode, mobile } = req.body;
         const validCompanyUser = await validateUserCompany.validateAsync(req.body);
         let userCompany = await UserCompany.findOne({ email: req.body.email });
         if(userCompany) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
-
-        userCompany = new UserCompany({
+        
+        // IMAGE CHECK
+        if (!req.file) {
+          userCompany = new UserCompany({
             _id: new mongoose.Types.ObjectId(),
             ...validCompanyUser
-        });
+          });
+        } else {
+          userCompany = new UserCompany({
+            _id: new mongoose.Types.ObjectId(),
+            ...validCompanyUser,
+            image: fs.readFileSync(req.file.path)
+          });
+        }
+        
+        // HASH PASSWORD
         const salt = await bcrypt.genSalt(10);
         userCompany.password = await bcrypt.hash(userCompany.password, salt);
         userCompany = await userCompany.save();
 
+        // GENERATE TOKEN
         const token = userCompany.generateAuthToken();
         res.header('x-auth-token', token).send({
             message: 'Rejestracja przebiegła pomyślnie',
@@ -99,10 +112,13 @@ exports.userCompanyUpdateUser = async (req, res) => {
       updateUserCompany[update.propertyName] = update.newValue;
     }
     await validatePatchUpdate.validateAsync(updateUserCompany);
-    if (req.body[0].propertyName === 'password') {
-      const salt = await bcrypt.genSalt(10);
-      updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
-    };
+    for (const update of req.body) {
+      if (update.propertyName === 'password') {
+        const salt = await bcrypt.genSalt(10);
+        updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
+      };
+    }
+    
     const userCompany = await UserCompany.findOneAndUpdate(
       { _id: id },
       { $set: updateUserCompany },
@@ -126,9 +142,11 @@ exports.userCompanyUpdateMe = async (req, res) => {
       updateUserCompany[update.propertyName] = update.newValue;
     }
     await validatePatchUpdate.validateAsync(updateUserCompany);
-    if (req.body[0].propertyName === 'password') {
-      const salt = await bcrypt.genSalt(10);
-      updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
+    for (const update of req.body) {
+      if (update.propertyName === 'password') {
+        const salt = await bcrypt.genSalt(10);
+        updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
+      };
     };
     const userCompany = await UserCompany.findOneAndUpdate(
       { _id: req.user._id },

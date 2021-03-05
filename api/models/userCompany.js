@@ -67,7 +67,7 @@ const userCompanySchema = new mongoose.Schema({
         // mobile no pattern: +48 123-456-789, or 123-456-789
     },
     image: {
-        type: String
+        type: Buffer.from('base64')
     }
 });
 
@@ -97,7 +97,7 @@ const schema = Joi.object({
     city: Joi.string().min(2).max(50).required(),
     postcode: Joi.string().length(6).required(),
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
-    image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+    // image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
 });
 
 const patch = Joi.object({
@@ -110,7 +110,7 @@ const patch = Joi.object({
     city: Joi.string().min(2).max(50),
     postcode: Joi.string().length(6),
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
-    image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+    // image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
 });
 
 exports.UserCompany = UserCompany;
