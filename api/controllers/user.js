@@ -28,7 +28,7 @@ exports.usersGetUser = async(req, res, next) => {
 
 exports.usersAddUser = async(req, res, next) => {
     try{
-        const { firstName, lastName, email, password, mobile, image, isSuperAdmin, isAdmin, isVolunteer } = req.body;
+        const { firstName, lastName, email, password, mobile, isSuperAdmin, isAdmin, isVolunteer } = req.body;
         const validUser = await validateUser.validateAsync(req.body);
         let user = await User.findOne({ email: req.body.email });
         if(user) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
@@ -36,11 +36,18 @@ exports.usersAddUser = async(req, res, next) => {
         if(isAdmin || isSuperAdmin){
             return res.status(403).send('Nie masz uprawnień do nadania statusu Administratora.')
         }
-
-        user = new User({
-            _id: new mongoose.Types.ObjectId(),
-            ...validUser
-        });
+        if (!req.file) {
+            user = new User({
+              _id: mongoose.Types.ObjectId(),
+              ...validUser
+            });
+          } else {
+            user = new User({
+              _id: mongoose.Types.ObjectId(),
+              ...validUser,
+              image: fs.readFileSync(req.file.path)
+            });
+          };
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password, salt);
         user = await user.save();
