@@ -82,6 +82,7 @@ describe('GET', () => {
                 description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
                 age: 3,
                 registrationDate: "2021-03-01T00:00:00.000Z",
+                isAdopted: false,
                 __v: 0
             });
             done();
@@ -196,7 +197,7 @@ describe('DELETE', () => {
 
 });
 
-//POST ANIMAL TEST
+//PUT ANIMAL TEST
 
 describe('PUT', () => {
     it('should update the animal and response with status 200 and send: Zaktualizowano dane wybranego zwierzaka!', function (done) {
