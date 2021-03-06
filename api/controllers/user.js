@@ -176,8 +176,14 @@ exports.usersUpdateMe = async(req, res, next) => {
 }
 
 exports.usersDeleteMe = async(req, res, next) => {
-    const user = await User.findByIdAndRemove(req.user._id).select('-password');
+    let user = await User.findById(req.user._id).select('-password');
     if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
+
+    if(user.isSuperAdmin){
+        return res.status(403).send('Tylko inny superAdmin może usunąć konto o uprawnieniach superAdmin.');
+    }
+
+    user = await User.findByIdAndRemove(req.user._id).select('-password');
 
     res.status(202).send({
         message: 'Konto zostało poprawnie usunięte',
@@ -194,6 +200,10 @@ exports.usersDeleteUser = async(req, res, next) => {
     let user = await User.findById(req.params.id)
     if((user.isAdmin || user.isSuperAdmin) && !req.user.isSuperAdmin){
         return res.status(403).send('Nie masz uprawnień do usunięcia konta administratora.');
+    }
+
+    if(user.isSuperAdmin && user.id === req.user._id){
+        return res.status(403).send('Tylko inny superAdmin może usunąć konto o uprawnieniach superAdmin.');
     }
 
     user = await User.findByIdAndRemove(req.params.id);
