@@ -2,11 +2,27 @@ const express = require('express');
 const router = express.Router();
 const paymentControllers = require('../controllers/payments');
 
-router.get('/', paymentControllers.getAllPayments);
-router.get('/:id', paymentControllers.getOnePayment);
+router.get(
+  '/',
+  [auth.loggedUser, auth.isAdmin],
+  paymentControllers.getAllPayments
+);
+router.get('/:id', auth.loggedUser, paymentControllers.getOnePayment);
 router.post('/', paymentControllers.makeAPayment);
-router.delete('/:id', paymentControllers.deleteOnePayment);
-router.put('/:id', paymentControllers.updateOnePayment);
-router.patch('/:id', paymentControllers.updateOnePropertyInPayment);
+router.delete(
+  '/:id',
+  [auth.loggedUser, auth.isAdmin],
+  paymentControllers.deleteOnePayment
+);
+router.put(
+  '/:id',
+  [auth.loggedUser, auth.isAdmin],
+  paymentControllers.updateOnePayment
+);
+router.patch(
+  '/:id',
+  [auth.loggedUser, auth.isAdmin],
+  paymentControllers.updateOnePropertyInPayment
+);
 
 module.exports = router;
