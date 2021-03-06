@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 it('Should save adoption text to database with correct userID and console.log null if everything is ok', (done) => {
   const adoptionFormTest = new AdoptionForm({
-    content: 'Hello, How are U',
+    content: 'Cześć, czy mozna adopotować psa?',
     userID: '5099803df3f4948bd2f98391',
     animalID: '5099803df3f4948bd2f98392'
   });

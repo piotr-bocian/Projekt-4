@@ -24,6 +24,6 @@ mongoose
   });
 
   app.use(express.json());
-  app.use('/api/adoptionForms', adoptionForms);
+  app.use('/api/adoptionforms', adoptionForms);
 
 module.exports = app;
