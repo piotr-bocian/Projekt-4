@@ -44,7 +44,6 @@ app.use('/api/animals', animalRouter);
 app.use('/api/posts/', postForm)
 app.use(express.static('uploads'));
 
-
 //handles query on non-existent route
 app.use((req, res, next) => {
   const error = new Error('STRONA O PODANYM ADRESIE NIE ISTNIEJE');
