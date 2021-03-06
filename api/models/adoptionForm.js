@@ -13,7 +13,7 @@ const adoptionFormSchema = new Schema({
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
-        require: false
+        require: true
     },
     animalID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -28,7 +28,7 @@ const AdoptionForm = mongoose.model('AdoptionForm', adoptionFormSchema);
 
     const schema = Joi.object({
         content: Joi.string().required(),
-        userID: Joi.string(),
+        userID: Joi.string().required(),
         animalID: Joi.string()
     });
 
