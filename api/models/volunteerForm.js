@@ -11,9 +11,15 @@ const volunteerFormSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    // birthDate: {
+    //     type: String,
+    //     required: true,
+    //     match: /^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/
+    // },
+    //birthDate: Joi.string().trim().regex(/^\d{4}\-(0[1-9]|1[012])\-(0[1-9]|[12][0-9]|3[01])$/).required()
     birthDate: {
         type: Date,
-        required: true
+        required: true,
     },
     mobile: {
         type: String,
@@ -40,25 +46,37 @@ const volunteerFormSchema = mongoose.Schema({
 
 const VolunteerForm = mongoose.model('VolunteerForm', volunteerFormSchema);
 
-function validateVolunteerForm(volunteerForm){
-    const schema = Joi.object({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        birthDate: Joi.date().required(),
-        mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
-        occupation: Joi.string.required(),
-        preferredTasks: Joi
-            .string()
-            .valid(
-                'praca z psami',
-                'praca z kotami',
-                'promocja schroniska'
-            )
-            .required()
-    });
+const schema = Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    birthDate: Joi.date().required(),
+    mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
+    occupation: Joi.string().required(),
+    preferredTasks: Joi
+        .string()
+        .valid(
+            'praca z psami',
+            'praca z kotami',
+            'promocja schroniska'
+        )
+        .required()
+});
 
-    return Joi.validate(volunteerForm, schema);
-}
+const schemaLight = Joi.object({
+    firstName: Joi.string(),
+    lastName: Joi.string(),
+    birthDate: Joi.date(),
+    mobile: Joi.string().trim().regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
+    occupation: Joi.string(),
+    preferredTasks: Joi
+        .string()
+        .valid(
+            'praca z psami',
+            'praca z kotami',
+            'promocja schroniska'
+        )
+});
 
 exports.VolunteerForm = VolunteerForm;
-exports.validateVolunteerForm = validateVolunteerForm;
+exports.validateVolunteerForm = schema;
+exports.validateVolunteerFormLight = schemaLight;
