@@ -3,7 +3,7 @@ const fs = require('fs');
 const { Animal, validateAnimal } = require('../models/animalSchema');
 
 
-//GET METHOD - ALL ANIMALS
+//GET METHOD - ALL ANIMALS AVAILABLE FOR ADOPTION
 exports.getAnimals = async (req, res) => {
 
     const page = parseInt(req.query.page);
@@ -30,7 +30,8 @@ exports.getAnimals = async (req, res) => {
         };
     }
     
-    results.results = await Animal.find()
+    results.results = await Animal
+        .find({isAdopted: false})
         .limit(limit)
         .skip(startIndex)
         .select({animalType: 1,name: 1, registrationDate: 1, gender: 1, size: 1, description: 1, age: 1, breed: 1})
@@ -44,6 +45,49 @@ exports.getAnimals = async (req, res) => {
         },
         animals: results
     });
+};
+
+//GET METHOD - ALL ANIMALS FOR ADMIN
+exports.getAdminAnimals = async (req, res) => {
+
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const results = {
+      allAnimalsInDatabase: await Animal.count(),
+  };
+
+  if (endIndex < (await Animal.count())) {
+      results.next = {
+        page: `/api/animals?page=${page + 1}&limit=${limit}`,
+        limit: limit,
+      };
+  }
+  
+  if (startIndex > 0) {
+      results.previous = {
+        page: `/api/animals?page=${page - 1}&limit=${limit}`,
+        limit: limit,
+      };
+  }
+  
+  results.results = await Animal.find()
+      .limit(limit)
+      .skip(startIndex)
+      .select({animalType: 1,name: 1, registrationDate: 1, gender: 1, size: 1, description: 1, age: 1, breed: 1, isAdopted: 1})
+      .sort({ amount: -1 });
+  
+  res.send({
+      request: {
+        type: 'GET',
+        description: 'Get all animals',
+        url: 'http://localhost:3000/api/animals/adminanimals',
+      },
+      animals: results
+  });
 };
 
 //GET METHOD - ONE ANIMAL
@@ -117,7 +161,7 @@ exports.updateAnimal = async (req, res) => {
     }
 
     try {
-      const { animalType, name, registrationDate, gender, size, description, age, breed } = req.body;
+      const { animalType, name, registrationDate, gender, size, description, age, breed, isAdopted } = req.body;
       await validateAnimal.validateAsync({
         animalType, 
         name, 
@@ -126,7 +170,8 @@ exports.updateAnimal = async (req, res) => {
         size, 
         description, 
         age, 
-        breed
+        breed,
+        isAdopted
       });
   
       let animal = await Animal.findByIdAndUpdate(
@@ -140,7 +185,7 @@ exports.updateAnimal = async (req, res) => {
             description, 
             age, 
             breed,
-            image
+            isAdopted
         },
         { new: true }
       );
@@ -170,7 +215,7 @@ exports.deleteAnimal = async (req, res) => {
   
       res.status(202).send({
         message: 'Wybrany zwierzak został poprawnie usunięty z bazy danych',
-        payment: animal,
+        animal: animal,
         request: {
           type: 'DELETE',
           description: 'To see all animals go to:',

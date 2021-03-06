@@ -8,6 +8,7 @@ const auth = require('../middleware/authorization');
 
 //GET METHOD
 router.get('/', animalControllers.getAnimals);
+router.get('/adminanimals',[auth.loggedUser ,auth.isAdmin], animalControllers.getAdminAnimals);
 router.get('/:id', [auth.loggedUser ,auth.isAdmin], animalControllers.getOneAnimal);
 router.post('/', [auth.loggedUser ,auth.isAdmin], upload.single('image'), animalControllers.addAnimal);
 router.put('/:id', [auth.loggedUser ,auth.isAdmin], animalControllers.updateAnimal);
