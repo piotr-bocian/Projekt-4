@@ -2,14 +2,22 @@ const express = require('express');
 const router = express.Router();
 const paymentControllers = require('../controllers/payments');
 const auth = require('../middleware/authorization');
+
+//ALL
+router.post('/', paymentControllers.makeAPayment);
+//USER
+router.get('/me', auth.loggedUser, paymentControllers.paymentsGetMe);
+//ADMIN
 router.get(
   '/',
   [auth.loggedUser, auth.isAdmin],
   paymentControllers.getAllPayments
 );
-router.get('/me', auth.loggedUser, paymentControllers.getOnePayment);
-router.get('/:id', [auth.loggedUser, auth.isAdmin], paymentControllers.getOnePayment);
-router.post('/', paymentControllers.makeAPayment);
+router.get(
+  '/:id',
+  [auth.loggedUser, auth.isAdmin],
+  paymentControllers.getOnePayment
+);
 router.delete(
   '/:id',
   [auth.loggedUser, auth.isAdmin],

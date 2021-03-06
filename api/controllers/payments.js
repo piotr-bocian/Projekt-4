@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { User } = require('../models/user');
 const {
   Payment,
   validatePayment,
@@ -41,7 +42,13 @@ exports.getAllPayments = async (req, res) => {
     payments: results,
   });
 };
+exports.paymentsGetMe = async (req, res, next) => {
+  const user = await User.findById(req.user._id).select('-password');
+  if (!user)
+    return res.status(404).send('Użytkownik o podanym id nie istnieje.');
 
+  res.send(user);
+};
 exports.getOnePayment = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
   if (isIdValid) {
