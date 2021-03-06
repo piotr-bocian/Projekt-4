@@ -27,14 +27,14 @@ exports.postFormGetOne = async (req, res, next) => {
 // POST adoption form
 exports.addpostForm = async (req, res, next) => {
   try{
-      const {content, postDate, photo} = req.body;
+      const {postDate, content, photo} = req.body;
       const value = await ValidatePost.validateAsync({
           postDate,
           content,
           photo,
       });
       let postForm = new Post({
-        postId: mongoose.Types.ObjectId(),
+        _id: mongoose.Types.ObjectId(),
           ...value
       });
       postForm = await postForm.save();
@@ -59,7 +59,7 @@ exports.editpostForm = async (req, res, next) => {
           updateOps[ops.propertyName] = ops.newValue;
       }
       const postForm = await Post.findOneAndUpdate(
-          { postId: postId },
+          { _id: postId },
           { $set: updateOps},
       );
       res.status(200).send({

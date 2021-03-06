@@ -3,26 +3,27 @@ const Schema = mongoose.Schema;
 const Joi = require('joi');
 
 const postSchema = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     postDate: {
         type: Date,
         default: Date.now,
-        required: true
+        required: false
     },
     content: {
         type: String,
         minLength: 50,
-        required: true
+        require: false
     },
     photo: {
         type: String,
-        required: true,
         // URL zdjęcia z zewnętrznego zródła
     }
 })
 const PostSchema = mongoose.model('Post', postSchema);
+
     const schema = Joi.object({
-      postDate: Joi.date().required(),
-      content: Joi.string().min(50).required(),
+      postDate: Joi.date(),
+      content: Joi.string().min(50),
       photo: Joi.string()
     });
 
