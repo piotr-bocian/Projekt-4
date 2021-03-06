@@ -1,7 +1,7 @@
 const auth = require('../middleware/authorization');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const { User, validateUser } = require('../models/user');
+const { User, validateUser, validatePatchUpdate } = require('../models/user');
 
 exports.usersGetMe = async (req, res, next) => {
     const user = await User.findById(req.user._id).select('-password');
@@ -55,9 +55,64 @@ exports.usersAddUser = async(req, res, next) => {
 };
 
 exports.usersUpdateUser = async(req, res, next) => {
-    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+    id = req.user._id;
+    const isIdValid = mongoose.Types.ObjectId.isValid(id);
     if(!isIdValid){
         return res.status(400).send('Podano błędny numer id.');
+    }
+    let user = await User.findById(req.user._id)
+    if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
+
+    try {
+        const updateUser = {}
+        for (const update of req.body) {
+            updateUser[update.propertyName] = update.newValue;
+        };
+        await validatePatchUpdate.validateAsync(updateUser);
+        if (req.body[0].propertyName === 'password') {
+            const salt = await bcrypt.genSalt(10);
+            updateUser.password = await bcrypt.hash(updateUser.password, salt);
+        };
+        user = await User.findOneAndUpdate(
+            { _id: id },
+            { $set: updateUser},
+            { new: true }
+        );
+        res.status(200).send({
+            message: `Zaktualizowano następujące pola: ${JSON.stringify(user)}`
+        });
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
+exports.usersUpdateMe = async(req, res, next) => {
+    id = req.params._id;
+    let user = await User.findById(req.user._id)
+    if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
+    
+    try {
+        const updateUser = {};
+        console.log(req.body);
+        //it throws an error req.body is not iterable
+        for (const update of req.body) {
+            updateUser[update.propertyName] = update.newValue;
+        };
+        await validatePatchUpdate.validateAsync(updateUser);
+        if (req.body[0].propertyName === 'password') {
+            const salt = await bcrypt.genSalt(10);
+            updateUser.password = await bcrypt.hash(updateUser.password, salt);
+        };
+        user = await User.findOneAndUpdate(
+            { _id: id },
+            { $set: updateUser},
+            { new: true }
+        );
+        res.status(200).send({
+            message: `Zaktualizowano następujące pola: ${JSON.stringify(user)}`
+        });
+    } catch (error) {
+        res.status(400).send(error.message);
     }
 }
 

@@ -82,7 +82,7 @@ userSchema.methods.generateAuthToken = function() {
 const User = mongoose.model('User', userSchema);
 
 
-const schema = Joi.object({
+const newUserSchema = Joi.object({
     firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/).required(),
     lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/).required(),
     email: Joi.string().min(5).max(255).required().email(),
@@ -93,5 +93,17 @@ const schema = Joi.object({
     isVolunteer: Joi.boolean()
 });
 
+const updateUserSchema = Joi.object({
+    firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
+    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
+    email: Joi.string().min(5).max(255).email(),
+    password: Joi.string().min(8).max(255).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/),
+    mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
+    image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
+    isAdmin: Joi.boolean(),
+    isVolunteer: Joi.boolean()
+});
+
 exports.User = User;
-exports.validateUser = schema;
+exports.validateUser = newUserSchema;
+exports.validatePatchUpdate = updateUserSchema;

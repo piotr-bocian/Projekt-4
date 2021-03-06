@@ -9,6 +9,8 @@ router.get('/me', auth.loggedUser, userController.usersGetMe);
 router.get('/', [auth.loggedUser ,auth.isAdmin], userController.usersGetAll);
 router.get('/:id', [auth.loggedUser ,auth.isAdmin], userController.usersGetUser);
 router.post('/', userController.usersAddUser);
+router.patch('/me', auth.loggedUser, userController.usersUpdateMe);
+router.patch('/:id', [auth.loggedUser, auth.isAdmin], userController.usersUpdateUser);
 router.delete('/me', auth.loggedUser, userController.usersDeleteMe);
 router.delete('/:id', [auth.loggedUser, auth.isAdmin], userController.usersDeleteUser);
 
