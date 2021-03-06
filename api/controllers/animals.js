@@ -33,6 +33,7 @@ exports.getAnimals = async (req, res) => {
     results.results = await Animal.find()
         .limit(limit)
         .skip(startIndex)
+        .select({animalType: 1,name: 1, registrationDate: 1, gender: 1, size: 1, description: 1, age: 1, breed: 1})
         .sort({ amount: -1 });
     
     res.send({
@@ -138,7 +139,8 @@ exports.updateAnimal = async (req, res) => {
             size, 
             description, 
             age, 
-            breed
+            breed,
+            image
         },
         { new: true }
       );
