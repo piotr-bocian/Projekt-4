@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
     image: {
         type: Buffer.from('base64')
     },
+    isSuperAdmin: {
+        type: Boolean,
+        default: false
+    },
     isAdmin: {
         type: Boolean,
         default: false
@@ -70,7 +74,8 @@ userSchema.methods.generateAuthToken = function() {
         _id: this._id,
         email: this.email,
         isAdmin: this.isAdmin,
-        isVolunteer: this.isVolunteer
+        isVolunteer: this.isVolunteer,
+        isSuperAdmin: this.isSuperAdmin
     },
     process.env.SCHRONISKO_JWT_PRIVATE_KEY,
     {
@@ -82,7 +87,7 @@ userSchema.methods.generateAuthToken = function() {
 const User = mongoose.model('User', userSchema);
 
 
-const schema = Joi.object({
+const newUserSchema = Joi.object({
     firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/).required(),
     lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/).required(),
     email: Joi.string().min(5).max(255).required().email(),
@@ -90,8 +95,22 @@ const schema = Joi.object({
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
     image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
     isAdmin: Joi.boolean(),
-    isVolunteer: Joi.boolean()
+    isVolunteer: Joi.boolean(),
+    isSuperAdmin: Joi.boolean()
+});
+
+const updateUserSchema = Joi.object({
+    firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
+    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
+    email: Joi.string().min(5).max(255).email(),
+    password: Joi.string().min(8).max(255).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/),
+    mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
+    image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
+    isAdmin: Joi.boolean(),
+    isVolunteer: Joi.boolean(),
+    isSuperAdmin: Joi.boolean()
 });
 
 exports.User = User;
-exports.validateUser = schema;
+exports.validateUser = newUserSchema;
+exports.validatePatchUpdate = updateUserSchema;
