@@ -22,7 +22,7 @@ const postSchema = new Schema({
 const PostSchema = mongoose.model('Post', postSchema);
 
     const schema = Joi.object({
-      postDate: Joi.date(),
+      postDate: Joi.date().required(),
       content: Joi.string().min(50),
       photo: Joi.string()
     });

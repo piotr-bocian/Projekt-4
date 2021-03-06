@@ -58,6 +58,7 @@ exports.editpostForm = async (req, res) => {
   }
   try {
     const { postDate, content, photo } = req.body;
+    console.log(req.body)
     await ValidatePost.validateAsync({
       postDate,
       content,
@@ -81,7 +82,6 @@ exports.editpostForm = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
-//
 
 // DELETE post form
 exports.deletepostForm = async (req, res, next) => {
