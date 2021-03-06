@@ -11,8 +11,44 @@ exports.usersGetMe = async (req, res, next) => {
 }
 
 exports.usersGetAll = async(req, res, next) => {
-    const users = await User.find().select('-password').sort('lastName');
-    res.send(users);
+    const page = parseInt(req.query.page);
+    const limit = parseInt(req.query.limit);
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {
+        allUsersInDatabase: await User.count(),
+    };
+
+    if (endIndex < (await User.count())) {
+        results.next = {
+          page: `/api/users?page=${page + 1}&limit=${limit}`,
+          limit: limit,
+        };
+    }
+    
+    if (startIndex > 0) {
+        results.previous = {
+          page: `/api/users?page=${page - 1}&limit=${limit}`,
+          limit: limit,
+        };
+    }
+    
+    results.results = await User.find().select('-password')
+        .limit(limit)
+        .skip(startIndex)
+        .sort({ amount: -1,
+        lastName: 1 });
+    
+    res.send({
+        request: {
+          type: 'GET',
+          description: 'Get all users',
+          url: 'http://localhost:3000/api/users/',
+        },
+        users: results
+    });
 };
 
 exports.usersGetUser = async(req, res, next) => {
