@@ -55,12 +55,12 @@ exports.usersAddUser = async(req, res, next) => {
 };
 
 exports.usersUpdateUser = async(req, res, next) => {
-    id = req.user._id;
+    id = req.params.id;
     const isIdValid = mongoose.Types.ObjectId.isValid(id);
     if(!isIdValid){
         return res.status(400).send('Podano błędny numer id.');
     }
-    let user = await User.findById(req.user._id)
+    let user = await User.findById(id)
     if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
 
     try {
@@ -69,9 +69,11 @@ exports.usersUpdateUser = async(req, res, next) => {
             updateUser[update.propertyName] = update.newValue;
         };
         await validatePatchUpdate.validateAsync(updateUser);
-        if (req.body[0].propertyName === 'password') {
-            const salt = await bcrypt.genSalt(10);
-            updateUser.password = await bcrypt.hash(updateUser.password, salt);
+        for (const update of req.body) {
+            if (update.propertyName === 'password') {
+                const salt = await bcrypt.genSalt(10);
+                updateUser.password = await bcrypt.hash(updateUser.password, salt);
+            };
         };
         user = await User.findOneAndUpdate(
             { _id: id },
@@ -79,7 +81,7 @@ exports.usersUpdateUser = async(req, res, next) => {
             { new: true }
         );
         res.status(200).send({
-            message: `Zaktualizowano następujące pola: ${JSON.stringify(user)}`
+            message: `Zaktualizowano następujące pola: ${JSON.stringify(updateUser)}`
         });
     } catch (error) {
         res.status(400).send(error.message);
@@ -87,29 +89,31 @@ exports.usersUpdateUser = async(req, res, next) => {
 }
 
 exports.usersUpdateMe = async(req, res, next) => {
-    id = req.params._id;
+    id = req.user._id;
     let user = await User.findById(req.user._id)
     if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
     
     try {
         const updateUser = {};
-        console.log(req.body);
-        //it throws an error req.body is not iterable
         for (const update of req.body) {
+            if (update.propertyName === 'isAdmin') return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.')
             updateUser[update.propertyName] = update.newValue;
         };
         await validatePatchUpdate.validateAsync(updateUser);
-        if (req.body[0].propertyName === 'password') {
-            const salt = await bcrypt.genSalt(10);
-            updateUser.password = await bcrypt.hash(updateUser.password, salt);
+        for (const update of req.body) {
+            if (update.propertyName === 'password') {
+                const salt = await bcrypt.genSalt(10);
+                updateUser.password = await bcrypt.hash(updateUser.password, salt);
+            };
         };
+        
         user = await User.findOneAndUpdate(
             { _id: id },
             { $set: updateUser},
             { new: true }
         );
         res.status(200).send({
-            message: `Zaktualizowano następujące pola: ${JSON.stringify(user)}`
+            message: `Zaktualizowano następujące pola: ${JSON.stringify(updateUser)}`
         });
     } catch (error) {
         res.status(400).send(error.message);
