@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const Joi = require('joi');
 
 
+
 const adoptionFormSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     content: {
@@ -12,7 +13,7 @@ const adoptionFormSchema = new Schema({
     userID: {
         type: mongoose.Schema.Types.ObjectId,
         ref:'User',
-        require: true
+        require: false
     },
     animalID: {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,16 +25,12 @@ const AdoptionForm = mongoose.model('AdoptionForm', adoptionFormSchema);
 
 //JOI VALIDATION
 
-function validateSchema(form) {
+
     const schema = Joi.object({
-        content: Joi.String.required(),
-        userID: Joi.number().required(),
-        animalID: Joi.number()
+        content: Joi.string().required(),
+        userID: Joi.string(),
+        animalID: Joi.string()
     });
-    return Joi.validate(form, schema);
-}
 
 exports.AdoptionForm = AdoptionForm;
-exports.validateAdoptionForm = validateSchema;
-
-
+exports.validateAdoptionForm = schema;

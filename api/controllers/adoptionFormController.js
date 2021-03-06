@@ -1,17 +1,5 @@
 const mongoose = require('mongoose');
-const {AdoptionForm, validateAdoptionForm} = require('../models/adoptionForm');
-
-// moge tak użyć?
-// app.use('/adoptionForms/:adoptionId', (req, res, next) => {
-//     const adoptionFormId = Number(req.params.adoptionId);
-//     const adoptionFormIndex = adoptionForms.findIndex(form => form.id === adoptionFormId);
-//     if (adoptionFormIndex === -1) {
-//       return res.status(404).send('Adoption Form not found');
-//     }
-//     req.adoptionFormIndex = adoptionFormIndex;
-//     next();
-//   });
-
+const { AdoptionForm, validateAdoptionForm } = require('../models/adoptionForm');
 
 // GETL ALL adoption forms
 exports.AdoptionFormGetAll = async (req, res, next) => {
@@ -31,7 +19,7 @@ exports.AdoptionFormGetOne = async (req, res, next) => {
         request: {
             type: 'GET',
             description: 'Get all volunteer forms',
-            url: 'localhost:3000/api/adoptionForms/',
+            url: 'localhost:3000/api/adoptionforms/',
         }
     });
 }
@@ -62,28 +50,35 @@ exports.addAdoptionForm = async (req, res, next) => {
 
 // UPDATE adoption form
 exports.editAdoptionForm = async (req, res, next) => {
-    const adoptionId = req.params.adoptionId;
-    if(!mongoose.Types.ObjectId.isValid(adoptionId))
-        return res.status(400).send('Podano bledny numer _adoptionId');
-    try{
-        const updateOps = {}
-        for(const ops of req.body){
-            updateOps[ops.propertyName] = ops.newValue;
-        }
-        // await validateVolunteerFormLight.validateAsync(updateOps);
-        const adoptionForm = await AdoptionForm.findOneAndUpdate(
-            { _id: id },
-            { $set: updateOps},
-        );
-        res.status(200).send({
-            message: `Zaktualizowano nastepujące pola ${JSON.stringify(
-                updateOps
-              )}`,
-              adoptionForm
-        });
+    const isIdValid = mongoose.Types.ObjectId.isValid(req.params.adoptionId);
+    if (!isIdValid) {
+      res.status(400).send('Podano błędny numer _adoptionId');
+      return;
     }
-    catch(error){
-        res.status(400).send(error.message);
+    try {
+      const { content, userID, animalID } = req.body;
+      console.log(req.body)
+      await validateAdoptionForm.validateAsync({
+        content,
+        userID,
+        animalID,
+      });
+  
+      let form = await AdoptionForm.findByIdAndUpdate(
+        req.params.adoptionId,
+        {
+            content,
+            userID,
+            animalID,
+        },
+        { new: true }
+      );
+      res.status(200).send({
+        message: 'Zaktualizowano formularz',
+        form,
+      });
+    } catch (error) {
+      res.status(400).send(error.message);
     }
   };
 
