@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const paymentControllers = require('../controllers/payments');
-
+const auth = require('../middleware/authorization');
 router.get(
   '/',
   [auth.loggedUser, auth.isAdmin],
