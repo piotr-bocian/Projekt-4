@@ -49,30 +49,39 @@ exports.addpostForm = async (req, res, next) => {
 }
 
 // UPDATE post form
-exports.editpostForm = async (req, res, next) => {
-  const postId = req.params.postId;
-  if(!mongoose.Types.ObjectId.isValid(postId))
-      return res.status(400).send('Podano bledny numer _postId');
-  try{
-      const updateOps = {}
-      for(const ops of req.body){
-          updateOps[ops.propertyName] = ops.newValue;
-      }
-      const postForm = await Post.findOneAndUpdate(
-          { _id: postId },
-          { $set: updateOps},
-      );
-      res.status(200).send({
-          message: `Zaktualizowano nastepujące pola ${JSON.stringify(
-              updateOps
-            )}`,
-            postForm
-      });
+//
+exports.editpostForm = async (req, res) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.postId);
+  if (!isIdValid) {
+    res.status(400).send('Podano błędny numer _id');
+    return;
   }
-  catch(error){
-      res.status(400).send(error.message);
+  try {
+    const { postDate, content, photo } = req.body;
+    await ValidatePost.validateAsync({
+      postDate,
+      content,
+      photo,
+    });
+
+    let post = await Post.findByIdAndUpdate(
+      req.params.postId,
+      {
+        postDate,
+        content,
+        photo,
+      },
+      { new: true }
+    );
+    res.status(200).send({
+      message: 'Zaktualizowano post',
+      post,
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 };
+//
 
 // DELETE post form
 exports.deletepostForm = async (req, res, next) => {
@@ -90,4 +99,3 @@ exports.deletepostForm = async (req, res, next) => {
       postForm
   });
 }
-
