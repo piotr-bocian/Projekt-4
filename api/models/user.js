@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
     image: {
         type: Buffer.from('base64')
     },
+    isSuperAdmin: {
+        type: Boolean,
+        default: false
+    },
     isAdmin: {
         type: Boolean,
         default: false
@@ -70,7 +74,8 @@ userSchema.methods.generateAuthToken = function() {
         _id: this._id,
         email: this.email,
         isAdmin: this.isAdmin,
-        isVolunteer: this.isVolunteer
+        isVolunteer: this.isVolunteer,
+        isSuperAdmin: this.isSuperAdmin
     },
     process.env.SCHRONISKO_JWT_PRIVATE_KEY,
     {
@@ -90,7 +95,8 @@ const newUserSchema = Joi.object({
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
     image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
     isAdmin: Joi.boolean(),
-    isVolunteer: Joi.boolean()
+    isVolunteer: Joi.boolean(),
+    isSuperAdmin: Joi.boolean()
 });
 
 const updateUserSchema = Joi.object({
@@ -101,7 +107,8 @@ const updateUserSchema = Joi.object({
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
     image: Joi.binary().encoding('base64').max(5*1024*1024), //image size validation 5MB
     isAdmin: Joi.boolean(),
-    isVolunteer: Joi.boolean()
+    isVolunteer: Joi.boolean(),
+    isSuperAdmin: Joi.boolean()
 });
 
 exports.User = User;

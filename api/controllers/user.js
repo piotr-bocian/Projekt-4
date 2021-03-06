@@ -28,10 +28,14 @@ exports.usersGetUser = async(req, res, next) => {
 
 exports.usersAddUser = async(req, res, next) => {
     try{
-        const { firstName, lastName, email, password, mobile, image, isAdmin, isVolunteer } = req.body;
+        const { firstName, lastName, email, password, mobile, image, isSuperAdmin, isAdmin, isVolunteer } = req.body;
         const validUser = await validateUser.validateAsync(req.body);
         let user = await User.findOne({ email: req.body.email });
         if(user) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
+
+        if(isAdmin || isSuperAdmin){
+            return res.status(403).send('Nie masz uprawnień do nadania statusu Administratora.')
+        }
 
         user = new User({
             _id: new mongoose.Types.ObjectId(),
@@ -65,9 +69,15 @@ exports.usersUpdateUser = async(req, res, next) => {
 
     try {
         const updateUser = {}
+
         for (const update of req.body) {
+            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+                console.log(req.user, !req.user.isSuperAdmin);
+                return res.status(403).send('Nie masz uprawnień do zmiany statusu Administratora.');
+            } 
             updateUser[update.propertyName] = update.newValue;
         };
+
         await validatePatchUpdate.validateAsync(updateUser);
         for (const update of req.body) {
             if (update.propertyName === 'password') {
@@ -96,7 +106,9 @@ exports.usersUpdateMe = async(req, res, next) => {
     try {
         const updateUser = {};
         for (const update of req.body) {
-            if (update.propertyName === 'isAdmin') return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.')
+            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+                return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.');
+            } 
             updateUser[update.propertyName] = update.newValue;
         };
         await validatePatchUpdate.validateAsync(updateUser);
@@ -136,8 +148,12 @@ exports.usersDeleteUser = async(req, res, next) => {
         return res.status(400).send('Podano błędny numer id.');
     }
 
-    let user = await User.findByIdAndRemove(req.params.id);
+    let user = await User.findById(req.params.id)
+    if((user.isAdmin || user.isSuperAdmin) && !req.user.isSuperAdmin){
+        return res.status(403).send('Nie masz uprawnień do usunięcia konta administratora.');
+    }
 
+    user = await User.findByIdAndRemove(req.params.id);
     if(!user){
         return res.status(404).send('Podany użytkownik nie istnieje.');
     }
