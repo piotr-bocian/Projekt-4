@@ -47,6 +47,37 @@ exports.getVisit = async (req, res) => {
   }
 };
 
+exports.getMyVisits = async (req, res) => {
+  const page = parseInt(req.query.page);
+  const limit = parseInt(req.query.limit);
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
+  const results = {
+    allVisitsInDatabase: await adoptionVisit.find({userID: req.user._id}).count(),
+  };
+  if (endIndex < (await adoptionVisit.count())) {
+    results.next = {
+      page: page + 1,
+      limit: limit,
+    };
+  }
+
+  if (startIndex > 0) {
+    results.previous = {
+      page: page - 1,
+      limit: limit,
+    };
+  }
+
+  results.results = await adoptionVisit.find({userID: req.user._id})
+    .limit(limit)
+    .skip(startIndex)
+    .sort({ amount: -1 });
+  res.send(results);
+};
+
 exports.makeMyVisit = async (req, res) => {
   try {
     const { visitDate, visitTime, duration, isVisitDone } = req.body;
@@ -105,6 +136,27 @@ exports.deleteVisit = async (req, res) => {
     if (!visit) {
       return res.status(404).send('Wizyta adopcyjna, której szukasz nie istnieje');
     }
+
+    res.status(202).send({
+      message: 'Wizyta adopcyjna została poprawnie anulowana',
+      visit,
+    });
+  } else {
+    res.status(400).send('Podano błędny numer _id');
+  }
+};
+
+exports.deleteMyVisit = async (req, res) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (isIdValid) {
+
+    const visit = await adoptionVisit.findById(req.params.id)
+
+    if (visit.visitDate <= Date.now()) {
+      return res.status(404).send('Czas na anulowanie wizyty adopcyjnej minął.');
+    };
+
+    const visitToDelete = await adoptionVisit.findByIdAndRemove(req.params.id);
 
     res.status(202).send({
       message: 'Wizyta adopcyjna została poprawnie anulowana',
