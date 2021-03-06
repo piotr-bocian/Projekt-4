@@ -7,7 +7,8 @@ router.get(
   [auth.loggedUser, auth.isAdmin],
   paymentControllers.getAllPayments
 );
-router.get('/:id', auth.loggedUser, paymentControllers.getOnePayment);
+router.get('/me', auth.loggedUser, paymentControllers.getOnePayment);
+router.get('/:id', [auth.loggedUser, auth.isAdmin], paymentControllers.getOnePayment);
 router.post('/', paymentControllers.makeAPayment);
 router.delete(
   '/:id',
