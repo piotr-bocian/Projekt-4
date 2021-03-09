@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { User } = require('../models/user');
 const {
   Payment,
   validatePayment,
@@ -30,6 +29,8 @@ exports.getAllPayments = async (req, res) => {
     };
   }
   results.results = await Payment.find()
+    // .populate(req.user.id)
+    // .select(req.params)
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
@@ -42,12 +43,29 @@ exports.getAllPayments = async (req, res) => {
     payments: results,
   });
 };
-exports.paymentsGetMe = async (req, res, next) => {
-  const user = await User.findById(req.user._id).select('-password');
-  if (!user)
-    return res.status(404).send('Użytkownik o podanym id nie istnieje.');
-
-  res.send(user);
+exports.paymentsPostMe = async (req, res, next) => {
+  try {
+    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
+    const value = await validatePayment.validateAsync({
+      typeOfPayment,
+      amount,
+      paymentDate,
+      paymentMethod,
+    });
+    let payment = new Payment({
+      _id: mongoose.Types.ObjectId(),
+      ...value,
+      userID: req.user._id,
+      userCompanyID: req.body.userCompanyID, //ADD USER COMPANY ID
+    });
+    payment = await payment.save();
+    res.status(201).send({
+      message: 'Twoja płatność przebiegła pomyślnie',
+      payment,
+    });
+  } catch (error) {
+    res.status(400).send(error.details[0].message);
+  }
 };
 exports.getOnePayment = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
@@ -83,8 +101,6 @@ exports.makeAPayment = async (req, res) => {
     let payment = new Payment({
       _id: mongoose.Types.ObjectId(),
       ...value,
-      userID: req.body.userID,
-      userCompanyID: req.body.userCompanyID,
     });
     payment = await payment.save();
     res.status(201).send({

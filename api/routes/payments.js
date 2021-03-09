@@ -5,8 +5,8 @@ const auth = require('../middleware/authorization');
 
 //ALL
 router.post('/', paymentControllers.makeAPayment);
-//USER
-router.get('/me', auth.loggedUser, paymentControllers.paymentsGetMe);
+//LOGGED USER PAYMENT
+router.post('/me', auth.loggedUser, paymentControllers.paymentsPostMe);
 //ADMIN
 router.get(
   '/',
