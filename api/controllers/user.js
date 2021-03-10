@@ -118,6 +118,9 @@ exports.usersUpdateUser = async(req, res, next) => {
                 console.log(req.user, !req.user.isSuperAdmin);
                 return res.status(403).send('Nie masz uprawnień do zmiany statusu Administratora.');
             } 
+            if (update.propertyName === 'image') {
+                updateUser.image = fs.readFileSync(req.file.path);
+            }
             updateUser[update.propertyName] = update.newValue;
         };
 
@@ -151,7 +154,10 @@ exports.usersUpdateMe = async(req, res, next) => {
         for (const update of req.body) {
             if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
                 return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.');
-            } 
+            }
+            if (update.propertyName === 'image') {
+                updateUser.image = fs.readFileSync(req.file.path);
+            }
             updateUser[update.propertyName] = update.newValue;
         };
         await validatePatchUpdate.validateAsync(updateUser);
