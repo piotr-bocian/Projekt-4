@@ -10,7 +10,7 @@ router.post('/me', auth.loggedUser, paymentControllers.paymentsPostMe);
 //ADMIN
 router.get(
   '/',
-  [auth.loggedUser, auth.isAdmin],
+  // [auth.loggedUser, auth.isAdmin],
   paymentControllers.getAllPayments
 );
 router.get(

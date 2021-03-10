@@ -29,7 +29,7 @@ exports.getAllPayments = async (req, res) => {
     };
   }
   //search engine
-  let search;
+let search;
   const term = req.query.search;
   if (term) {
     search = {

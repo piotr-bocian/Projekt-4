@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const { Db } = require('mongodb');
 
 const paymentSchema = mongoose.Schema({
   _id: mongoose.Schema.Types.ObjectId,
@@ -35,16 +34,12 @@ const paymentSchema = mongoose.Schema({
     required: true,
   },
   userID: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
-  },
-  userCompanyID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserCompany',
   },
 });
 //index wildcard allow to dynamic search
-paymentSchema.index({'$**': 'text'});
+paymentSchema.index({ '$**': 'text' });
 const Payment = mongoose.model('Payment', paymentSchema);
 
 //validation is an object that return value or error
