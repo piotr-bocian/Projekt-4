@@ -28,9 +28,16 @@ exports.getAllPayments = async (req, res) => {
       limit: limit,
     };
   }
-  results.results = await Payment.find()
-    // .populate(req.user.id)
-    // .select(req.params)
+  //search engine
+  let search;
+  const term = req.query.search;
+  if (term) {
+    search = {
+      $text: { $search: term },
+    };
+  }
+
+  results.results = await Payment.find(search)
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
@@ -43,6 +50,7 @@ exports.getAllPayments = async (req, res) => {
     payments: results,
   });
 };
+
 exports.paymentsPostMe = async (req, res, next) => {
   try {
     const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
@@ -56,7 +64,6 @@ exports.paymentsPostMe = async (req, res, next) => {
       _id: mongoose.Types.ObjectId(),
       ...value,
       userID: req.user._id,
-      userCompanyID: req.body.userCompanyID, //ADD USER COMPANY ID
     });
     payment = await payment.save();
     res.status(201).send({
