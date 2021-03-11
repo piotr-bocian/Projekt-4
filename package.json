@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "nodemon server.js",
-    "test:PaymentEndpoints": "jest -- test/paymentEndpoint.test.js"
+    "test:PaymentEndpoints": "jest -- test/paymentEndpoint.test.js",
+    "test users": "jest -- test/usersEndpoint.test.js"
   },
   "repository": {
     "type": "git",
