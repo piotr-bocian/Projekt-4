@@ -5,8 +5,10 @@ const visitControllers = require('../controllers/adoptionVisit');
 
 // User:
 router.get('/me', auth.loggedUser, visitControllers.getMyVisits);
+router.get('/me/:id', auth.loggedUser, visitControllers.getMyVisit);
 router.post('/me', auth.loggedUser, visitControllers.makeMyVisit);
 router.delete('/me/:id', auth.loggedUser, visitControllers.deleteMyVisit);
+router.patch('/me/:id', auth.loggedUser, visitControllers.updateMyVisit);
 
 // Admin:
 router.get('/', [auth.loggedUser, auth.isAdmin], visitControllers.getAllVisits);

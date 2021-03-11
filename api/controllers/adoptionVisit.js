@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { adoptionVisit, validateVisit } = require('../models/adoptionVisit');
+const { adoptionVisit, validateVisit, validatePatchUpdate} = require('../models/adoptionVisit');
 
 exports.getAllVisits = async (req, res) => {
   const page = parseInt(req.query.page);
@@ -78,6 +78,25 @@ exports.getMyVisits = async (req, res) => {
   res.send(results);
 };
 
+exports.getMyVisit = async (req, res) => {
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (isIdValid) {
+    const visit = await adoptionVisit.findById(req.params.id);
+
+    if (!visit) {
+      return res.status(404).send('Wizyta adopcyjna, której szukasz nie istnieje');
+    }
+
+    if (visit.userID != req.user._id) {
+      return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
+    }
+
+    res.send(visit);
+  } else {
+    res.status(400).send('Podano błędny numer _id');
+  }
+};
+
 exports.makeMyVisit = async (req, res) => {
   try {
     const { visitDate, visitTime, duration, isVisitDone } = req.body;
@@ -152,8 +171,17 @@ exports.deleteMyVisit = async (req, res) => {
 
     const visit = await adoptionVisit.findById(req.params.id)
 
+    if (!visit) {
+      return res.status(404).send('Wizyta adopcyjna, której szukasz nie istnieje');
+    }
+
+    // userID.check
+    if (visit.userID != req.user._id) {
+      return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
+    }
+    // Visit date check
     if (visit.visitDate <= Date.now()) {
-      return res.status(404).send('Czas na anulowanie wizyty adopcyjnej minął.');
+      return res.status(403).send('Czas na anulowanie wizyty adopcyjnej minął.');
     };
 
     const visitToDelete = await adoptionVisit.findByIdAndRemove(req.params.id);
@@ -195,6 +223,56 @@ exports.updateVisit = async (req, res) => {
     res.status(200).send({
       message: 'Zaktualizowano wizytę adopcyjną',
       visit,
+    });
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+exports.updateMyVisit = async (req, res) => {
+  const id = req.params.id;
+  const isIdValid = mongoose.Types.ObjectId.isValid(id);
+  if (!isIdValid) {
+    res.status(400).send('Podano błędny numer _id');
+    return;
+  }
+  try {
+    const updateVisit = {};
+    // forbidden changes by user:
+    for (const update of req.body) {
+      if (update.propertyName === 'isVisitDone') {
+        return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
+      };
+      if (update.propertyName === 'userID') {
+        return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
+      };
+      updateVisit[update.propertyName] = update.newValue;
+    }
+
+    await validatePatchUpdate.validateAsync(updateVisit);
+    
+    // Visit check
+    const visitCheck = await adoptionVisit.findOne(
+      { _id: id });
+    // Visit userId check
+    if (visitCheck.userID != req.user._id) {
+      // console.log(visitCheck.userID, req.user._id)
+      return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
+    }
+    // Visit date check
+    if (visitCheck.visitDate <= Date.now()) {
+      return res.status(403).send('Czas na anulowanie wizyty adopcyjnej minął.');
+    };
+
+    const visit = await adoptionVisit.findOneAndUpdate(
+      { _id: id },
+      { $set: updateVisit },
+      { new: true }
+    );
+    res.status(200).send({
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(
+        updateVisit
+      )}`
     });
   } catch (error) {
     res.status(400).send(error.message);

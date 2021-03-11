@@ -50,7 +50,15 @@ const schema = Joi.object({
     isVisitDone: Joi.boolean()
 });
 
+const patch = Joi.object({
+    visitDate: Joi.date(),
+    visitTime: Joi.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/),
+    duration: Joi.number().min(30).max(120),
+    isVisitDone: Joi.boolean()
+});
+
 
 
 exports.adoptionVisit = adoptionVisit;
 exports.validateVisit = schema;
+exports.validatePatchUpdate = patch;
