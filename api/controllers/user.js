@@ -54,9 +54,9 @@ exports.usersGetAll = async(req, res, next) => {
 exports.usersGetUser = async(req, res, next) => {
     const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
     if(isIdValid){
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).select('-password');
         if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
-        res.send(user);
+        res.status(200).send(user);
     }else {
         res.status(400).send('Podano nieprawidłowy numer id');
     }    
@@ -89,8 +89,8 @@ exports.usersAddUser = async(req, res, next) => {
         user = await user.save();
 
         const token = user.generateAuthToken();
-        res.header('x-auth-token', token).send({
-            message: 'Rejestracja przebiegła pomyślnie',
+        res.header('x-auth-token', token).status(201).send({
+            message: 'Rejestracja przebiegła pomyślnie.',
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email

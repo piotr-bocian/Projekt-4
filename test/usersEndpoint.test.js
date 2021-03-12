@@ -12,16 +12,13 @@ const app = express();
 app.use(express.json());
 
 app.get('/test', userController.usersGetAll);
-app.get('test/me', userController.usersGetMe);
 app.get('/test/:id', userController.usersGetUser);
 app.post('/test', upload.single('image'), userController.usersAddUser);
-app.patch('test/:id', userController.usersUpdateUser);
-app.patch('test/me', userController.usersUpdateMe);
-app.delete('test/me', userController.usersDeleteMe);
+// app.patch('test/:id', userController.usersUpdateUser);
 app.delete('test/:id', userController.usersDeleteUser);
 
 const dummyUserA = {
-    _id: "603d60be60915444eb7b7f92",
+    _id: "603d60be60915444eb7b7f91",
     isSuperAdmin: false,
     isAdmin: false,
     isVolunteer: false,
@@ -32,7 +29,7 @@ const dummyUserA = {
     mobile: "123-123-123"
 };
 const dummyUserB = {
-    _id: "603812100b344261dda8c174",
+    _id: "603812100b344261dda8c175",
     isSuperAdmin: false,
     isAdmin: false,
     isVolunteer: false,
@@ -73,109 +70,114 @@ describe('GET', () => {
         .catch((err) => done(err));
     });
 
-//     it('should response with status 200 when correct id is sending', function (done) {
-//         const testAnimal = Animal.create(dummyData1);
-//         return request(app)
-//           .get('/test/603b512b3e865c0e4cf63527')
-//           .set('Accept', 'application/json')
-//           .expect(200)
-//           .then((response) => {
-//             expect(response.body.animal).toStrictEqual({
-//                 _id: '603b512b3e865c0e4cf63527',
-//                 animalType: 'kot',
-//                 name: 'Jadwiga',
-//                 gender: 'żeńska',
-//                 description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
-//                 age: 3,
-//                 registrationDate: "2021-03-01T00:00:00.000Z",
-//                 isAdopted: false,
-//                 __v: 0
-//             });
-//             done();
-//           })
-//           .catch((err) => done(err));
-//       });
+    it('should response with status 200 when correct id is sent', function (done) {
+        const testUser = User.create(dummyUserB);
+        return request(app)
+          .get('/test/603812100b344261dda8c175')
+          .set('Accept', 'application/json')
+          .expect(200)
+          .then((response) => {
+            expect(response.body).toStrictEqual({
+              _id: "603812100b344261dda8c175",
+              isSuperAdmin: false,
+              isAdmin: false,
+              isVolunteer: false,
+              firstName: "Brajan",
+              lastName: "Brajanski",
+              email: "brajan@gmail.com",
+              mobile: "789-456-654",
+              __v: 0
+            });
+            done();
+          })
+          .catch((err) => done(err));
+      });
 
-//       it('should response with status 404 when incorrect id is sent, else it should response with: Zwierzaka, którego szukasz, nie ma w naszej bazie danych', function (done) {
-//         return request(app)
-//           .get('/test/6incorrectid')
-//           .set('Accept', 'application/json')
-//           .expect(404, 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych')
-//           .then((response) => {
-//             expect(response.text).toBe('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
-//             done();
-//           })
-//           .catch((err) => done(err));
-//       });
+      it('should response with status 404 when incorrect id is sent, else it should response with: Podany użytkownik nie istnieje.', function (done) {
+        return request(app)
+          .get('/test/6incorrectid')
+          .set('Accept', 'application/json')
+          .expect(404, 'Podany użytkownik nie istnieje.')
+          .then((response) => {
+            expect(response.text).toBe('Podany użytkownik nie istnieje.');
+            done();
+          })
+          .catch((err) => done(err));
+      });
 
 });
 
-// //POST ANIMAL TEST
+// //POST USER TEST
 
-// describe('POST', () => {
+describe('POST', () => {
 
-//     it('should respond with status 201', function (done) {
-//       const postData = {
-//         _id: '603b512b3e865c0e4cf63527',
-//         animalType: 'kot',
-//         name: 'Jadwiga',
-//         gender: 'żeńska',
-//         description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
-//         age: 3,
-//         registrationDate: "2021-03-01"
-//       };
+    it('should respond with status 201', function (done) {
+      const postData = {
+        isSuperAdmin: false,
+        isAdmin: false,
+        isVolunteer: false,
+        firstName: "Brajan",
+        lastName: "Brajanski",
+        email: "brajan1@gmail.com",
+        password: 'Bb123456',
+        mobile: "789-456-654"
+      };
 
-//       request(app)
-//         .post('/test')
-//         .send(postData)
-//         .set('Accept', 'application/json')
-//         .expect(201)
-//         .end(function (err, res) {
-//           expect(res.body.message).toBe('Nowy zwierzak został zarejestrowany.');
-//           if (err) return done(err);
-//           return done();
-//         });
-//     });
+      request(app)
+        .post('/test')
+        .send(postData)
+        .set('Accept', 'application/json')
+        .expect(201)
+        .end(function (err, res) {
+          expect(res.body.message).toBe('Rejestracja przebiegła pomyślnie.');
+          if (err) return done(err);
+          return done();
+        });
+    });
 
-//     it('should respond with status 400 when incorrect data are send, it should also send: animalType" must be one of [pies, kot, inne]', function (done) {
-//         const postData = {
-//             _id: '603b512b3e865c0e4cf63527',
-//             animalType: 'żółw',
-//             name: 'Jadwiga',
-//             gender: 'żeńska',
-//             description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
-//             age: 3
-//         }
+    it('should respond with status 400 when incorrect data are send, it should also send a message which contains: Pole imię musi zawierać tylko litery', function (done) {
+        const postData = {
+          isSuperAdmin: false,
+          isAdmin: false,
+          isVolunteer: false,
+          firstName: "123456",
+          lastName: "Brajanski",
+          email: "brajan2@gmail.com",
+          password: 'Bb123456',
+          mobile: "789-456-654"
+        }
     
-//         request(app)
-//           .post('/test')
-//           .send(postData)
-//           .set('Accept', 'application/json')
-//           .expect(400)
-//           .end(function (err, res) {
-//             expect(res.text).toBe(
-//               '"animalType" must be one of [pies, kot, inne]'
-//             );
-//             if (err) return done(err);
-//             return done();
-//           });
-//       });
-// });
+        request(app)
+          .post('/test')
+          .send(postData)
+          .set('Accept', 'application/json')
+          .expect(400)
+          .end(function (err, res) {
+            // console.log(res)
+            expect(res.text).toMatch(
+              'Pole imię musi zawierać tylko litery'
+            );
+            if (err) return done(err);
+            return done();
+          });
+      });
+});
 
-// //DELETE ANIMAL TEST
+// //DELETE USER TEST
 
-// describe('DELETE', () => {
-//     it('should response with status 400 and send: Podano błędny numer _id', function (done) {
-//       return request(app)
-//         .delete('/test/incorrectid')
-//         .set('Accept', 'application/json')
-//         .expect(400)
-//         .then((response) => {
-//           expect(response.text).toBe('Podano błędny numer _id');
-//           done();
-//         })
-//         .catch((err) => done(err));
-//     });
+describe('DELETE', () => {
+    it('should response with status 400 and send: Podano błędny numer id', function (done) {
+      return request(app)
+        .delete('/test/incorrectid')
+        .set('Accept', 'application/json')
+        // .expect(400)
+        .then((response) => {
+          console.log(response);
+          expect(response.text).toBe('Podano błędny numer id');
+          done();
+        })
+        .catch((err) => done(err));
+      });
 
 //     it('should response with status 202 and send: Wybrany zwierzak został poprawnie usunięty z bazy danych', function (done) {
 //         const dummyDataDelete = {
@@ -201,7 +203,7 @@ describe('GET', () => {
 //           .catch((err) => done(err));
 //       });
 
-// });
+});
 
 // //PUT ANIMAL TEST
 
