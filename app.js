@@ -3,12 +3,15 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 require('dotenv').config();
 const app = express();
+
 const users = require('./api/routes/users');
 const login = require('./api/routes/login');
 const visitRoutes = require('./api/routes/adoptionVisit');
 const payment = require('./api/routes/payments');
 const volunteerForms = require('./api/routes/volunteerForms');
 const animalRouter = require('./api/routes/animals');
+const postForm = require('./api/routes/postRoutes');
+const adoptionForms = require('./api/routes/adoptionFormRoutes');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
@@ -39,8 +42,9 @@ app.use('/api/visits', visitRoutes)
 app.use('/api/payments', payment);
 app.use('/api/volunteerForms', volunteerForms);
 app.use('/api/animals', animalRouter);
+app.use('/api/posts/', postForm)
+app.use('/api/adoptionforms', adoptionForms);
 app.use(express.static('uploads'));
-
 
 //handles query on non-existent route
 app.use((req, res, next) => {
