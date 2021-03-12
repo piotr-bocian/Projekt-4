@@ -162,6 +162,7 @@ exports.updateAnimal = async (req, res) => {
 
     try {
       const { animalType, name, registrationDate, gender, size, description, age, breed, isAdopted } = req.body;
+      let animal;
       await validateAnimal.validateAsync({
         animalType, 
         name, 
@@ -173,11 +174,11 @@ exports.updateAnimal = async (req, res) => {
         breed,
         isAdopted
       });
-  
-      let animal = await Animal.findByIdAndUpdate(
+    if (!req.file) {
+      animal = await Animal.findByIdAndUpdate(
         req.params.id,
         {
-            animalType, 
+            animalType,
             name, 
             registrationDate, 
             gender, 
@@ -189,6 +190,24 @@ exports.updateAnimal = async (req, res) => {
         },
         { new: true }
       );
+    } else {
+      animal = await Animal.findByIdAndUpdate(
+        req.params.id,
+        {
+            animalType,
+            name, 
+            registrationDate, 
+            gender, 
+            size, 
+            description, 
+            age, 
+            breed,
+            isAdopted,
+            image: fs.readFileSync(req.file.path),
+        },
+        { new: true }
+      );
+    }
       res.status(200).send({
         message: 'Zaktualizowano dane wybranego zwierzaka!',
         animal,
