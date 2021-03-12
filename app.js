@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const upl = multer();
+const { upload } = require('./api/middleware/upload');
 require('dotenv').config();
 const app = express();
 
@@ -36,6 +38,8 @@ mongoose
   }
 
 app.use(express.json());
+//necessary for parsing multipart/form-data
+app.use(upload.single('image') || upl.array());
 app.use('/api/users', users);
 app.use('/api/login', login);
 app.use('/api/visits', visitRoutes)
@@ -45,6 +49,8 @@ app.use('/api/animals', animalRouter);
 app.use('/api/posts/', postForm)
 app.use('/api/adoptionforms', adoptionForms);
 app.use(express.static('uploads'));
+
+
 
 //handles query on non-existent route
 app.use((req, res, next) => {
