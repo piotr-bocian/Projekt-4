@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/test', userController.usersGetAll);
 app.get('/test/:id', userController.usersGetUser);
 app.post('/test', upload.single('image'), userController.usersAddUser);
-// app.patch('test/:id', userController.usersUpdateUser);
+app.patch('test/:id', userController.usersUpdateUser);
 app.delete('test/:id', userController.usersDeleteUser);
 
 const dummyUserA = {
@@ -153,7 +153,6 @@ describe('POST', () => {
           .set('Accept', 'application/json')
           .expect(400)
           .end(function (err, res) {
-            // console.log(res)
             expect(res.text).toMatch(
               'Pole imię musi zawierać tylko litery'
             );
@@ -168,9 +167,9 @@ describe('POST', () => {
 describe('DELETE', () => {
     it('should response with status 400 and send: Podano błędny numer id', function (done) {
       return request(app)
-        .delete('/test/incorrectid')
+        .delete('/test/603d39d125bc801abc807c1')
         .set('Accept', 'application/json')
-        // .expect(400)
+        .expect(400)
         .then((response) => {
           console.log(response);
           expect(response.text).toBe('Podano błędny numer id');
