@@ -1,3 +1,4 @@
+const fs = require('fs');
 const auth = require('../middleware/authorization');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
@@ -62,7 +63,7 @@ exports.usersGetUser = async(req, res, next) => {
     }    
 };
 
-exports.usersAddUser = async(req, res, next) => {
+exports.usersAddUser = async(req, res) => {
     try{
         const { firstName, lastName, email, password, mobile, isSuperAdmin, isAdmin, isVolunteer } = req.body;
         const validUser = await validateUser.validateAsync(req.body);
@@ -150,19 +151,20 @@ exports.usersUpdateMe = async(req, res, next) => {
     if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
     
     try {
-        const updateUser = {};
-        for (const update of req.body) {
-            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+        let updateUser = {};
+        for (const [propName, newValue] of Object.entries(req.body)) {
+            console.log(propName);
+            if ((propName === 'isAdmin' || propName === 'isSuperAdmin') && !req.user.isSuperAdmin){
                 return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.');
             }
-            if (update.propertyName === 'image') {
-                updateUser.image = fs.readFileSync(req.file.path);
-            }
-            updateUser[update.propertyName] = update.newValue;
+            updateUser[propName] = newValue;
         };
+        if (req.file) {
+            updateUser.image = fs.readFileSync(req.file.path);
+        }
         await validatePatchUpdate.validateAsync(updateUser);
-        for (const update of req.body) {
-            if (update.propertyName === 'password') {
+        for (const [propName] of Object.entries(req.body)) {
+            if (propName === 'password') {
                 const salt = await bcrypt.genSalt(10);
                 updateUser.password = await bcrypt.hash(updateUser.password, salt);
             };
