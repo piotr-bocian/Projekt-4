@@ -15,7 +15,7 @@ router.get('/:id', [auth.loggedUser ,auth.isAdmin], userCompanyController.userCo
 router.delete('/:id', [auth.loggedUser ,auth.isAdmin], userCompanyController.userCompanyDeleteUser);
 router.patch('/:id', [auth.loggedUser ,auth.isAdmin], userCompanyController.userCompanyUpdateUser);
 // EVERYONE
-router.post('/', upload.single('image'), userCompanyController.userCompanyAddUser);
+router.post('/', userCompanyController.userCompanyAddUser);
 
 
 module.exports = router;

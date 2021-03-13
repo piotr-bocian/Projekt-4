@@ -110,7 +110,7 @@ const patch = Joi.object({
     city: Joi.string().min(2).max(50),
     postcode: Joi.string().length(6),
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
-    // image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
+    image: Joi.binary().encoding('base64').max(5*1024*1024) //image size validation 5MB
 });
 
 exports.UserCompany = UserCompany;

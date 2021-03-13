@@ -3,7 +3,7 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { UserCompany, validateUserCompany, validatePatchUpdate } = require('../models/userCompany');
-const { User, validateUser } = require('../models/user');
+const { User } = require('../models/user');
 
 exports.userCompanyGetMe = async (req, res, next) => {
     const userCompany = await UserCompany.findById(req.user._id).select('-password');
@@ -136,30 +136,34 @@ exports.userCompanyUpdateUser = async (req, res) => {
 
 
 exports.userCompanyUpdateMe = async (req, res) => {
+  // id = req.user._id;
+  // let userCompany = await UserCompany.findById(req.user._id)
+  // if(!userCompany) return res.status(404).send('Podany użytkownik nie istnieje.');
   try {
-    const updateUserCompany = {};
-    for (const update of req.body) {
-      updateUserCompany[update.propertyName] = update.newValue;
+    let updateUserCompany = {};
+    for (const [propName, newValue] of Object.entries(req.body)) {
+      console.log(propName, newValue);
+      updateUserCompany[propName] = newValue;
+    };
+    if (req.file) {
+      console.log('działa')
+      updateUserCompany.image = fs.readFileSync(req.file.path);
+      console.log(updateUserCompany);
     }
     await validatePatchUpdate.validateAsync(updateUserCompany);
-    for (const update of req.body) {
-      if (update.propertyName === 'password') {
+    for (const [propName] of Object.entries(req.body)) {
+      if (propName === 'password') {
         const salt = await bcrypt.genSalt(10);
         updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
       };
-      // if (update.propertyName === 'image') {
-      //   updateUserCompany.image = fs.readFileSync(req.file.path)
-      // }
     };
-    const userCompany = await UserCompany.findOneAndUpdate(
+    userCompany = await UserCompany.findOneAndUpdate(
       { _id: req.user._id },
       { $set: updateUserCompany },
       { new: true }
     );
     res.status(200).send({
-      message: `Zaktualizowano nastepujące pola ${JSON.stringify(
-        userCompany
-      )}`
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(userCompany)}`
     });
   } catch (error) {
     res.status(400).send(error.message);

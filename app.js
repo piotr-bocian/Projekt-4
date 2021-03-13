@@ -1,8 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const upl = multer();
+const { upload } = require('./api/middleware/upload');
 require('dotenv').config();
 const app = express();
+
 const userCompany = require('./api/routes/userCompany');
 const users = require('./api/routes/users');
 const login = require('./api/routes/login');
@@ -34,6 +37,7 @@ mongoose
   }
 
 app.use(express.json());
+app.use(upload.single('image') || upl.array());
 app.use('/api/users', users);
 app.use('/api/usersCompany', userCompany);
 app.use('/api/login', login);
