@@ -10,7 +10,7 @@ beforeAll(async () => {
 
 it('Should save payment to database with correct data and console.log null if everything is ok', (done) => {
   const payment = new Payment({
-    typeOfPayment: 'jednorazowy przelew',
+    typeOfPayment: 'Jednorazowy przelew',
     amount: 10,
     paymentDate: '2021-02-22',
     paymentMethod: 'Blik',

@@ -6,9 +6,9 @@ const paymentSchema = mongoose.Schema({
   typeOfPayment: {
     type: String,
     enum: [
-      'opłata adopcyjna',
-      'jednorazowy przelew',
-      'wirtualny opiekun-opłata cykliczna',
+      'Opłata adopcyjna',
+      'Jednorazowy przelew',
+      'Wirtualny opiekun-opłata cykliczna',
     ],
     required: true,
   },
@@ -46,9 +46,9 @@ const Payment = mongoose.model('Payment', paymentSchema);
 const schema = Joi.object({
   typeOfPayment: Joi.string()
     .valid(
-      'opłata adopcyjna',
-      'jednorazowy przelew',
-      'wirtualny opiekun-opłata cykliczna'
+      'Opłata adopcyjna',
+      'Jednorazowy przelew',
+      'Wirtualny opiekun-opłata cykliczna',
     )
     .required(),
   amount: Joi.number().min(5).required(),
@@ -66,9 +66,9 @@ const schema = Joi.object({
 
 const patch = Joi.object({
   typeOfPayment: Joi.string().valid(
-    'opłata adopcyjna',
-    'jednorazowy przelew',
-    'wirtualny opiekun-opłata cykliczna'
+    'Opłata adopcyjna',
+    'Jednorazowy przelew',
+    'Wirtualny opiekun-opłata cykliczna',
   ),
   amount: Joi.number().min(5),
   paymentDate: Joi.date().min('now'),

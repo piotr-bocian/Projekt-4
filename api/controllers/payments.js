@@ -29,7 +29,7 @@ exports.getAllPayments = async (req, res) => {
     };
   }
   //search engine
-let search;
+  let search;
   const term = req.query.search;
   if (term) {
     search = {
@@ -51,29 +51,6 @@ let search;
   });
 };
 
-exports.paymentsPostMe = async (req, res, next) => {
-  try {
-    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
-    const value = await validatePayment.validateAsync({
-      typeOfPayment,
-      amount,
-      paymentDate,
-      paymentMethod,
-    });
-    let payment = new Payment({
-      _id: mongoose.Types.ObjectId(),
-      ...value,
-      userID: req.user._id,
-    });
-    payment = await payment.save();
-    res.status(201).send({
-      message: 'Twoja płatność przebiegła pomyślnie',
-      payment,
-    });
-  } catch (error) {
-    res.status(400).send(error.details[0].message);
-  }
-};
 exports.getOnePayment = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
   if (isIdValid) {
@@ -105,13 +82,37 @@ exports.makeAPayment = async (req, res) => {
       paymentDate,
       paymentMethod,
     });
-    let payment = new Payment({
+    payment = new Payment({
       _id: mongoose.Types.ObjectId(),
       ...value,
     });
     payment = await payment.save();
     res.status(201).send({
       message: 'Płatność przebiegła pomyślnie',
+      payment,
+    });
+  } catch (error) {
+    res.status(400).send(error.details[0].message);
+  }
+};
+
+exports.paymentsPostMe = async (req, res, next) => {
+  try {
+    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
+    const value = await validatePayment.validateAsync({
+      typeOfPayment,
+      amount,
+      paymentDate,
+      paymentMethod,
+    });
+    let payment = new Payment({
+      _id: mongoose.Types.ObjectId(),
+      ...value,
+      userID: req.user._id,
+    });
+    payment = await payment.save();
+    res.status(201).send({
+      message: 'Twoja płatność przebiegła pomyślnie',
       payment,
     });
   } catch (error) {
