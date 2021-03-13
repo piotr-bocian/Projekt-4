@@ -41,7 +41,14 @@ exports.getVisit = async (req, res) => {
       return res.status(404).send('Wizyta adopcyjna, której szukasz nie istnieje');
     }
 
-    res.send(visit);
+    res.send({
+      visit,
+      request: {
+        type: 'GET',
+        description: 'Get all adoption visits',
+        url: 'http://localhost:3000/api/visits/',
+      },
+    });
   } else {
     res.status(400).send('Podano błędny numer _id');
   }
@@ -91,7 +98,14 @@ exports.getMyVisit = async (req, res) => {
       return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
     }
 
-    res.send(visit);
+    res.send({
+      visit,
+      request: {
+        type: 'GET',
+        description: 'Get all adoption visits',
+        url: 'http://localhost:3000/api/visits/me/',
+      },
+    });
   } else {
     res.status(400).send('Podano błędny numer _id');
   }
@@ -159,6 +173,11 @@ exports.deleteVisit = async (req, res) => {
     res.status(202).send({
       message: 'Wizyta adopcyjna została poprawnie anulowana',
       visit,
+      request: {
+        type: 'DELETE',
+        description: 'To see all adoption visits go to:',
+        url: 'http://localhost:3000/api/visits/',
+      },
     });
   } else {
     res.status(400).send('Podano błędny numer _id');
@@ -189,6 +208,11 @@ exports.deleteMyVisit = async (req, res) => {
     res.status(202).send({
       message: 'Wizyta adopcyjna została poprawnie anulowana',
       visit,
+      request: {
+        type: 'DELETE',
+        description: 'To see all adoption visits go to:',
+        url: 'http://localhost:3000/api/visits/me/',
+      },
     });
   } else {
     res.status(400).send('Podano błędny numer _id');
@@ -223,6 +247,11 @@ exports.updateVisit = async (req, res) => {
     res.status(200).send({
       message: 'Zaktualizowano wizytę adopcyjną',
       visit,
+      request: {
+        type: 'PUT',
+        description: 'To see all adoption visits go to:',
+        url: 'http://localhost:3000/api/visits/',
+      },
     });
   } catch (error) {
     res.status(400).send(error.message);
@@ -272,7 +301,12 @@ exports.updateMyVisit = async (req, res) => {
     res.status(200).send({
       message: `Zaktualizowano nastepujące pola ${JSON.stringify(
         updateVisit
-      )}`
+      )}`,
+      request: {
+        type: 'PATCH',
+        description: 'To see all adoption visits go to:',
+        url: 'http://localhost:3000/api/visits/me/',
+      },
     });
   } catch (error) {
     res.status(400).send(error.message);

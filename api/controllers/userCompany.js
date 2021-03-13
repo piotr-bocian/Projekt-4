@@ -147,6 +147,9 @@ exports.userCompanyUpdateMe = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
       };
+      // if (update.propertyName === 'image') {
+      //   updateUserCompany.image = fs.readFileSync(req.file.path)
+      // }
     };
     const userCompany = await UserCompany.findOneAndUpdate(
       { _id: req.user._id },
