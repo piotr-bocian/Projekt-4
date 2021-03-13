@@ -14,8 +14,8 @@ app.use(express.json());
 app.get('/test', userController.usersGetAll);
 app.get('/test/:id', userController.usersGetUser);
 app.post('/test', upload.single('image'), userController.usersAddUser);
-app.patch('test/:id', userController.usersUpdateUser);
-app.delete('test/:id', userController.usersDeleteUser);
+app.patch('/test/:id', userController.usersUpdateUser);
+app.delete('/test/:id', userController.usersDeleteUser);
 
 const dummyUserA = {
     _id: "603d60be60915444eb7b7f91",
@@ -167,40 +167,41 @@ describe('POST', () => {
 describe('DELETE', () => {
     it('should response with status 400 and send: Podano błędny numer id', function (done) {
       return request(app)
-        .delete('/test/603d39d125bc801abc807c1')
+        .delete('/test/incorrectId')
         .set('Accept', 'application/json')
         .expect(400)
         .then((response) => {
-          console.log(response);
-          expect(response.text).toBe('Podano błędny numer id');
+          expect(response.text).toBe('Podano błędny numer id.');
           done();
         })
         .catch((err) => done(err));
       });
 
-//     it('should response with status 202 and send: Wybrany zwierzak został poprawnie usunięty z bazy danych', function (done) {
-//         const dummyDataDelete = {
-//             _id: '60369dc3e954c736b94a1212',
-//             animalType: 'pies',
-//             name: 'Doduś',
-//             gender: 'męska',
-//             size: 'mały',
-//             description: 'Mały czarny kundelek, ewidentnie długowieczny. Lubi przekopywać się pod płotem i zwiedzać okolice.',
-//             age: 15
-//         };
-//         const testAnimal = Animal.create(dummyDataDelete);
-//         return request(app)
-//           .delete('/test/60369dc3e954c736b94a1212')
-//           .set('Accept', 'application/json')
-//           .expect(202)
-//           .then((response) => {
-//             expect(response.body.message).toBe(
-//               'Wybrany zwierzak został poprawnie usunięty z bazy danych'
-//             );
-//             done();
-//           })
-//           .catch((err) => done(err));
-//       });
+    it('should response with status 202 and send: Pomyślnie usunięto konto użytkownika.', function (done) {
+        const dummyUserDelete = {
+            _id: '60369dc3e954c736b94a1214',
+            isSuperAdmin: false,
+            isAdmin: false,
+            isVolunteer: false,
+            firstName: "Brajan",
+            lastName: "Brajanski",
+            email: "bra@gmail.com",
+            password: "Bb123456",
+            mobile: "789-456-654",
+        };
+        const testUser = User.create(dummyUserDelete);
+        return request(app)
+          .delete('/test/60369dc3e954c736b94a1214')
+          .set('Accept', 'application/json')
+          .expect(202)
+          .then((response) => {
+            expect(response.body.message).toBe(
+              'Pomyślnie usunięto konto użytkownika.'
+            );
+            done();
+          })
+          .catch((err) => done(err));
+      });
 
 });
 
