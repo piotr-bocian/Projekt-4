@@ -16,7 +16,8 @@ describe("Animal schema tests", () => {
         gender: 'męska',
         size: 'średni/duży',
         description: 'A true king of our shelter! Loves people, children and long walks in the park.',
-        breed: 'German Shepherd'
+        breed: 'German Shepherd',
+        isAdopted: false
       });
 
     it('Should save animal to database with correct data and console.log null if everything is ok', () => {
@@ -32,6 +33,7 @@ describe("Animal schema tests", () => {
         animal.name = '';
         animal.gender = '';
         animal.size ='';
+        animal.isAdopted=null;
         animal.validate((response) => {
             expect(response.errors.animalType.message).toBeTruthy();
             expect(response.errors.description.message).toBeTruthy();
@@ -39,6 +41,7 @@ describe("Animal schema tests", () => {
             expect(response.errors.name.message).toBeTruthy();
             expect(response.errors.gender.message).toBeTruthy();
             expect(response.errors.size.message).toBeTruthy();
+            expect(response.errors.isAdopted.message).toBeTruthy();
         });
     });
 
