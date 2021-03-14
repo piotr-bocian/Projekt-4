@@ -261,7 +261,7 @@ describe('PATCH', () => {
         mobile: "123-456-789"
       };
   
-      const patchData = [{propertyName: "city", newValue: "Katowice"}];
+      const patchData = {"city": "Katowice"};
   
       const post = UserCompany.create(dummyDataForPatch);
       return request(app)
@@ -291,7 +291,7 @@ describe('PATCH', () => {
         mobile: "123-456-789"
       };
   
-      const patchData = [{ propertyName: 'nip', newValue: "123456789" }];
+      const patchData = {'nip':"123456789" };
   
       const post = UserCompany.create(dummyDataForPatch);
       return request(app)

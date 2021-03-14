@@ -81,7 +81,7 @@ describe('GET', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .then((response) => {
-        expect(response.body).toStrictEqual({ //
+        expect(response.body.visit).toStrictEqual({ //
           _id: "7199803df3f4948bd2f98113",
           visitDate: "2021-01-14T00:00:00.000Z",
           visitTime: "16:45",

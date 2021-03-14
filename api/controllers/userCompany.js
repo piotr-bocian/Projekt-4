@@ -107,13 +107,16 @@ exports.userCompanyUpdateUser = async (req, res) => {
     return;
   }
   try {
-    const updateUserCompany = {};
-    for (const update of req.body) {
-      updateUserCompany[update.propertyName] = update.newValue;
+    let updateUserCompany = {};
+    for (const [propName, newValue] of Object.entries(req.body)) {
+      updateUserCompany[propName] = newValue;
+    }
+    if (req.file) {
+      updateUserCompany.image = fs.readFileSync(req.file.path);
     }
     await validatePatchUpdate.validateAsync(updateUserCompany);
-    for (const update of req.body) {
-      if (update.propertyName === 'password') {
+    for (const [propName] of Object.entries(req.body)) {
+      if (propName === 'password') {
         const salt = await bcrypt.genSalt(10);
         updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
       };
@@ -142,13 +145,10 @@ exports.userCompanyUpdateMe = async (req, res) => {
   try {
     let updateUserCompany = {};
     for (const [propName, newValue] of Object.entries(req.body)) {
-      console.log(propName, newValue);
       updateUserCompany[propName] = newValue;
     };
     if (req.file) {
-      console.log('działa')
       updateUserCompany.image = fs.readFileSync(req.file.path);
-      console.log(updateUserCompany);
     }
     await validatePatchUpdate.validateAsync(updateUserCompany);
     for (const [propName] of Object.entries(req.body)) {

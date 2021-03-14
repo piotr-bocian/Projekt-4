@@ -266,16 +266,16 @@ exports.updateMyVisit = async (req, res) => {
     return;
   }
   try {
-    const updateVisit = {};
+    let updateVisit = {};
     // forbidden changes by user:
-    for (const update of req.body) {
-      if (update.propertyName === 'isVisitDone') {
+    for (const [propName, newValue] of Object.entries(req.body)) {
+      if (propName === 'isVisitDone') {
         return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
       };
-      if (update.propertyName === 'userID') {
+      if (propName === 'userID') {
         return res.status(403).send('Brak uprawnień do wykonania tej operacji.');
       };
-      updateVisit[update.propertyName] = update.newValue;
+      updateVisit[propName] = newValue;
     }
 
     await validatePatchUpdate.validateAsync(updateVisit);
