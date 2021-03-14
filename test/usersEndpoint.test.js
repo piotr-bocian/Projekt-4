@@ -57,8 +57,8 @@ afterAll((done) => {
 // GET USERS TEST
 
 describe('GET', () => {
-    it('should get all data from database', function (done) {
-      const testUser = User.create(dummyUserA);
+    it('should get all data from database', async function (done) {
+      const testUser = await User.create(dummyUserA);
       return request(app)
         .get('/test')
         .set('Accept', 'application/json')
@@ -205,42 +205,42 @@ describe('DELETE', () => {
 
 });
 
-// //PUT ANIMAL TEST
+// //PATCH USER TEST
 
-// describe('PUT', () => {
-//     it('should update the animal and response with status 200 and send: Zaktualizowano dane wybranego zwierzaka!', function (done) {
-//       const dummyDataForUpdate = {
-//         _id: '99999dc3e954c736b94a12f7',
-//         animalType: 'pies',
-//         name: 'Doduś',
-//         gender: 'męska',
-//         size: 'mały',
-//         description: 'Mały czarny kundelek, ewidentnie długowieczny. Lubi przekopywać się pod płotem i zwiedzać okolice.',
-//         age: 15
-//       };
+describe('PATCH', () => {
+    it('should update the given user and response with status 200 and send: Zaktualizowano następujące pola: and list updated fields', function (done) {
+      const dummyUserForUpdate = {
+        _id: '99999dc3e954c736b94a12f7',
+        isSuperAdmin: false,
+        isAdmin: false,
+        isVolunteer: false,
+        firstName: "Brad",
+        lastName: "Pipt",
+        email: "brad@gmail.com",
+        password: "Bp123456",
+        mobile: "111-222-333",
+      };
   
-//       const putData = {
-//         animalType: 'pies',
-//         name: 'Dodo',
-//         gender: 'męska',
-//         size: 'mały/średni',
-//         description: 'Mały czarny kundelek, ewidentnie długowieczny. Lubi przekopywać się pod płotem i zwiedzać okolice.',
-//         age: 17
-//       };
+      const patchData = {
+        firstName: "Bradley",
+        lastName: "Pitt",
+        email: "bradp@gmail.com",
+        mobile: "122-233-344",
+      };
   
-//       const post = Animal.create(dummyDataForUpdate);
-//       return request(app)
-//         .put('/test/99999dc3e954c736b94a12f7')
-//         .send(putData)
-//         .set('Accept', 'application/json')
-//         .expect(200)
-//         .then((response) => {
-//           expect(response.body.message).toBe('Zaktualizowano dane wybranego zwierzaka!');
-//           done();
-//         })
-//         .catch((err) => done(err));
-//     });
-// });
+      const post = User.create(dummyUserForUpdate);
+      return request(app)
+        .patch('/test/99999dc3e954c736b94a12f7')
+        .send(patchData)
+        .set('Accept', 'application/json')
+        .expect(200)
+        .then((response) => {
+          expect(response.body.message).toContain('Zaktualizowano następujące pola');
+          done();
+        })
+        .catch((err) => done(err));
+    });
+});
 
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
