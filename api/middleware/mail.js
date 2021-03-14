@@ -1,16 +1,16 @@
 const nodemailer = require('nodemailer');
 
-exports.registrationMail = (req, res, next) => {
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'studentpiwo1@gmail.com',
-            pass: 'tajnehaslo123'
-        }
-    });
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'furry.tales.shelter@gmail.com',
+        pass: process.env.MAILING_PASS
+    }
+});
 
+exports.registrationMail = (req, res, next) => {
     let mailOptions = {
-        from: 'studentpiwo1@gmail.com',
+        from: 'furry.tales.shelter@gmail.com',
         to: req.body.email,
         subject: 'Rejestracja',
         text: 'Gratulacje! Udało Ci się zarejestrować Twoje konto'
