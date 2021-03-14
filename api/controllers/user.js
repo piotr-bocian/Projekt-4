@@ -114,20 +114,22 @@ exports.usersUpdateUser = async(req, res, next) => {
     try {
         const updateUser = {}
 
-        for (const update of req.body) {
-            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
-                console.log(req.user, !req.user.isSuperAdmin);
+        for (const [propName, newValue] of Object.entries(req.body)) {
+            if ((propName === 'isAdmin' || propName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+                // console.log(req.user, !req.user.isSuperAdmin);
                 return res.status(403).send('Nie masz uprawnień do zmiany statusu Administratora.');
             } 
-            if (update.propertyName === 'image') {
-                updateUser.image = fs.readFileSync(req.file.path);
-            }
-            updateUser[update.propertyName] = update.newValue;
+            
+            updateUser[propName] = newValue;
         };
 
+        if (req.file) {
+            updateUser.image = fs.readFileSync(req.file.path);
+        }
+
         await validatePatchUpdate.validateAsync(updateUser);
-        for (const update of req.body) {
-            if (update.propertyName === 'password') {
+        for (const propName of Object.entries(req.body)) {
+            if (propName === 'password') {
                 const salt = await bcrypt.genSalt(10);
                 updateUser.password = await bcrypt.hash(updateUser.password, salt);
             };
