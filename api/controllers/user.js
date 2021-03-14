@@ -36,7 +36,16 @@ exports.usersGetAll = async(req, res, next) => {
         };
     }
     
-    results.results = await User.find().select('-password')
+    //search engine
+    let search;
+    const term = req.query.search;
+    if (term) {
+        search = {
+        $text: { $search: term },
+        };
+    }
+
+    results.results = await User.find(search).select('-password')
         .limit(limit)
         .skip(startIndex)
         .sort({ amount: -1,
