@@ -1,3 +1,5 @@
+const helmet = require('helmet');
+const error = require('./api/middleware/error');
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -5,6 +7,7 @@ const multer = require('multer');
 const upl = multer();
 const { upload } = require('./api/middleware/upload');
 require('dotenv').config();
+require('./errorLogging')();
 const app = express();
 
 const userCompany = require('./api/routes/userCompany');
@@ -36,11 +39,16 @@ mongoose
     console.log('Connection failed', error);
   });
 
-  if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
-    console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
-    process.exit(1);
-  }
 
+if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
+  console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
+  process.exit(1);
+}
+
+
+app.use(helmet());
+//necessary for parsing multipart/form-data
+app.use(upload.single('image') || upl.array());
 app.use(cors());
 app.use(express.json());
 app.use(upload.single('image') || upl.array());
@@ -55,11 +63,15 @@ app.use('/api/posts/', postForm)
 app.use('/api/adoptionforms', adoptionForms);
 app.use(express.static('uploads'));
 
+
+
 //handles query on non-existent route
 app.use((req, res, next) => {
   const error = new Error('STRONA O PODANYM ADRESIE NIE ISTNIEJE');
   res.status(404).send(error.message);
   next(error);
 });
+
+app.use(error);
 
 module.exports = app;

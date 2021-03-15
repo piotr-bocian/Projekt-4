@@ -1,3 +1,4 @@
+const fs = require('fs');
 const auth = require('../middleware/authorization');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
@@ -35,7 +36,16 @@ exports.usersGetAll = async(req, res, next) => {
         };
     }
     
-    results.results = await User.find().select('-password')
+    //search engine
+    let search;
+    const term = req.query.search;
+    if (term) {
+        search = {
+        $text: { $search: term },
+        };
+    }
+
+    results.results = await User.find(search).select('-password')
         .limit(limit)
         .skip(startIndex)
         .sort({ amount: -1,
@@ -54,15 +64,15 @@ exports.usersGetAll = async(req, res, next) => {
 exports.usersGetUser = async(req, res, next) => {
     const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
     if(isIdValid){
-        const user = await User.findById(req.params.id);
+        const user = await User.findById(req.params.id).select('-password');
         if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
-        res.send(user);
+        res.status(200).send(user);
     }else {
         res.status(400).send('Podano nieprawidłowy numer id');
     }    
 };
 
-exports.usersAddUser = async(req, res, next) => {
+exports.usersAddUser = async(req, res) => {
     try{
         const { firstName, lastName, email, password, mobile, isSuperAdmin, isAdmin, isVolunteer } = req.body;
         const validUser = await validateUser.validateAsync(req.body);
@@ -89,8 +99,8 @@ exports.usersAddUser = async(req, res, next) => {
         user = await user.save();
 
         const token = user.generateAuthToken();
-        res.header('x-auth-token', token).send({
-            message: 'Rejestracja przebiegła pomyślnie',
+        res.header('x-auth-token', token).status(201).send({
+            message: 'Rejestracja przebiegła pomyślnie.',
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email
@@ -113,20 +123,22 @@ exports.usersUpdateUser = async(req, res, next) => {
     try {
         const updateUser = {}
 
-        for (const update of req.body) {
-            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
-                console.log(req.user, !req.user.isSuperAdmin);
+        for (const [propName, newValue] of Object.entries(req.body)) {
+            if ((propName === 'isAdmin' || propName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+                // console.log(req.user, !req.user.isSuperAdmin);
                 return res.status(403).send('Nie masz uprawnień do zmiany statusu Administratora.');
             } 
-            if (update.propertyName === 'image') {
-                updateUser.image = fs.readFileSync(req.file.path);
-            }
-            updateUser[update.propertyName] = update.newValue;
+            
+            updateUser[propName] = newValue;
         };
 
+        if (req.file) {
+            updateUser.image = fs.readFileSync(req.file.path);
+        }
+
         await validatePatchUpdate.validateAsync(updateUser);
-        for (const update of req.body) {
-            if (update.propertyName === 'password') {
+        for (const propName of Object.entries(req.body)) {
+            if (propName === 'password') {
                 const salt = await bcrypt.genSalt(10);
                 updateUser.password = await bcrypt.hash(updateUser.password, salt);
             };
@@ -150,19 +162,20 @@ exports.usersUpdateMe = async(req, res, next) => {
     if(!user) return res.status(404).send('Podany użytkownik nie istnieje.');
     
     try {
-        const updateUser = {};
-        for (const update of req.body) {
-            if ((update.propertyName === 'isAdmin' || update.propertyName === 'isSuperAdmin') && !req.user.isSuperAdmin){
+        let updateUser = {};
+        for (const [propName, newValue] of Object.entries(req.body)) {
+            console.log(propName);
+            if ((propName === 'isAdmin' || propName === 'isSuperAdmin') && !req.user.isSuperAdmin){
                 return res.status(403).send('Nie masz uprawnień do nadania sobie statusu Administratora.');
             }
-            if (update.propertyName === 'image') {
-                updateUser.image = fs.readFileSync(req.file.path);
-            }
-            updateUser[update.propertyName] = update.newValue;
+            updateUser[propName] = newValue;
         };
+        if (req.file) {
+            updateUser.image = fs.readFileSync(req.file.path);
+        }
         await validatePatchUpdate.validateAsync(updateUser);
-        for (const update of req.body) {
-            if (update.propertyName === 'password') {
+        for (const [propName] of Object.entries(req.body)) {
+            if (propName === 'password') {
                 const salt = await bcrypt.genSalt(10);
                 updateUser.password = await bcrypt.hash(updateUser.password, salt);
             };
