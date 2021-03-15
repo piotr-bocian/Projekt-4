@@ -1,4 +1,5 @@
 const helmet = require('helmet');
+const compression = require('compression');
 const error = require('./api/middleware/error');
 const express = require('express');
 const cors = require('cors');
@@ -47,6 +48,7 @@ if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
 
 
 app.use(helmet());
+app.use(compression());
 //necessary for parsing multipart/form-data
 app.use(upload.single('image') || upl.array());
 app.use(cors());
