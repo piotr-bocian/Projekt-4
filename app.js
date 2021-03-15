@@ -23,10 +23,7 @@ const adoptionForms = require('./api/routes/adoptionFormRoutes');
 
 mongoose.set('useUnifiedTopology', true);
 mongoose
-  .connect(
-    'mongodb+srv://Lukasz:' +
-      process.env.ANIMAL_SHELTER_PW +
-      '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  .connect(process.env.ANIMAL_SHELTER_DB,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
