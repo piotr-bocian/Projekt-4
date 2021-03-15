@@ -10,6 +10,7 @@ require('dotenv').config();
 require('./errorLogging')();
 const app = express();
 
+const userCompany = require('./api/routes/userCompany');
 const users = require('./api/routes/users');
 const login = require('./api/routes/login');
 const visitRoutes = require('./api/routes/adoptionVisit');
@@ -38,21 +39,23 @@ mongoose
     console.log('Connection failed', error);
   });
 
+
 if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
   console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
   process.exit(1);
 }
+
 
 app.use(helmet());
 //necessary for parsing multipart/form-data
 app.use(upload.single('image') || upl.array());
 app.use(cors());
 app.use(express.json());
-
-
+app.use(upload.single('image') || upl.array());
 app.use('/api/users', users);
+app.use('/api/usersCompany', userCompany);
 app.use('/api/login', login);
-app.use('/api/visits', visitRoutes);
+app.use('/api/visits', visitRoutes)
 app.use('/api/payments', payment);
 app.use('/api/volunteerForms', volunteerForms);
 app.use('/api/animals', animalRouter);
