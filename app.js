@@ -1,3 +1,4 @@
+const helmet = require('helmet');
 const error = require('./api/middleware/error');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -39,6 +40,7 @@ mongoose
     process.exit(1);
   }
 
+app.use(helmet());
 app.use(express.json());
 //necessary for parsing multipart/form-data
 app.use(upload.single('image') || upl.array());
