@@ -51,7 +51,6 @@ app.use(helmet());
 app.use(upload.single('image') || upl.array());
 app.use(cors());
 app.use(express.json());
-app.use(upload.single('image') || upl.array());
 app.use('/api/users', users);
 app.use('/api/usersCompany', userCompany);
 app.use('/api/login', login);
