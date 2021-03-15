@@ -9,6 +9,9 @@
     "test:PaymentEndpoints": "jest -- test/paymentEndpoint.test.js",
     "test users": "jest -- test/usersEndpoint.test.js"
   },
+  "engines": {
+    "node": "12.21.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/piotr-bocian/Projekt-4.git"
