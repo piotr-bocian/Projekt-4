@@ -1,11 +1,30 @@
 const mongoose = require('mongoose');
 const { User } = require('../api/models/user');
+const jwt = require('jsonwebtoken');
 const databaseName = 'test';
 
 //you need to connect to a test database while DBCompass is running
 beforeAll(async () => {
     const url = `mongodb://127.0.0.1/${databaseName}`;
     await mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true});
+});
+
+describe('user.generateAuthToken', () => {
+    it('should return a valid JWT', () => {
+        const payload = {
+            _id: new mongoose.Types.ObjectId().toHexString(),
+            email: 'bch@gmail.com',
+            isAdmin: true,
+            isSuperAdmin: false,
+            isVolunteer: false
+        };
+        const user = new User(payload);
+        console.log('user',user);
+        const token = user.generateAuthToken();
+        const decoded = jwt.verify(token, process.env.SCHRONISKO_JWT_PRIVATE_KEY);
+        console.log('decoded',decoded)
+        expect(decoded).toMatchObject(payload);
+    });
 });
 
 describe("User schema tests", () => {

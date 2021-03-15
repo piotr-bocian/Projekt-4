@@ -1,6 +1,7 @@
 const auth = require('../middleware/authorization');
 const { User, validateUser } = require('../models/user');
 const userController = require('../controllers/user');
+const { upload } = require('../middleware/upload')
 const express = require('express');
 const router = express.Router();
 const mail = require('../middleware/mail');

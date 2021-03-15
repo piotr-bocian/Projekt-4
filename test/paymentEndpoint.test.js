@@ -17,14 +17,14 @@ app.patch('/test/:id', payment.updateOnePropertyInPayment);
 
 const dummyData = {
   _id: '60369dc3e954c736b94a12f3',
-  typeOfPayment: 'opłata adopcyjna',
+  typeOfPayment: 'Opłata adopcyjna',
   amount: 19,
   paymentDate: '2021-05-05',
   paymentMethod: 'Blik',
 };
 const dummyData2 = {
   _id: '60369dc3e954c736b94a12f9',
-  typeOfPayment: 'opłata adopcyjna',
+  typeOfPayment: 'Opłata adopcyjna',
   amount: 345,
   paymentDate: '2021-05-05',
   paymentMethod: 'Blik',
@@ -80,7 +80,7 @@ describe('GET', () => {
       .then((response) => {
         expect(response.body.payment).toStrictEqual({
           _id: '60369dc3e954c736b94a12f9',
-          typeOfPayment: 'opłata adopcyjna',
+          typeOfPayment: 'Opłata adopcyjna',
           amount: 345,
           paymentDate: '2021-05-05T00:00:00.000Z',
           paymentMethod: 'Blik',
@@ -107,7 +107,7 @@ describe('GET', () => {
 describe('POST', () => {
   it('should respond with status 201', function (done) {
     const postData = {
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 25,
       paymentDate: '2021-07-09',
       paymentMethod: 'Blik',
@@ -140,7 +140,7 @@ describe('POST', () => {
       .expect(400)
       .end(function (err, res) {
         expect(res.text).toBe(
-          '"typeOfPayment" must be one of [opłata adopcyjna, jednorazowy przelew, wirtualny opiekun-opłata cykliczna]'
+          '"typeOfPayment" must be one of [Opłata adopcyjna, Jednorazowy przelew, Wirtualny opiekun-opłata cykliczna]'
         );
         if (err) return done(err);
         return done();
@@ -156,7 +156,6 @@ describe('DELETE', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .then((response) => {
-        // console.log(response.text);
         expect(response.text).toBe('Podano błędny numer _id');
         done();
       })
@@ -166,7 +165,7 @@ describe('DELETE', () => {
   it('should response with status 404 and send: Płatność, której szukasz nie istnieje', function (done) {
     const dummyDataDelete = {
       _id: '60369dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
@@ -186,7 +185,7 @@ describe('DELETE', () => {
   it('should response with status 202 and send: Płatność została poprawnie usunieta z bazy danych', function (done) {
     const dummyDataDelete = {
       _id: '99369dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
@@ -211,14 +210,14 @@ describe('PUT', () => {
   it('should update payment and response with status 200 and send: Zaktualizowana płatność', function (done) {
     const dummyDataForUpdate = {
       _id: '99999dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
     };
 
     const putData = {
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 25,
       paymentDate: '2021-07-09',
       paymentMethod: 'Blik',
@@ -240,14 +239,14 @@ describe('PUT', () => {
   it('should update payment and response with status 400 and send: Podano błędny numer _id', function (done) {
     const dummyDataForUpdate = {
       _id: '33333dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
     };
 
     const putData = {
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 25,
       paymentDate: '2021-07-09',
       paymentMethod: 'Blik',
@@ -269,14 +268,14 @@ describe('PUT', () => {
   it('should update payment and response with status 400 when incorrect data are send also it should response with : paymentMethod" must be one of [Karta płatnicza, Blik, Przelew bankowy, Apple Pay, Google Pay]', function (done) {
     const dummyDataForUpdate = {
       _id: '56789dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
     };
 
     const putData = {
-      typeOfPayment: 'jednorazowy przelew',
+      typeOfPayment: 'Jednorazowy przelew',
       amount: 25,
       paymentDate: '2021-07-09',
       paymentMethod: 'nothing',
@@ -303,7 +302,7 @@ describe('PATCH', () => {
   it('should response with status 200 and send message: Zaktualizowano nastepujące pola {"amount":7}', function (done) {
     const dummyDataForPatch = {
       _id: '77777dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
@@ -328,7 +327,7 @@ describe('PATCH', () => {
   it('should response with status 400 and send message: "amount" must be greater than or equal to 5', function (done) {
     const dummyDataForPatch = {
       _id: '10000dc3e954c736b94a12f5',
-      typeOfPayment: 'opłata adopcyjna',
+      typeOfPayment: 'Opłata adopcyjna',
       amount: 19,
       paymentDate: '2021-05-05',
       paymentMethod: 'Blik',
