@@ -3,7 +3,7 @@
 ## Założenia
 Głównym założeniem tego projektu było stworzenie w pełni funkcjonalnego REST API połączonego ze nierelacyjną bazą danych. Do stworzenia bazy danych wykorzystaliśmy usługę Atlas od MongoDB, korzystaliśmy z metodologii MVC.
 
-#### Schemat bazy danych(.github/githubImage/Database.png)
+#### Schemat bazy danych(../.github/githubImage/Database.png)
 
 ### Główne technologie z jakich korzystaliśmy w projekcie to:
 
