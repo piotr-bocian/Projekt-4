@@ -15,6 +15,8 @@ const userCompanySchema = new mongoose.Schema({
     password: { 
         type: String, 
         required: true,
+        minLength: 8,
+        maxLength: 1024,
         // match: [/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, 'Property password should contain at least 1 digit, 1 lowercase, 1 uppercase and should be at least 8 characters long'] // 1 digit, 1 lower, 1 upper case, min 8 characters
         //password validation:
         // ^ - symbol indicates that regex is for password,

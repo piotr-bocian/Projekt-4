@@ -20,7 +20,7 @@ app.patch('/test/:id', userCompanyController.userCompanyUpdateUser);
 const dummyData = {
     _id: "7199803df3f4948bd2f98113",
     email: "uslugi.kowalski@mail.com",
-    password: "$2b$10$b/5ASQJrJwhD4dh10DFNO.FkNHr6xCrEdPD6VwlCSs9dnOZl1W5d.",
+    password: "TestoweHaslo123",
     nip: "1234567891",
     companyName: "Usługi Kowalski",
     street: "Katowicka",
@@ -69,7 +69,7 @@ describe('GET', () => {
         expect(response.body).toStrictEqual({ //
             _id: "7199803df3f4948bd2f98113",
             email: "uslugi.kowalski@mail.com",
-            password: "$2b$10$b/5ASQJrJwhD4dh10DFNO.FkNHr6xCrEdPD6VwlCSs9dnOZl1W5d.",
+            password: "TestoweHaslo123",
             nip: "1234567891",
             companyName: "Usługi Kowalski",
             street: "Katowicka",
@@ -100,15 +100,15 @@ describe('GET', () => {
 describe('POST', () => {
   it('should respond with status 200', function (done) {
     const postData = {
-        email: "nowakowscy@mail.com",
-        password: "TestoweHaslo123",
-        nip: "1234567890",
-        companyName: "Meble Nowakowscy",
-        street: "Poznańska",
-        houseNo: "11",
-        city: "Poznań",
-        postcode: "33-100",
-        mobile: "123-456-789"
+      email: "nowakowscy@mail.com",
+      password: "TestoweHaslo123",
+      nip: "1234567890",
+      companyName: "Meble Nowakowscy",
+      street: "Poznańska",
+      houseNo: "11",
+      city: "Poznań",
+      postcode: "33-100",
+      mobile: "123-456-789"
     };
 
     request(app)
@@ -152,10 +152,10 @@ describe('POST', () => {
   
   it('should respond with status 400 when incorrect data are sended, it should also send: Użytkownik o podanym adresie email jest już zarejestrowany.', function (done) {
     const postData = {
-        email: "nowakowscy@mail.com",
+        email: "uslugi.kowalski@mail.com",
         password: "TestoweHaslo123",
         nip: "1234567890",
-        companyName: "Meble Nowakowscy",
+        companyName: "Usługi Kowalski",
         street: "Poznańska",
         houseNo: "11",
         city: "Poznań",
@@ -217,7 +217,7 @@ describe('DELETE', () => {
       .catch((err) => done(err));
   });
 
-  it('should response with status 202 and send: Wizyta adopcyjna została poprawnie anulowana', function (done) {
+  it('should response with status 202 and send: Użytkownik został poprawnie usunięty', function (done) {
     const dummyDataDelete = {
         _id: '99369dc3e954c736b94a12f5',
         email: "nowakowscy3@mail.com",
@@ -247,7 +247,7 @@ describe('DELETE', () => {
 
 // PATCH /test
 describe('PATCH', () => {
-    it('should response with status 200 and send message: Zaktualizowano nastepujące pola {\"_id\":\"77777dc3e954c736b94a12f5\",\"email\":\"nowakowscy4@mail.com\",\"password\":\"TestoweHaslo123\",\"nip\":\"1234567890\",\"companyName\":\"Meble Nowakowscy Cztery\",\"street\":\"Poznańska\",\"houseNo\":\"11\",\"city\":\"Katowice\",\"postcode\":\"33-100\",\"mobile\":\"123-456-789\",\"__v\":0}', function (done) {
+    it('should response with status 200 and send message: Zaktualizowano nastepujące pola {\"city\":\"Katowice\"}', function (done) {
       const dummyDataForPatch = {
         _id: '77777dc3e954c736b94a12f5',
         email: "nowakowscy4@mail.com",
@@ -271,7 +271,7 @@ describe('PATCH', () => {
         .expect(200)
         .then((response) => {
           expect(response.body.message).toBe(
-            'Zaktualizowano nastepujące pola {\"_id\":\"77777dc3e954c736b94a12f5\",\"email\":\"nowakowscy4@mail.com\",\"password\":\"TestoweHaslo123\",\"nip\":\"1234567890\",\"companyName\":\"Meble Nowakowscy Cztery\",\"street\":\"Poznańska\",\"houseNo\":\"11\",\"city\":\"Katowice\",\"postcode\":\"33-100\",\"mobile\":\"123-456-789\",\"__v\":0}'
+            'Zaktualizowano nastepujące pola {\"city\":\"Katowice\"}'
           );
           done();
         })

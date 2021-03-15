@@ -129,7 +129,7 @@ exports.userCompanyUpdateUser = async (req, res) => {
     );
     res.status(200).send({
       message: `Zaktualizowano nastepujące pola ${JSON.stringify(
-        userCompany
+        updateUserCompany
       )}`
     });
   } catch (error) {
@@ -139,9 +139,9 @@ exports.userCompanyUpdateUser = async (req, res) => {
 
 
 exports.userCompanyUpdateMe = async (req, res) => {
-  // id = req.user._id;
-  // let userCompany = await UserCompany.findById(req.user._id)
-  // if(!userCompany) return res.status(404).send('Podany użytkownik nie istnieje.');
+  id = req.user._id;
+  let userCompany = await UserCompany.findById(id)
+  if(!userCompany) return res.status(404).send('Podany użytkownik nie istnieje.');
   try {
     let updateUserCompany = {};
     for (const [propName, newValue] of Object.entries(req.body)) {
@@ -158,12 +158,12 @@ exports.userCompanyUpdateMe = async (req, res) => {
       };
     };
     userCompany = await UserCompany.findOneAndUpdate(
-      { _id: req.user._id },
+      { _id: id },
       { $set: updateUserCompany },
       { new: true }
     );
     res.status(200).send({
-      message: `Zaktualizowano nastepujące pola ${JSON.stringify(userCompany)}`
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(updateUserCompany)}`
     });
   } catch (error) {
     res.status(400).send(error.message);
