@@ -6,9 +6,9 @@ const paymentSchema = mongoose.Schema({
   typeOfPayment: {
     type: String,
     enum: [
-      'opłata adopcyjna',
-      'jednorazowy przelew',
-      'wirtualny opiekun-opłata cykliczna',
+      'Opłata adopcyjna',
+      'Jednorazowy przelew',
+      'Wirtualny opiekun-opłata cykliczna',
     ],
     required: true,
   },
@@ -34,57 +34,52 @@ const paymentSchema = mongoose.Schema({
     required: true,
   },
   userID: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
   },
-  userCompanyID: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'UserCompany',
-  },
 });
-
+//index wildcard allow to dynamic search
+paymentSchema.index({ '$**': 'text' });
 const Payment = mongoose.model('Payment', paymentSchema);
 
 //validation is an object that return value or error
-  const schema = Joi.object({
-    typeOfPayment: Joi.string()
-      .valid(
-        'opłata adopcyjna',
-        'jednorazowy przelew',
-        'wirtualny opiekun-opłata cykliczna'
-      )
-      .required(),
-    amount: Joi.number().min(5).required(),
-    paymentDate: Joi.date().min('now'),
-    paymentMethod: Joi.string()
-      .valid(
-        'Karta płatnicza',
-        'Blik',
-        'Przelew bankowy',
-        'Apple Pay',
-        'Google Pay'
-      )
-      .required(),
-  });
+const schema = Joi.object({
+  typeOfPayment: Joi.string()
+    .valid(
+      'Opłata adopcyjna',
+      'Jednorazowy przelew',
+      'Wirtualny opiekun-opłata cykliczna',
+    )
+    .required(),
+  amount: Joi.number().min(5).required(),
+  paymentDate: Joi.date().min('now'),
+  paymentMethod: Joi.string()
+    .valid(
+      'Karta płatnicza',
+      'Blik',
+      'Przelew bankowy',
+      'Apple Pay',
+      'Google Pay'
+    )
+    .required(),
+});
 
-  const patch = Joi.object({
-    typeOfPayment: Joi.string()
-      .valid(
-        'opłata adopcyjna',
-        'jednorazowy przelew',
-        'wirtualny opiekun-opłata cykliczna'
-      ),
-    amount: Joi.number().min(5),
-    paymentDate: Joi.date().min('now'),
-    paymentMethod: Joi.string()
-      .valid(
-        'Karta płatnicza',
-        'Blik',
-        'Przelew bankowy',
-        'Apple Pay',
-        'Google Pay'
-      ),
-  });
+const patch = Joi.object({
+  typeOfPayment: Joi.string().valid(
+    'Opłata adopcyjna',
+    'Jednorazowy przelew',
+    'Wirtualny opiekun-opłata cykliczna',
+  ),
+  amount: Joi.number().min(5),
+  paymentDate: Joi.date().min('now'),
+  paymentMethod: Joi.string().valid(
+    'Karta płatnicza',
+    'Blik',
+    'Przelew bankowy',
+    'Apple Pay',
+    'Google Pay'
+  ),
+});
 
 exports.Payment = Payment;
 exports.validatePayment = schema;

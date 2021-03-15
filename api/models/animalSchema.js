@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const multer = require('multer');
+const { boolean } = require('joi');
 
 
 //ANIMAL SCHEMA
 
 const animalSchema = new mongoose.Schema({
-     _id: mongoose.Schema.Types.ObjectId,
+    _id: mongoose.Schema.Types.ObjectId,
     animalType: {
         type: String,
         enum: ['pies', 'kot', 'inne'],
@@ -56,11 +57,16 @@ const animalSchema = new mongoose.Schema({
         minlength: 2,
         maxlength: 255,
         lowercase: true
+    },
+    isAdopted: {
+        type: Boolean,
+        default: false,
+        required: true
     }
 });
 
 //ANIMAL MODEL
-
+animalSchema.index({ '$**': 'text' });
 const Animal = mongoose.model('Animal', animalSchema);
 
 //JOI VALIDATION
@@ -92,7 +98,8 @@ const schema = Joi.object({
         ),
     description: Joi.string().min(50).max(524288).required(),
     age: Joi.number().max(30),
-    breed: Joi.string().min(2).max(255)
+    breed: Joi.string().min(2).max(255),
+    isAdopted: Joi.boolean().required()
 });
 
 

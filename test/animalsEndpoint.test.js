@@ -25,7 +25,8 @@ const dummyData = {
     description: 'Melancholijna i wiecznie głodna, toleruje inne zwierzęta, póki nie zaglądają jej do miski. Dużo śpi.',
     age: 3,
     breed: 'york',
-    registartionDate: '2021-03-01'
+    registartionDate: '2021-03-01',
+    isAdopted: false
 };
 const dummyData1 = {
     _id: '603b512b3e865c0e4cf63527',
@@ -82,6 +83,7 @@ describe('GET', () => {
                 description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
                 age: 3,
                 registrationDate: "2021-03-01T00:00:00.000Z",
+                isAdopted: false,
                 __v: 0
             });
             done();
@@ -115,7 +117,8 @@ describe('POST', () => {
         gender: 'żeńska',
         description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
         age: 3,
-        registrationDate: "2021-03-01"
+        registrationDate: "2021-03-01",
+        isAdopted: false
       };
 
       request(app)
@@ -196,7 +199,7 @@ describe('DELETE', () => {
 
 });
 
-//POST ANIMAL TEST
+//PUT ANIMAL TEST
 
 describe('PUT', () => {
     it('should update the animal and response with status 200 and send: Zaktualizowano dane wybranego zwierzaka!', function (done) {
@@ -207,7 +210,8 @@ describe('PUT', () => {
         gender: 'męska',
         size: 'mały',
         description: 'Mały czarny kundelek, ewidentnie długowieczny. Lubi przekopywać się pod płotem i zwiedzać okolice.',
-        age: 15
+        age: 15,
+        isAdopted: false
       };
   
       const putData = {
@@ -216,7 +220,8 @@ describe('PUT', () => {
         gender: 'męska',
         size: 'mały/średni',
         description: 'Mały czarny kundelek, ewidentnie długowieczny. Lubi przekopywać się pod płotem i zwiedzać okolice.',
-        age: 17
+        age: 17,
+        isAdopted: true
       };
   
       const post = Animal.create(dummyDataForUpdate);

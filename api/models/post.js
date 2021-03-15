@@ -3,34 +3,29 @@ const Schema = mongoose.Schema;
 const Joi = require('joi');
 
 const postSchema = new Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     postDate: {
         type: Date,
         default: Date.now,
-        required: true
+        required: false
     },
     content: {
         type: String,
         minLength: 50,
-        required: true
+        require: false
     },
     photo: {
         type: String,
-        required: true,
         // URL zdjęcia z zewnętrznego zródła
     }
 })
+const PostSchema = mongoose.model('Post', postSchema);
 
-const Post = mongoose.model('Post', postSchema);
-
-function validatePost(post) {
     const schema = Joi.object({
-      postDate: Joi.Date().required(),
-      content: Joi.string().min(50).required(),
-      photo: Joi.string().required()
+      postDate: Joi.date().required(),
+      content: Joi.string().min(50),
+      photo: Joi.string()
     });
 
-    return Joi.validate(post, schema);
-  }
-
-  exports.validatePost = validatePost;
-  exports.Post = Post;
+  exports.ValidatePost = schema;
+  exports.Post = PostSchema;
