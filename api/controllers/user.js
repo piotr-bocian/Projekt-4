@@ -105,10 +105,10 @@ exports.usersAddUser = async(req, res) => {
             lastName: user.lastName,
             email: user.email
         });
+        next();
     } catch (error) {
         res.status(400).send(error.message);
     }
-
 };
 
 exports.usersUpdateUser = async(req, res, next) => {
