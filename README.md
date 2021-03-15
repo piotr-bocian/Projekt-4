@@ -54,11 +54,15 @@ The main assumption of this project was to create a fully functional REST API co
 * We enable dynamic search in database resources, e.g. payment search, animal search, etc.
 
 
+*Aby uruchomić testy należy najpierw uruchomić MongoDB Compass.*
+*To run the tests, you must first run MongoDB Compass.*
+
+
 # Zespół:
-Team Lead: Piotr Bocian,
-Product Owner: Adam Połynka,
-Tech Lead: Szymon Suchodolski,
-Development Manager: Łukasz Żurawski,
-Członkowie zespołu: Jan Eliasz, Klaudia Wojciechowska, Daria Torz.
+* __Team Lead__: Piotr Bocian,
+* __Product Owner__: Adam Połynka,
+* __Tech Lead__: Szymon Suchodolski,
+* __Development Manager__: Łukasz Żurawski,
+* __Członkowie zespołu__: Jan Eliasz, Klaudia Wojciechowska, Daria Torz.
 
 15/03/2021
