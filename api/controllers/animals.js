@@ -44,7 +44,6 @@ exports.getAnimals = async (req, res) => {
         .find(search)
         .limit(limit)
         .skip(startIndex)
-        .select({animalType: 1, name: 1, registrationDate: 1, gender: 1, size: 1, description: 1, age: 1, breed: 1})
         .sort({ amount: -1 });
     
     res.send({
@@ -96,7 +95,6 @@ exports.getAdminAnimals = async (req, res) => {
   results.results = await Animal.find(search)
       .limit(limit)
       .skip(startIndex)
-      .select({animalType: 1,name: 1, registrationDate: 1, gender: 1, size: 1, description: 1, age: 1, breed: 1, isAdopted: 1})
       .sort({ amount: -1 });
   
   res.send({
