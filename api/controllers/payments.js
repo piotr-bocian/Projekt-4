@@ -28,7 +28,16 @@ exports.getAllPayments = async (req, res) => {
       limit: limit,
     };
   }
-  results.results = await Payment.find()
+  //search engine
+  let search;
+  const term = req.query.search;
+  if (term) {
+    search = {
+      $text: { $search: term },
+    };
+  }
+
+  results.results = await Payment.find(search)
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
@@ -73,15 +82,37 @@ exports.makeAPayment = async (req, res) => {
       paymentDate,
       paymentMethod,
     });
-    let payment = new Payment({
+    payment = new Payment({
       _id: mongoose.Types.ObjectId(),
       ...value,
-      userID: req.body.userID,
-      userCompanyID: req.body.userCompanyID,
     });
     payment = await payment.save();
     res.status(201).send({
       message: 'Płatność przebiegła pomyślnie',
+      payment,
+    });
+  } catch (error) {
+    res.status(400).send(error.details[0].message);
+  }
+};
+
+exports.paymentsPostMe = async (req, res, next) => {
+  try {
+    const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
+    const value = await validatePayment.validateAsync({
+      typeOfPayment,
+      amount,
+      paymentDate,
+      paymentMethod,
+    });
+    let payment = new Payment({
+      _id: mongoose.Types.ObjectId(),
+      ...value,
+      userID: req.user._id,
+    });
+    payment = await payment.save();
+    res.status(201).send({
+      message: 'Twoja płatność przebiegła pomyślnie',
       payment,
     });
   } catch (error) {

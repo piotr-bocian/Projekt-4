@@ -1,6 +1,7 @@
 const helmet = require('helmet');
 const error = require('./api/middleware/error');
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const upl = multer();
@@ -23,11 +24,13 @@ mongoose
   .connect(
     'mongodb+srv://Lukasz:' +
       process.env.ANIMAL_SHELTER_PW +
-      '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',{
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useFindAndModify: false,
-    })
+      '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    }
+  )
   .then(() => {
     console.log('Connected to Atlas MongoDB');
   })
@@ -35,18 +38,21 @@ mongoose
     console.log('Connection failed', error);
   });
 
-  if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
-    console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
-    process.exit(1);
-  }
+if (!process.env.SCHRONISKO_JWT_PRIVATE_KEY) {
+  console.error('FATAL ERROR: Brak klucza prywatnego JWT.');
+  process.exit(1);
+}
 
 app.use(helmet());
-app.use(express.json());
 //necessary for parsing multipart/form-data
 app.use(upload.single('image') || upl.array());
+app.use(cors());
+app.use(express.json());
+
+
 app.use('/api/users', users);
 app.use('/api/login', login);
-app.use('/api/visits', visitRoutes)
+app.use('/api/visits', visitRoutes);
 app.use('/api/payments', payment);
 app.use('/api/volunteerForms', volunteerForms);
 app.use('/api/animals', animalRouter);
