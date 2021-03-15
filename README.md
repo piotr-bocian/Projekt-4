@@ -3,7 +3,7 @@
 ## Założenia
 Głównym założeniem tego projektu było stworzenie w pełni funkcjonalnego REST API połączonego ze nierelacyjną bazą danych. Do stworzenia bazy danych wykorzystaliśmy usługę Atlas od MongoDB, korzystaliśmy z metodologii MVC.
 
-#### ![Schemat bazy danych](.github/githubImage/Database.png)
+#### ![Schemat bazy danych](.github/githubImage/animalDatabase.png)
 
 ### Główne technologie z jakich korzystaliśmy w projekcie to:
 
@@ -56,9 +56,9 @@ The main assumption of this project was to create a fully functional REST API co
 
 # Zespół:
 Team Lead: Piotr Bocian,
-Product Owner: Klaudia Wojciechowska,
+Product Owner: Adam Połynka,
 Tech Lead: Szymon Suchodolski,
 Development Manager: Łukasz Żurawski,
-Członkowie zespołu: Jan Eliasz, Adam Połynka, Daria Torz.
+Członkowie zespołu: Jan Eliasz, Klaudia Wojciechowska, Daria Torz.
 
 15/03/2021
