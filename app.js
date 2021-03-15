@@ -1,9 +1,11 @@
+const error = require('./api/middleware/error');
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const upl = multer();
 const { upload } = require('./api/middleware/upload');
 require('dotenv').config();
+require('./errorLogging')();
 const app = express();
 
 const users = require('./api/routes/users');
@@ -58,5 +60,7 @@ app.use((req, res, next) => {
   res.status(404).send(error.message);
   next(error);
 });
+
+app.use(error);
 
 module.exports = app;

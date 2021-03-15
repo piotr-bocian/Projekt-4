@@ -1,13 +1,10 @@
 const bcrypt = require('bcrypt');
 const login = require('../api/controllers/login');
 const request = require('supertest');
-const userController = require('../api/controllers/user');
 const { User } = require('../api/models/user');
 const express = require('express');
 const mongoose = require('mongoose');
-const fs = require('fs');
 const databaseName = 'test';
-const { upload } = require('../api/middleware/upload');
 
 // here create endpoint for tests,
 const app = express();
