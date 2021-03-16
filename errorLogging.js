@@ -13,9 +13,7 @@ module.exports = function() {
             new winston.transports.File({filename: 'logfile.log'}),
             new winston.transports.Console({format: winston.format.simple()}),
             new winston.transports.MongoDB({ 
-                db: 'mongodb+srv://Lukasz:' +
-                process.env.ANIMAL_SHELTER_PW +
-                '@schronisko.lrx7d.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+                db: process.env.MONGODB_URI,
                 level: 'error' 
             })
         ],
