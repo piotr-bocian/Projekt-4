@@ -15,7 +15,7 @@ exports.registrationMail = (req, res, next) => {
         subject: 'Rejestracja',
         text: 'Gratulacje! Udało Ci się zarejestrować Twoje konto'
     }
-
+    
     transporter.sendMail(mailOptions, (err, data) => {
         if(err){
             console.log('Error occured', err);

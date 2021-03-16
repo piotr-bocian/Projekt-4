@@ -72,7 +72,7 @@ exports.usersGetUser = async(req, res, next) => {
     }    
 };
 
-exports.usersAddUser = async(req, res) => {
+exports.usersAddUser = async(req, res, next) => {
     try{
         const { firstName, lastName, email, password, mobile, isSuperAdmin, isAdmin, isVolunteer } = req.body;
         const validUser = await validateUser.validateAsync(req.body);
