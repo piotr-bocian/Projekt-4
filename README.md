@@ -1,5 +1,19 @@
 # Projekt-4 SCHRONISKO DLA ZWIERZĄT - REST API *(English version below)*
 
+ ## Działające demo
+https://best-animal-shelter.herokuapp.com/
+
+_Obsługiwane zapytania_
+* /api/users'
+* /api/usersCompany'
+* /api/login'
+* /api/visits'
+* /api/payments'
+* /api/volunteerForms'
+* /api/animals'
+* /api/posts/'
+* /api/adoptionforms'
+
 ## Założenia
 Głównym założeniem tego projektu było stworzenie w pełni funkcjonalnego REST API połączonego ze nierelacyjną bazą danych. Do stworzenia bazy danych wykorzystaliśmy usługę Atlas od MongoDB, korzystaliśmy z metodologii MVC.
 
