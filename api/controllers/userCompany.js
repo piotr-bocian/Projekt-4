@@ -17,7 +17,6 @@ exports.usersGetAll = async(req, res, next) => {
     const usersCompany = await UserCompany.find().sort('companyName');
     const users = await User.find().sort('lastName');
     res.send([...users, ...usersCompany]);
-    next();
 };
 
 exports.userCompanyGetUser = async(req, res, next) => {

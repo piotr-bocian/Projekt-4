@@ -34,19 +34,6 @@ it('Should console.log: postTest validation failed: content: the minimum length 
   });
 });
 
-it('Should console.log: postTest validation failed: photo: link to an external photo source is required', (done) => {
-    const postTest = new Post({
-        postDate: '2021-02-22',
-        content: 'Piękny pies shih tzu - Adoptowany 2 miesiące temu z naszego schroniska',
-        photo: '',
-      });
-      postTest.validate((response) => {
-    console.log(response.message);
-    expect(response.message).toBe('Post validation failed: photo: Path `photo` is required.')
-    done();
-  });
-});
-
 //you have to clean the collections after the tests
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);

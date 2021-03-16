@@ -46,8 +46,8 @@ afterAll((done) => {
 
 // 'GET /test'
 describe('GET', () => {
-  it('should get all data from database', function (done) {
-    const post = Payment.create(dummyData);
+  it('should get all data from database', async function (done) {
+    const post = await Payment.create(dummyData);
     return request(app)
       .get('/test')
       .set('Accept', 'application/json')
