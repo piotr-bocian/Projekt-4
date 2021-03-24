@@ -131,6 +131,30 @@ exports.getOneAnimal = async (req, res) => {
     }
 };
 
+//GET METHOD - ONE ANIMAL
+exports.getOneAnimalAdmin= async (req, res) => {
+    
+  const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
+  if (isIdValid) {
+    const animal = await Animal.findById(req.params.id);
+
+  if (!animal) {
+      return res.status(404).send('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
+  }
+
+  res.send({
+      request: {
+        type: 'GET',
+        description: 'Get an animals',
+        url: 'http://localhost:3000/api/adminanimals/:id',
+      },
+      animal: animal,
+    });
+  } else {
+    res.status(400).send('Podano błędny numer _id');
+  }
+};
+
 //POST METHOD - POST AN ANIMAL
 exports.addAnimal = async (req, res) => {
     try {
