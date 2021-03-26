@@ -76,7 +76,7 @@ describe('POST - user logging', () => {
 		.set('Accept', 'application/json');
 
 		expect(res.status).toBe(400);
-		expect(res.text).toBe('Nieprawidłowy email lub hasło.');
+		expect(res.body.message).toBe('Nieprawidłowy email lub hasło.');
 		return done();
   });
 
@@ -92,7 +92,7 @@ describe('POST - user logging', () => {
 	.set('Accept', 'application/json');
 
 	expect(res.status).toBe(400);
-	expect(res.text).toBe('Nieprawidłowy email lub hasło.');
+	expect(res.body.message).toBe('Nieprawidłowy email lub hasło.');
 	return done();
 });
 });
