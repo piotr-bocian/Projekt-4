@@ -8,10 +8,10 @@ exports.logging = async(req, res, next) => {
         const { email, password } = req.body;
         const validLogin = await loginSchema.validateAsync(req.body);
         let user = await User.findOne({ email: req.body.email });
-        if(!user) return res.status(400).send('Nieprawidłowy email lub hasło.');
+        if(!user) return res.status(400).send({ message: 'Nieprawidłowy email lub hasło.' });
 
         const validPassword = await bcrypt.compare(req.body.password, user.password)
-        if(!validPassword) return res.status(400).send('Nieprawidłowy email lub hasło.');
+        if(!validPassword) return res.status(400).send({ message: 'Nieprawidłowy email lub hasło.' });
 
         const token = user.generateAuthToken();
         res.status(200).send({
