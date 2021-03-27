@@ -12,14 +12,14 @@ const userSchema = new mongoose.Schema({
         required: true,
         minLength: 2, 
         maxLength: 50,
-        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/, 'Pole imię musi zawierać tylko litery']
+        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/, 'Pole imię musi zawierać tylko litery']
     },
     lastName: {
         type: String,
         required: true,
         minLength: 2, 
         maxLength: 50,
-        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/, 'Pole nazwisko musi zawierać tylko lietery']
+        match: [/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/, 'Pole nazwisko musi zawierać tylko lietery']
     },
     email: { 
         type: String, 
@@ -89,11 +89,11 @@ userSchema.methods.generateAuthToken = function() {
 }
 
 const User = mongoose.model('User', userSchema);
-//.regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/)
+//.regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/)
 
 const newUserSchema = Joi.object({
-    firstName: Joi.string().min(2).max(50).required(),
-    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/).required(),
+    firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/).required(),
+    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/).required(),
     email: Joi.string().min(5).max(255).required().email(),
     password: Joi.string().min(8).max(255).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/).required(),
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/).required(),
@@ -104,8 +104,8 @@ const newUserSchema = Joi.object({
 });
 
 const updateUserSchema = Joi.object({
-    firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
-    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{3,50}$/),
+    firstName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/),
+    lastName: Joi.string().min(2).max(50).regex(/^[A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]{2,50}$/),
     email: Joi.string().min(5).max(255).email(),
     password: Joi.string().min(8).max(255).regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z<>!@#$%^&*?_=+-]{8,}$/),
     mobile: Joi.string().min(11).max(15).regex(/^(\+\d{2} )?\d{3}-\d{3}-\d{3}$/),
