@@ -99,11 +99,12 @@ exports.usersAddUser = async(req, res, next) => {
         user = await user.save();
 
         const token = user.generateAuthToken();
-        res.header('x-auth-token', token).status(201).send({
+        res.status(201).send({
             message: 'Rejestracja przebiegła pomyślnie.',
             firstName: user.firstName,
             lastName: user.lastName,
-            email: user.email
+            email: user.email,
+            token: token
         });
         next();
     } catch (error) {

@@ -16,7 +16,7 @@ exports.logging = async(req, res, next) => {
         const token = user.generateAuthToken();
         res.status(200).send({
             message: 'Logowanie przebiegło pomyślnie.',
-            token
+            token: token
         });
         
     } catch (error) {
