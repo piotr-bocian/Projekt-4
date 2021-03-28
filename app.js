@@ -66,7 +66,7 @@ app.use(express.static('uploads'));
 //handles query on non-existent route
 app.use((req, res, next) => {
   const error = new Error('STRONA O PODANYM ADRESIE NIE ISTNIEJE');
-  res.status(404).send(error.message);
+  res.status(404).send({error: error.message});
   next(error);
 });
 

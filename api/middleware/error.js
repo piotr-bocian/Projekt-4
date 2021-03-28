@@ -2,5 +2,5 @@ const winston = require('winston');
 
 module.exports = function (err, req, res, next) {
     winston.error(err.message, err);
-    res.status(500).send('Coś poszło nie tak.')
+    res.status(500).send({message: 'Coś poszło nie tak.'});
 }

@@ -97,9 +97,9 @@ describe('GET', () => {
         return request(app)
           .get('/test/6incorrectid')
           .set('Accept', 'application/json')
-          .expect(404, 'Podany użytkownik nie istnieje.')
+          .expect(404)
           .then((response) => {
-            expect(response.text).toBe('Podany użytkownik nie istnieje.');
+            expect(response.body.message).toMatch('Podany użytkownik nie istnieje.');
             done();
           })
           .catch((err) => done(err));
@@ -135,7 +135,7 @@ describe('POST', () => {
         });
     });
 
-    it('should respond with status 400 when incorrect data are send, it should also send a message which contains: Pole imię musi zawierać tylko litery', function (done) {
+    it('should respond with status 400 when incorrect data is send, it should also send a message which contains: Pole imię musi zawierać tylko litery', function (done) {
         const postData = {
           isSuperAdmin: false,
           isAdmin: false,
@@ -154,7 +154,7 @@ describe('POST', () => {
           .expect(400)
           .end(function (err, res) {
             expect(res.text).toMatch(
-              'Pole imię musi zawierać tylko litery'
+              'fails to match the required pattern'
             );
             if (err) return done(err);
             return done();
@@ -171,7 +171,7 @@ describe('DELETE', () => {
         .set('Accept', 'application/json')
         .expect(400)
         .then((response) => {
-          expect(response.text).toBe('Podano błędny numer id.');
+          expect(response.body.message).toBe('Podano błędny numer id.');
           done();
         })
         .catch((err) => done(err));

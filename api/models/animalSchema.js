@@ -66,7 +66,7 @@ const animalSchema = new mongoose.Schema({
 });
 
 //ANIMAL MODEL
-animalSchema.index({ '$**': 'text' });
+animalSchema.index({ animalType: 'text' });
 const Animal = mongoose.model('Animal', animalSchema);
 
 //JOI VALIDATION
