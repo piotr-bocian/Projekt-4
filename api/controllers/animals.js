@@ -115,7 +115,7 @@ exports.getOneAnimal = async (req, res) => {
       const animal = await Animal.findById(req.params.id);
   
     if (!animal) {
-        return res.status(404).send('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
+        return res.status(404).send({message: 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych'});
     }
   
     res.send({
@@ -127,7 +127,7 @@ exports.getOneAnimal = async (req, res) => {
         animal: animal,
       });
     } else {
-      res.status(400).send('Podano błędny numer _id');
+      res.status(400).send({message:'Podano błędny numer _id'});
     }
 };
 
@@ -139,7 +139,7 @@ exports.getOneAnimalAdmin= async (req, res) => {
     const animal = await Animal.findById(req.params.id);
 
   if (!animal) {
-      return res.status(404).send('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
+      return res.status(404).send({message: 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych'});
   }
 
   res.send({
@@ -151,7 +151,7 @@ exports.getOneAnimalAdmin= async (req, res) => {
       animal: animal,
     });
   } else {
-    res.status(400).send('Podano błędny numer _id');
+    res.status(400).send({message: 'Podano błędny numer _id'});
   }
 };
 
@@ -190,7 +190,7 @@ exports.addAnimal = async (req, res) => {
           animal
         });
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({message: error.message});
     }
 };
 
@@ -198,7 +198,7 @@ exports.addAnimal = async (req, res) => {
 exports.updateAnimal = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
   if (!isIdValid) {
-    res.status(400).send('Podano błędny numer _id');
+    res.status(400).send({message: 'Podano błędny numer _id'});
     return;
   }
 
@@ -271,7 +271,7 @@ exports.deleteAnimal = async (req, res) => {
       const animal = await Animal.findByIdAndRemove(req.params.id);
   
       if (!animal) {
-        return res.status(404).send('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
+        return res.status(404).send({message: 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych'});
       }
   
       res.status(202).send({
@@ -284,6 +284,6 @@ exports.deleteAnimal = async (req, res) => {
         },
       });
     } else {
-      res.status(400).send('Podano błędny numer _id');
+      res.status(400).send({message: 'Podano błędny numer _id'});
     }
   };

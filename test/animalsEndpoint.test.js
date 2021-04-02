@@ -95,9 +95,9 @@ describe('GET', () => {
         return request(app)
           .get('/test/6incorrectid')
           .set('Accept', 'application/json')
-          .expect(404, 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych')
+          .expect(404, {message: 'Zwierzaka, którego szukasz, nie ma w naszej bazie danych'})
           .then((response) => {
-            expect(response.text).toBe('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
+            expect(response.body.message).toBe('Zwierzaka, którego szukasz, nie ma w naszej bazie danych');
             done();
           })
           .catch((err) => done(err));
@@ -140,7 +140,8 @@ describe('POST', () => {
             name: 'Jadwiga',
             gender: 'żeńska',
             description: 'Typowy kot, niewiele ją interesuje poza jedzeniem. Indywidualistka.',
-            age: 3
+            age: 3,
+            isAdopted: true
         }
     
         request(app)
@@ -149,9 +150,7 @@ describe('POST', () => {
           .set('Accept', 'application/json')
           .expect(400)
           .end(function (err, res) {
-            expect(res.text).toBe(
-              '"animalType" must be one of [pies, kot, inne]'
-            );
+            expect(res.body.message).toBe('"animalType" must be one of [pies, kot, inne]');
             if (err) return done(err);
             return done();
           });
@@ -167,7 +166,7 @@ describe('DELETE', () => {
         .set('Accept', 'application/json')
         .expect(400)
         .then((response) => {
-          expect(response.text).toBe('Podano błędny numer _id');
+          expect(response.body.message).toBe('Podano błędny numer _id');
           done();
         })
         .catch((err) => done(err));
