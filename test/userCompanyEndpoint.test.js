@@ -51,9 +51,9 @@ describe('GET', () => {
     return request(app)
       .get('/test/incorectid')
       .set('Accept', 'application/json')
-      .expect(400, 'Podano nieprawidłowy numer id')
+      .expect(400, {message: 'Podano nieprawidłowy numer id'})
       .then((response) => {
-        expect(response.text).toBe('Podano nieprawidłowy numer id');
+        expect(response.body.message).toBe('Podano nieprawidłowy numer id');
         done();
       })
       .catch((err) => done(err));
@@ -87,9 +87,9 @@ describe('GET', () => {
     return request(app)
       .get('/test/6incorrectid')
       .set('Accept', 'application/json')
-      .expect(404, 'Użytkownik o podanym ID nie istnieje.')
+      .expect(404, {message: 'Użytkownik o podanym ID nie istnieje.'})
       .then((response) => {
-        expect(response.text).toBe('Użytkownik o podanym ID nie istnieje.');
+        expect(response.body.message).toBe('Użytkownik o podanym ID nie istnieje.');
         done();
       })
       .catch((err) => done(err));
@@ -142,7 +142,7 @@ describe('POST', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .end(function (err, res) {
-        expect(res.text).toBe(
+        expect(res.body.message).toBe(
           '\"nip\" length must be 10 characters long'
         );
         if (err) return done(err);
@@ -169,7 +169,7 @@ describe('POST', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .end(function (err, res) {
-        expect(res.text).toBe(
+        expect(res.body.message).toBe(
           'Użytkownik o podanym adresie email jest już zarejestrowany.'
         );
         if (err) return done(err);
@@ -186,7 +186,7 @@ describe('DELETE', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .then((response) => {
-        expect(response.text).toBe('Podano błędny numer _id');
+        expect(response.body.message).toBe('Podano błędny numer _id');
         done();
       })
       .catch((err) => done(err));
@@ -211,7 +211,7 @@ describe('DELETE', () => {
       .set('Accept', 'application/json')
       .expect(404)
       .then((response) => {
-        expect(response.text).toBe('Użytkownik o podanym ID nie istnieje.');
+        expect(response.body.message).toBe('Użytkownik o podanym ID nie istnieje.');
         done();
       })
       .catch((err) => done(err));
@@ -300,7 +300,7 @@ describe('PATCH', () => {
         .set('Accept', 'application/json')
         .expect(400)
         .then((response) => {
-          expect(response.text).toBe(
+          expect(response.body.message).toBe(
             '\"nip\" length must be 10 characters long'
           );
           done();

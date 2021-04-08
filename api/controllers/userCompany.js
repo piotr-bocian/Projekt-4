@@ -8,7 +8,7 @@ const { User } = require('../models/user');
 exports.userCompanyGetMe = async (req, res, next) => {
     const userCompany = await UserCompany.findById(req.user._id).select('-password');
     if (!userCompany) {
-      return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+      return res.status(404).send({message: 'Użytkownik o podanym ID nie istnieje.'});
     };
     res.send(userCompany);
 }
@@ -23,10 +23,10 @@ exports.userCompanyGetUser = async(req, res, next) => {
     const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
     if(isIdValid){
         const userCompany = await UserCompany.findById(req.params.id);
-        if(!userCompany) return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+        if(!userCompany) return res.status(404).send({message: 'Użytkownik o podanym ID nie istnieje.'});
         res.send(userCompany);
     }else {
-        res.status(400).send('Podano nieprawidłowy numer id');
+        res.status(400).send({message: 'Podano nieprawidłowy numer id'});
     }    
 };
 
@@ -35,7 +35,7 @@ exports.userCompanyAddUser = async(req, res, next) => {
         const { email, password, nip, companyName, street, houseNo, city, postcode, mobile } = req.body;
         const validCompanyUser = await validateUserCompany.validateAsync(req.body);
         let userCompany = await UserCompany.findOne({ email: req.body.email });
-        if(userCompany) return res.status(400).send('Użytkownik o podanym adresie email jest już zarejestrowany.');
+        if(userCompany) return res.status(400).send({message: 'Użytkownik o podanym adresie email jest już zarejestrowany.'});
         
         // IMAGE CHECK
         if (!req.file) {
@@ -64,7 +64,7 @@ exports.userCompanyAddUser = async(req, res, next) => {
             email: userCompany.email
         });
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send({message: error.message});
     }
 
 };
@@ -72,7 +72,7 @@ exports.userCompanyAddUser = async(req, res, next) => {
 exports.userCompanyDeleteMe = async (req, res, next) => {
     const userCompany = await UserCompany.findByIdAndRemove(req.user._id).select('-password');
     if (!userCompany) {
-      return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+      return res.status(404).send({message: 'Użytkownik o podanym ID nie istnieje.'});
     };
     res.status(202).send({
         message: 'Użytkownik został poprawnie usunięty',
@@ -86,7 +86,7 @@ if (isIdValid) {
     const userCompany = await UserCompany.findByIdAndRemove(req.params.id);
 
     if (!userCompany) {
-    return res.status(404).send('Użytkownik o podanym ID nie istnieje.');
+    return res.status(404).send({message: 'Użytkownik o podanym ID nie istnieje.'});
     }
 
     res.status(202).send({
@@ -94,7 +94,7 @@ if (isIdValid) {
     userCompany,
     });
 } else {
-    res.status(400).send('Podano błędny numer _id');
+    res.status(400).send({message: 'Podano błędny numer _id'});
     }
 };
 
@@ -102,7 +102,7 @@ exports.userCompanyUpdateUser = async (req, res) => {
   const id = req.params.id;
   const isIdValid = mongoose.Types.ObjectId.isValid(id);
   if (!isIdValid) {
-    res.status(400).send('Podano błędny numer _id');
+    res.status(400).send({message: 'Podano błędny numer _id'});
     return;
   }
   try {
@@ -132,7 +132,7 @@ exports.userCompanyUpdateUser = async (req, res) => {
       )}`
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({message: error.message});
   }
 };
 
@@ -140,7 +140,7 @@ exports.userCompanyUpdateUser = async (req, res) => {
 exports.userCompanyUpdateMe = async (req, res) => {
   id = req.user._id;
   let userCompany = await UserCompany.findById(id)
-  if(!userCompany) return res.status(404).send('Podany użytkownik nie istnieje.');
+  if(!userCompany) return res.status(404).send({message: 'Podany użytkownik nie istnieje.'});
   try {
     let updateUserCompany = {};
     for (const [propName, newValue] of Object.entries(req.body)) {
@@ -165,7 +165,7 @@ exports.userCompanyUpdateMe = async (req, res) => {
       message: `Zaktualizowano nastepujące pola ${JSON.stringify(updateUserCompany)}`
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({message: error.message});
   }
 };
 

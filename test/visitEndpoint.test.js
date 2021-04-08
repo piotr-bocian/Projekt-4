@@ -66,9 +66,9 @@ describe('GET', () => {
     return request(app)
       .get('/test/incorectid')
       .set('Accept', 'application/json')
-      .expect(400, 'Podano błędny numer _id')
+      .expect(400, {message: 'Podano błędny numer _id'})
       .then((response) => {
-        expect(response.text).toBe('Podano błędny numer _id');
+        expect(response.body.message).toBe('Podano błędny numer _id');
         done();
       })
       .catch((err) => done(err));
@@ -98,9 +98,9 @@ describe('GET', () => {
     return request(app)
       .get('/test/6incorrectid')
       .set('Accept', 'application/json')
-      .expect(404, 'Wizyta adopcyjna, której szukasz nie istnieje')
+      .expect(404, {message: 'Wizyta adopcyjna, której szukasz nie istnieje'})
       .then((response) => {
-        expect(response.text).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
+        expect(response.body.message).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
         done();
       })
       .catch((err) => done(err));
@@ -145,7 +145,7 @@ describe('POST', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .end(function (err, res) {
-        expect(res.text).toBe(
+        expect(res.body.message).toBe(
           '"duration" must be less than or equal to 120'
         );
         if (err) return done(err);
@@ -163,7 +163,7 @@ describe('DELETE', () => {
       .expect(400)
       .then((response) => {
         // console.log(response.text);
-        expect(response.text).toBe('Podano błędny numer _id');
+        expect(response.body.message).toBe('Podano błędny numer _id');
         done();
       })
       .catch((err) => done(err));
@@ -184,7 +184,7 @@ describe('DELETE', () => {
       .set('Accept', 'application/json')
       .expect(404)
       .then((response) => {
-        expect(response.text).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
+        expect(response.body.message).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
         done();
       })
       .catch((err) => done(err));
@@ -272,7 +272,7 @@ describe('PUT', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .then((response) => {
-        expect(response.text).toBe('Podano błędny numer _id');
+        expect(response.body.message).toBe('Podano błędny numer _id');
         done();
       })
       .catch((err) => done(err));
@@ -303,7 +303,7 @@ describe('PUT', () => {
       .set('Accept', 'application/json')
       .expect(400)
       .then((response) => {
-        expect(response.text).toBe(
+        expect(response.body.message).toBe(
           '"duration" must be less than or equal to 120'
         );
         done();
