@@ -16,21 +16,21 @@ app.delete('/test/:id', visitControllers.deleteVisit);
 app.put('/test/:id', visitControllers.updateVisit);
 
 const dummyData = {
-  _id: "5099803df3f4948bd2f98113",
-  visitDate: "2021-03-22",
-  visitTime: "12:30",
+  _id: '5099803df3f4948bd2f98113',
+  visitDate: '2021-03-22',
+  visitTime: '12:30',
   duration: 45,
-  userID: "5099803df3f4948bd2f98113",
-  isVisitDone: false
+  userID: '5099803df3f4948bd2f98113',
+  isVisitDone: false,
 };
 
 const dummyData2 = {
-  _id: "7199803df3f4948bd2f98113",
-  visitDate: "2021-01-14",
-  visitTime: "16:45",
+  _id: '7199803df3f4948bd2f98113',
+  visitDate: '2021-01-14',
+  visitTime: '16:45',
   duration: 60,
-  userID: "9999803df3f4948bd2f98113",
-  isVisitDone: true
+  userID: '9999803df3f4948bd2f98113',
+  isVisitDone: true,
 };
 
 beforeAll((done) => {
@@ -56,7 +56,9 @@ describe('GET', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .then((response) => {
-        expect(response.body.allVisitsInDatabase).toStrictEqual(1); //
+        expect(response.body.adoptionVisits.allVisitsInDatabase).toStrictEqual(
+          1
+        );
         done();
       })
       .catch((err) => done(err));
@@ -66,7 +68,7 @@ describe('GET', () => {
     return request(app)
       .get('/test/incorectid')
       .set('Accept', 'application/json')
-      .expect(400, {message: 'Podano błędny numer _id'})
+      .expect(400, { message: 'Podano błędny numer _id' })
       .then((response) => {
         expect(response.body.message).toBe('Podano błędny numer _id');
         done();
@@ -81,12 +83,13 @@ describe('GET', () => {
       .set('Accept', 'application/json')
       .expect(200)
       .then((response) => {
-        expect(response.body.visit).toStrictEqual({ //
-          _id: "7199803df3f4948bd2f98113",
-          visitDate: "2021-01-14T00:00:00.000Z",
-          visitTime: "16:45",
+        expect(response.body.visit).toStrictEqual({
+          //
+          _id: '7199803df3f4948bd2f98113',
+          visitDate: '2021-01-14T00:00:00.000Z',
+          visitTime: '16:45',
           duration: 60,
-          userID: "9999803df3f4948bd2f98113",
+          userID: '9999803df3f4948bd2f98113',
           isVisitDone: true,
           __v: 0,
         });
@@ -98,9 +101,11 @@ describe('GET', () => {
     return request(app)
       .get('/test/6incorrectid')
       .set('Accept', 'application/json')
-      .expect(404, {message: 'Wizyta adopcyjna, której szukasz nie istnieje'})
+      .expect(404, { message: 'Wizyta adopcyjna, której szukasz nie istnieje' })
       .then((response) => {
-        expect(response.body.message).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
+        expect(response.body.message).toBe(
+          'Wizyta adopcyjna, której szukasz nie istnieje'
+        );
         done();
       })
       .catch((err) => done(err));
@@ -111,11 +116,11 @@ describe('GET', () => {
 describe('POST', () => {
   it('should respond with status 201', function (done) {
     const postData = {
-    visitDate: "2021-03-01",
-    visitTime: "11:30",
-    duration: 45,
-    userID: "5199803df3f4948bd2f98113",
-    isVisitDone: false
+      visitDate: '2021-03-01',
+      visitTime: '11:30',
+      duration: 45,
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     request(app)
@@ -124,7 +129,9 @@ describe('POST', () => {
       .set('Accept', 'application/json')
       .expect(201)
       .end(function (err, res) {
-        expect(res.body.message).toBe('Rezerwacja wizyty adopcyjnej przebiegła pomyślnie');
+        expect(res.body.message).toBe(
+          'Rezerwacja wizyty adopcyjnej przebiegła pomyślnie'
+        );
         if (err) return done(err);
         return done();
       });
@@ -132,11 +139,11 @@ describe('POST', () => {
 
   it('should respond with status 400 when incorrect data are sended, it should also send: duration" must be less than or equal to 120', function (done) {
     const postData = {
-      visitDate: "2021-03-01",
-      visitTime: "11:30",
+      visitDate: '2021-03-01',
+      visitTime: '11:30',
       duration: 99999,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     request(app)
@@ -172,11 +179,11 @@ describe('DELETE', () => {
   it('should response with status 404 and send: Wizyta adopcyjna, której szukasz nie istnieje', function (done) {
     const dummyDataDelete = {
       _id: '60369dc3e954c736b94a12f5',
-      visitDate: "2021-03-01",
-      visitTime: "11:30",
+      visitDate: '2021-03-01',
+      visitTime: '11:30',
       duration: 50,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
     const post = adoptionVisit.create(dummyDataDelete);
     return request(app)
@@ -184,7 +191,9 @@ describe('DELETE', () => {
       .set('Accept', 'application/json')
       .expect(404)
       .then((response) => {
-        expect(response.body.message).toBe('Wizyta adopcyjna, której szukasz nie istnieje');
+        expect(response.body.message).toBe(
+          'Wizyta adopcyjna, której szukasz nie istnieje'
+        );
         done();
       })
       .catch((err) => done(err));
@@ -193,11 +202,11 @@ describe('DELETE', () => {
   it('should response with status 202 and send: Wizyta adopcyjna została poprawnie anulowana', function (done) {
     const dummyDataDelete = {
       _id: '99369dc3e954c736b94a12f5',
-      visitDate: "2021-03-01",
-      visitTime: "11:30",
+      visitDate: '2021-03-01',
+      visitTime: '11:30',
       duration: 50,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
     const post = adoptionVisit.create(dummyDataDelete);
     return request(app)
@@ -219,19 +228,19 @@ describe('PUT', () => {
   it('should update payment and response with status 200 and send: Zaktualizowano wizytę adopcyjną', function (done) {
     const dummyDataForUpdate = {
       _id: '99999dc3e954c736b94a12f5',
-      visitDate: "2021-03-01",
-      visitTime: "11:30",
+      visitDate: '2021-03-01',
+      visitTime: '11:30',
       duration: 50,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const putData = {
-      visitDate: "2021-03-03",
-      visitTime: "12:30",
+      visitDate: '2021-03-03',
+      visitTime: '12:30',
       duration: 50,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const post = adoptionVisit.create(dummyDataForUpdate);
@@ -250,19 +259,19 @@ describe('PUT', () => {
   it('should update payment and response with status 400 and send: Podano błędny numer _id', function (done) {
     const dummyDataForUpdate = {
       _id: '33333dc3e954c736b94a12f5',
-      visitDate: "2021-03-03",
-      visitTime: "12:30",
+      visitDate: '2021-03-03',
+      visitTime: '12:30',
       duration: 50,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const putData = {
-      visitDate: "2021-03-03",
-      visitTime: "12:30",
+      visitDate: '2021-03-03',
+      visitTime: '12:30',
       duration: 60,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const post = adoptionVisit.create(dummyDataForUpdate);
@@ -281,19 +290,19 @@ describe('PUT', () => {
   it('should update payment and response with status 400 when incorrect data are send also it should response with : duration" must be less than or equal to 120', function (done) {
     const dummyDataForUpdate = {
       _id: '56789dc3e954c736b94a12f5',
-      visitDate: "2021-03-03",
-      visitTime: "12:30",
+      visitDate: '2021-03-03',
+      visitTime: '12:30',
       duration: 60,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const putData = {
-      visitDate: "2021-04-03",
-      visitTime: "09:30",
+      visitDate: '2021-04-03',
+      visitTime: '09:30',
       duration: 11111,
-      userID: "5199803df3f4948bd2f98113",
-      isVisitDone: false
+      userID: '5199803df3f4948bd2f98113',
+      isVisitDone: false,
     };
 
     const post = adoptionVisit.create(dummyDataForUpdate);
@@ -311,7 +320,6 @@ describe('PUT', () => {
       .catch((err) => done(err));
   });
 });
-
 
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);

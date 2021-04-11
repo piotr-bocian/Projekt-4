@@ -15,7 +15,7 @@ exports.userCompanyGetMe = async (req, res, next) => {
 
 exports.usersGetAll = async(req, res, next) => {
     const usersCompany = await UserCompany.find().sort('companyName');
-    const users = await User.find().sort('lastName');
+    const users = await User.find(req.query || req.params).sort('lastName');
     res.send([...users, ...usersCompany]);
 };
 
@@ -27,7 +27,7 @@ exports.userCompanyGetUser = async(req, res, next) => {
         res.send(userCompany);
     }else {
         res.status(400).send({message: 'Podano nieprawidłowy numer id'});
-    }    
+    }
 };
 
 exports.userCompanyAddUser = async(req, res, next) => {
@@ -36,7 +36,7 @@ exports.userCompanyAddUser = async(req, res, next) => {
         const validCompanyUser = await validateUserCompany.validateAsync(req.body);
         let userCompany = await UserCompany.findOne({ email: req.body.email });
         if(userCompany) return res.status(400).send({message: 'Użytkownik o podanym adresie email jest już zarejestrowany.'});
-        
+
         // IMAGE CHECK
         if (!req.file) {
           userCompany = new UserCompany({
@@ -50,7 +50,7 @@ exports.userCompanyAddUser = async(req, res, next) => {
             image: fs.readFileSync(req.file.path)
           });
         }
-        
+
         // HASH PASSWORD
         const salt = await bcrypt.genSalt(10);
         userCompany.password = await bcrypt.hash(userCompany.password, salt);
@@ -120,7 +120,7 @@ exports.userCompanyUpdateUser = async (req, res) => {
         updateUserCompany.password = await bcrypt.hash(updateUserCompany.password, salt);
       };
     }
-    
+
     const userCompany = await UserCompany.findOneAndUpdate(
       { _id: id },
       { $set: updateUserCompany },

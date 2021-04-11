@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-const { adoptionVisit, validateVisit, validatePatchUpdate} = require('../models/adoptionVisit');
+const {
+  adoptionVisit,
+  validateVisit,
+  validatePatchUpdate,
+} = require('../models/adoptionVisit');
 
 exports.getAllVisits = async (req, res) => {
   const page = parseInt(req.query.page);
@@ -25,11 +29,17 @@ exports.getAllVisits = async (req, res) => {
     };
   }
 
-  results.results = await adoptionVisit.find()
+  results.results = await adoptionVisit
+    .find(req.query || req.params)
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
-  res.send(results);
+  res.send({
+    request: {
+      type: 'GET',
+    },
+    adoptionVisits: results,
+  });
 };
 
 exports.getVisit = async (req, res) => {
@@ -38,7 +48,9 @@ exports.getVisit = async (req, res) => {
     const visit = await adoptionVisit.findById(req.params.id);
 
     if (!visit) {
-      return res.status(404).send({message:'Wizyta adopcyjna, której szukasz nie istnieje'});
+      return res
+        .status(404)
+        .send({ message: 'Wizyta adopcyjna, której szukasz nie istnieje' });
     }
 
     res.send({
@@ -50,7 +62,7 @@ exports.getVisit = async (req, res) => {
       },
     });
   } else {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
   }
 };
 
@@ -62,7 +74,9 @@ exports.getMyVisits = async (req, res) => {
   const endIndex = page * limit;
 
   const results = {
-    allVisitsInDatabase: await adoptionVisit.find({userID: req.user._id}).count(),
+    allVisitsInDatabase: await adoptionVisit
+      .find({ userID: req.user._id })
+      .count(),
   };
   if (endIndex < (await adoptionVisit.count())) {
     results.next = {
@@ -78,7 +92,8 @@ exports.getMyVisits = async (req, res) => {
     };
   }
 
-  results.results = await adoptionVisit.find({userID: req.user._id})
+  results.results = await adoptionVisit
+    .find({ userID: req.user._id })
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });
@@ -91,11 +106,15 @@ exports.getMyVisit = async (req, res) => {
     const visit = await adoptionVisit.findById(req.params.id);
 
     if (!visit) {
-      return res.status(404).send({message:'Wizyta adopcyjna, której szukasz nie istnieje'});
+      return res
+        .status(404)
+        .send({ message: 'Wizyta adopcyjna, której szukasz nie istnieje' });
     }
 
     if (visit.userID != req.user._id) {
-      return res.status(403).send({message:'Brak uprawnień do wykonania tej operacji.'});
+      return res
+        .status(403)
+        .send({ message: 'Brak uprawnień do wykonania tej operacji.' });
     }
 
     res.send({
@@ -107,7 +126,7 @@ exports.getMyVisit = async (req, res) => {
       },
     });
   } else {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
   }
 };
 
@@ -132,7 +151,7 @@ exports.makeMyVisit = async (req, res) => {
       visit,
     });
   } catch (error) {
-    res.status(400).send({message: error.message});
+    res.status(400).send({ message: error.message });
   }
 };
 
@@ -157,7 +176,7 @@ exports.makeVisit = async (req, res) => {
       visit,
     });
   } catch (error) {
-    res.status(400).send({message: error.message});
+    res.status(400).send({ message: error.message });
   }
 };
 
@@ -167,7 +186,9 @@ exports.deleteVisit = async (req, res) => {
     const visit = await adoptionVisit.findByIdAndRemove(req.params.id);
 
     if (!visit) {
-      return res.status(404).send({message:'Wizyta adopcyjna, której szukasz nie istnieje'});
+      return res
+        .status(404)
+        .send({ message: 'Wizyta adopcyjna, której szukasz nie istnieje' });
     }
 
     res.status(202).send({
@@ -180,28 +201,33 @@ exports.deleteVisit = async (req, res) => {
       },
     });
   } else {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
   }
 };
 
 exports.deleteMyVisit = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
   if (isIdValid) {
-
-    const visit = await adoptionVisit.findById(req.params.id)
+    const visit = await adoptionVisit.findById(req.params.id);
 
     if (!visit) {
-      return res.status(404).send({message:'Wizyta adopcyjna, której szukasz nie istnieje'});
+      return res
+        .status(404)
+        .send({ message: 'Wizyta adopcyjna, której szukasz nie istnieje' });
     }
 
     // userID.check
     if (visit.userID != req.user._id) {
-      return res.status(403).send({message:'Brak uprawnień do wykonania tej operacji.'});
+      return res
+        .status(403)
+        .send({ message: 'Brak uprawnień do wykonania tej operacji.' });
     }
     // Visit date check
     if (visit.visitDate <= Date.now()) {
-      return res.status(403).send({message:'Czas na anulowanie wizyty adopcyjnej minął.'});
-    };
+      return res
+        .status(403)
+        .send({ message: 'Czas na anulowanie wizyty adopcyjnej minął.' });
+    }
 
     const visitToDelete = await adoptionVisit.findByIdAndRemove(req.params.id);
 
@@ -215,14 +241,14 @@ exports.deleteMyVisit = async (req, res) => {
       },
     });
   } else {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
   }
 };
 
 exports.updateVisit = async (req, res) => {
   const isIdValid = mongoose.Types.ObjectId.isValid(req.params.id);
   if (!isIdValid) {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
     return;
   }
   try {
@@ -254,7 +280,7 @@ exports.updateVisit = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).send({message: error.message});
+    res.status(400).send({ message: error.message });
   }
 };
 
@@ -262,7 +288,7 @@ exports.updateMyVisit = async (req, res) => {
   const id = req.params.id;
   const isIdValid = mongoose.Types.ObjectId.isValid(id);
   if (!isIdValid) {
-    res.status(400).send({message:'Podano błędny numer _id'});
+    res.status(400).send({ message: 'Podano błędny numer _id' });
     return;
   }
   try {
@@ -270,28 +296,35 @@ exports.updateMyVisit = async (req, res) => {
     // forbidden changes by user:
     for (const [propName, newValue] of Object.entries(req.body)) {
       if (propName === 'isVisitDone') {
-        return res.status(403).send({message:'Brak uprawnień do wykonania tej operacji.'});
-      };
+        return res
+          .status(403)
+          .send({ message: 'Brak uprawnień do wykonania tej operacji.' });
+      }
       if (propName === 'userID') {
-        return res.status(403).send({message:'Brak uprawnień do wykonania tej operacji.'});
-      };
+        return res
+          .status(403)
+          .send({ message: 'Brak uprawnień do wykonania tej operacji.' });
+      }
       updateVisit[propName] = newValue;
     }
 
     await validatePatchUpdate.validateAsync(updateVisit);
-    
+
     // Visit check
-    const visitCheck = await adoptionVisit.findOne(
-      { _id: id });
+    const visitCheck = await adoptionVisit.findOne({ _id: id });
     // Visit userId check
     if (visitCheck.userID != req.user._id) {
       // console.log(visitCheck.userID, req.user._id)
-      return res.status(403).send({message: 'Brak uprawnień do wykonania tej operacji.'});
+      return res
+        .status(403)
+        .send({ message: 'Brak uprawnień do wykonania tej operacji.' });
     }
     // Visit date check
     if (visitCheck.visitDate <= Date.now()) {
-      return res.status(403).send({message: 'Czas na anulowanie wizyty adopcyjnej minął.'});
-    };
+      return res
+        .status(403)
+        .send({ message: 'Czas na anulowanie wizyty adopcyjnej minął.' });
+    }
 
     const visit = await adoptionVisit.findOneAndUpdate(
       { _id: id },
@@ -299,9 +332,7 @@ exports.updateMyVisit = async (req, res) => {
       { new: true }
     );
     res.status(200).send({
-      message: `Zaktualizowano nastepujące pola ${JSON.stringify(
-        updateVisit
-      )}`,
+      message: `Zaktualizowano nastepujące pola ${JSON.stringify(updateVisit)}`,
       request: {
         type: 'PATCH',
         description: 'To see all adoption visits go to:',
@@ -309,6 +340,6 @@ exports.updateMyVisit = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(400).send({message: error.message});
+    res.status(400).send({ message: error.message });
   }
 };

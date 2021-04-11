@@ -37,7 +37,7 @@ exports.getAllPayments = async (req, res) => {
     };
   }
 
-  results.results = await Payment.find(search)
+  results.results = await Payment.find(search || req.query || req.params)
     .limit(limit)
     .skip(startIndex)
     .sort({ amount: -1 });

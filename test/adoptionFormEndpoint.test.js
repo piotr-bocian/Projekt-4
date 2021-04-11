@@ -52,7 +52,7 @@ describe('GET', () => {
       .set('Accept', 'appliacation/json')
       .expect(200)
       .then((response) => {
-        expect(response.body).toStrictEqual([
+        expect(response.body.adoptionForms.results).toStrictEqual([
           {
             _id: '60377c92f773614138a582d6',
             content: 'Cześć, czy mozna adopotować Jeża?',
@@ -125,7 +125,6 @@ describe('POST', () => {
       });
   });
 });
-
 
 // DELETE
 describe('DELETE', () => {
