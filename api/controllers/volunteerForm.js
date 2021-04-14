@@ -77,15 +77,16 @@ exports.updateVolunteerFormProperty = async (req, res, next) => {
 
   try {
     const updateOps = {};
-    for (const ops of req.body) {
-      updateOps[ops.propertyName] = ops.newValue;
+    for (const [propName, newValue] of Object.entries(req.body)) {
+      updateOps[propName] = newValue;
     }
 
     await validateVolunteerFormLight.validateAsync(updateOps);
 
     const volunteerForm = await VolunteerForm.findOneAndUpdate(
       { _id: id },
-      { $set: updateOps }
+      { $set: updateOps },
+      { new: true }
     );
 
     res.status(200).send({
@@ -93,7 +94,7 @@ exports.updateVolunteerFormProperty = async (req, res, next) => {
       volunteerForm,
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send({ error: error.message });
   }
 };
 
