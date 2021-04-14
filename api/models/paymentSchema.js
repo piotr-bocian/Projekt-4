@@ -71,7 +71,7 @@ const patch = Joi.object({
     'Wirtualny opiekun-opłata cykliczna',
   ),
   amount: Joi.number().min(5),
-  paymentDate: Joi.date().min('now'),
+  paymentDate: Joi.date(),
   paymentMethod: Joi.string().valid(
     'Karta płatnicza',
     'Blik',

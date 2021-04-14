@@ -151,12 +151,13 @@ exports.updateOnePayment = async (req, res) => {
   }
   try {
     const { typeOfPayment, amount, paymentDate, paymentMethod } = req.body;
-    await validatePayment.validateAsync({
+    await validatePatchUpdate.validateAsync({
       typeOfPayment,
       amount,
       paymentDate,
       paymentMethod,
-    });
+    })
+    // await validatePayment.validateAsync();
 
     let payment = await Payment.findByIdAndUpdate(
       req.params.id,
