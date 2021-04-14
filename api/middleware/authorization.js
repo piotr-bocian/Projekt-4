@@ -19,7 +19,7 @@ exports.isAdmin = function (req, res, next) {
     next();
 }
 
-exports.isAdmin = function (req, res, next) {
+exports.isSuperAdmin = function (req, res, next) {
     if(!req.user.isSuperAdmin) return res.status(403).send({message: 'Brak uprawnień do wykonania tej operacji.'});
     next();
 }
