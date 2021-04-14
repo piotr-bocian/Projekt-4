@@ -137,6 +137,65 @@ exports.usersAddUser = async (req, res, next) => {
   }
 };
 
+exports.usersAddEmployee = async (req, res, next) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      password,
+      mobile,
+      isSuperAdmin,
+      isAdmin,
+      isVolunteer,
+    } = req.body;
+    const validUser = await validateUser.validateAsync(req.body);
+    let user = await User.findOne({ email: req.body.email });
+    if (user)
+      return res
+        .status(400)
+        .send({
+          message:
+            'Użytkownik o podanym adresie email jest już zarejestrowany.',
+        });
+
+    if (isSuperAdmin) {
+      return res
+        .status(403)
+        .send({
+          message: 'Nie masz uprawnień do nadania statusu Administratora.',
+        });
+    }
+    if (!req.file) {
+      user = new User({
+        _id: mongoose.Types.ObjectId(),
+        ...validUser,
+      });
+    } else {
+      user = new User({
+        _id: mongoose.Types.ObjectId(),
+        ...validUser,
+        image: fs.readFileSync(req.file.path),
+      });
+    }
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    user = await user.save();
+
+    const token = user.generateAuthToken();
+    res.status(201).send({
+      message: 'Pomyślnie dodano pracownika.',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      token: token,
+    });
+    next();
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+};
+
 exports.usersUpdateUser = async (req, res, next) => {
   id = req.params.id;
   const isIdValid = mongoose.Types.ObjectId.isValid(id);
