@@ -11,7 +11,7 @@ router.get('/me', auth.loggedUser, userController.usersGetMe);
 router.get('/', [auth.loggedUser ,auth.isAdmin], userController.usersGetAll);
 router.get('/:id', [auth.loggedUser ,auth.isAdmin], userController.usersGetUser);
 router.post('/', userController.usersAddUser,mail.registrationMail);
-router.post('/', [auth.loggedUser, auth.isSuperAdmin], userController.usersAddEmployee,mail.registrationMail);
+router.post('/addEmployee', [auth.loggedUser, auth.isSuperAdmin], userController.usersAddEmployee,mail.registrationMail);
 router.patch('/me', auth.loggedUser, userController.usersUpdateMe);
 router.patch('/:id', [auth.loggedUser, auth.isAdmin], userController.usersUpdateUser);
 router.delete('/me', auth.loggedUser, userController.usersDeleteMe);
